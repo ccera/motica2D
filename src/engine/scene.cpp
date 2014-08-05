@@ -460,7 +460,7 @@ void Scene::renderScene()
     glEnable(GL_BLEND);
     glDisable(GL_DITHER);
     glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE); // Ukljuciti depth write (ovo je ionako deafultno)
+    //glDepthMask(GL_TRUE); // Ukljuciti depth write (ovo je ionako deafultno)
 
     // Prvo se samo depth renda tako da svi iduci koraci uopšte ne upisuju depth, nego ga samo čitaju.
     // Kod ako ima više stageova i puno tekstura ovo drastično smanjuje vrijeme u fragment shaderu jer on
@@ -488,7 +488,6 @@ void Scene::renderScene()
         emit objectPicked(pickedModelID);
         isCurrentlyPicking = false;
     }
-
 
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glClearColor(bgR, bgG, bgB, bgA);

@@ -34,7 +34,7 @@ Game::Game(QWindow *parent)
     QSurfaceFormat format;
     format.setVersion(2,1);
     format.setSamples(4);
-    format.setDepthBufferSize(32);
+    format.setDepthBufferSize(16); //32 ne radi na linux
     format.setStencilBufferSize(8);
     this->setFormat(format);
 #elif OPENGL32
