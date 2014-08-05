@@ -14,7 +14,8 @@ HEADERS += \
     src/engine/model.h \
     src/engine/scene.h \
     src/engine/transform.h \
-    src/engine/timer.h
+    src/engine/timer.h \
+    mygame.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
@@ -28,7 +29,8 @@ SOURCES += \
     src/engine/model.cpp \
     src/engine/scene.cpp \
     src/engine/transform.cpp \
-    src/engine/timer.cpp
+    src/engine/timer.cpp \
+    mygame.cpp
 
 # Ovdje dodati sve što se treba koirati uz app
 resources_dir.source = resources

@@ -19,8 +19,18 @@
 
 #include "texture.h"
 
+Texture::Texture() :
+    QObject()
+{
+}
+
 Texture::Texture(const QString &file) :
     QObject()
+{
+    this->setFile(file);
+}
+
+void Texture::setFile(const QString &file)
 {
     filename = file;
     name = file;

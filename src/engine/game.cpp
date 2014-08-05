@@ -68,7 +68,6 @@ Game::~Game()
 
 void Game::render(QPainter *painter)
 {
-
     //Painter labela.
     float height = painter->device()->height();
     for(int n=0; n < arrLabela.size(); n++) {
@@ -111,8 +110,8 @@ void Game::render()
         renderDt = (float)m_renderFrameTime->nsecsElapsed() / 1000000.0f;
     }
 
-    //Loop callback funkcija
-    //TODO pozvati sve koji su prijavljeni na event
+    // Emit update event to everybody dt is im miliseconds
+    emit update(renderDt);
 
     if (!isGLInitialized) {
         initialize();

@@ -65,6 +65,9 @@ public:
     QVector<Label*> arrLabela;
     QVector<Sprite*> arrSprites;
 
+signals:
+    void update(float dt);
+
 public slots:
     void renderLater();
     void renderNow();

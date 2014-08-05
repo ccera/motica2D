@@ -28,7 +28,10 @@ class Texture : public QObject
 {
     Q_OBJECT
 public:
-    explicit Texture(const QString &file);
+    Texture();
+    Texture(const QString &file);
+
+    void setFile(const QString &file);
 
     GLuint ID;
     QString name;

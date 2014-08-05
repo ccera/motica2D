@@ -32,8 +32,11 @@ class Sprite : public QObject, public Model
 {
     Q_OBJECT
 public:
-    explicit Sprite(Texture *texture);
+    Sprite();
+    Sprite(Texture *texture);
 
+    void setTexture(Texture *p_texture);
+    void setName(const QString &p_name);
     void onPicked();
 
 signals:

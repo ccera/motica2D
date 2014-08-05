@@ -29,7 +29,7 @@ Model::Model(Mesh *p_mesh, Texture *p_texture, const QString &p_name)
     isSelectable = true;
     model_id = 0;
     isVisible = true;
-    texture = p_texture;
+    this->setTexture(p_texture);
     transform = new Transform();
     isLabel = false;
 }
@@ -43,9 +43,19 @@ Model::Model()
     model_id = 0;
     isVisible = true;
     texture = NULL;
-    name = "";
+    this->setName("");
     transform = new Transform();
     isLabel = false;
+}
+
+void Model::setTexture(Texture *p_texture)
+{
+    texture = p_texture;
+}
+
+void Model::setName(const QString &p_name)
+{
+    name = p_name;
 }
 
 Model::~Model()

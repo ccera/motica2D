@@ -33,6 +33,8 @@ public:
     Model(Mesh *p_mesh, Texture *p_texture, const QString &p_name);
     Model();
     ~Model();
+    void setTexture(Texture *p_texture);
+    void setName(const QString &p_name);
     
     int     model_id;
     float   alpha;

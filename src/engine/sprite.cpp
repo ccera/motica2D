@@ -19,9 +19,24 @@
 
 #include "sprite.h"
 
+Sprite::Sprite() :
+    QObject(), Model(NULL, texture, "")
+{
+}
+
 Sprite::Sprite(Texture *texture) :
     QObject(), Model(NULL, texture, "")
 {
+}
+
+void Sprite::setTexture(Texture *p_texture)
+{
+    this->texture = p_texture;
+}
+
+void Sprite::setName(const QString &p_name)
+{
+    this->name = p_name;
 }
 
 void Sprite::onPicked()
