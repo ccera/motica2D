@@ -38,7 +38,7 @@ QString Resource(const QString &resource)
     QString str = "assets:/Resursi/resources/" + resource;
     return str;
 #elif _WIN64 || _WIN32
-    QString str = QCoreApplication::applicationDirPath() + "/../resources/" + resource;
+    QString str = QCoreApplication::applicationDirPath() + "/../Resursi/resources/" + resource;
     return str;
 #elif TARGET_OS_MAC
     QString str = QCoreApplication::applicationDirPath() + "/../Resources/Resursi/resources/" + resource;
