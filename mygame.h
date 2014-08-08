@@ -21,10 +21,14 @@ public slots:
 
 private:
     Game game;
-    Texture tex;
+    Texture planet;
+    Texture bottle;
     Texture background;
+    Texture fish;
     Sprite sprBackground;
-    Sprite sprCrate;
+    Sprite sprPlanet;
+    Sprite sprBottle;
+    Sprite sprFish;
     Label labela;
 };
 

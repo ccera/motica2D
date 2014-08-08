@@ -247,22 +247,13 @@ void Scene::bindTexture(Texture *texture)
 
     b.load(texture->filename);
 
-//    QPainter painter;
-//    painter.begin(&b);
-//    painter.setPen(Qt::blue); // The font color comes from user select on a QColorDialog
-//    painter.setFont(QFont("Arial", 30)); // The font size comes from user input
-//    painter.setCompositionMode(QPainter::CompositionMode_Source);
-//    painter.drawText(100, 100, "emir");  // Draw a number on the image
-//    painter.end();
-
-
     t = QGLWidget::convertToGLFormat( b );
 
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_LINEAR);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     //glEnable(GL_TEXTURE_2D); // Ovo ne treba testirano na desk, androis još samo ios testirati
 
@@ -272,7 +263,7 @@ void Scene::bindTexture(Texture *texture)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits());
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    // Automatsko generisanje mipmap opngl 3+ i opengl es 2.0+
+    //Automatsko generisanje mipmap opngl 3+ i opengl es 2.0+
     //glBindTexture(GL_TEXTURE_2D, texture->ID);
     //glGenerateMipmap(GL_TEXTURE_2D);
     //glBindTexture(GL_TEXTURE_2D, 0);
@@ -456,28 +447,12 @@ void Scene::renderScene()
     }
     qSort(modelList.begin(), modelList.end(), sortModels); //Prvo ih sortirati po z
 
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DITHER);
     glEnable(GL_DEPTH_TEST);
-    //glDepthMask(GL_TRUE); // Ukljuciti depth write (ovo je ionako deafultno)
-
-    // Prvo se samo depth renda tako da svi iduci koraci uopšte ne upisuju depth, nego ga samo čitaju.
-    // Kod ako ima više stageova i puno tekstura ovo drastično smanjuje vrijeme u fragment shaderu jer on
-    // lako preskoči fragmente bazirano na depthu. Tako order vertexa ne utiče na brzinu rendanja
-    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, viewportWidth, viewportHeight);
-    glUseProgram(m_progDepth);
-    for(int m=0; m < modelList.size(); m++) {
-        if(modelList[m]->isVisible) {
-            renderOnlyDepth(modelList[m]);
-        }
-    }
-
-    glDepthMask(GL_FALSE); // Isključiti depth write
-    glDepthFunc(GL_LEQUAL); // Depth test mora biti ovo jer ako je defaultno LESS a pošto nda su fragmenti na istoj dubini
-                            // mora biti LESS OR EQUAL
+    glDepthMask(GL_TRUE); // Ukljuciti depth write (ovo je ionako deafultno)
 
     if(isCurrentlyPicking) {
         glUseProgram(m_progPick);
@@ -489,21 +464,31 @@ void Scene::renderScene()
         isCurrentlyPicking = false;
     }
 
-    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glClearColor(bgR, bgG, bgB, bgA);
-    glClear(GL_COLOR_BUFFER_BIT); // Samo se čisti color, depth se ne smije dirati
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Samo se čisti color, depth se ne smije dirati
 
     glUseProgram(m_progSpr);
-    for(int t=0; t < textureList.size(); t++)
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureList[t]->ID);
-        for(int m=0; m < modelList.size(); m++) {
-            if(modelList[m]->isVisible && modelList[m]->texture->ID == textureList[t]->ID) {
-                renderModel(modelList[m]);
-            }
+    for(int m=0; m < modelList.size(); m++) {
+        if(modelList[m]->isVisible) {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, modelList[m]->texture->ID);
+            renderModel(modelList[m]);
         }
     }
+
+
+// Ovako moze samo kod spriteova koji nemaju alpha
+//    glUseProgram(m_progSpr);
+//    for(int t=0; t < textureList.size(); t++)
+//    {
+//        glActiveTexture(GL_TEXTURE0);
+//        glBindTexture(GL_TEXTURE_2D, textureList[t]->ID);
+//        for(int m=0; m < modelList.size(); m++) {
+//            if(modelList[m]->isVisible && modelList[m]->texture->ID == textureList[t]->ID) {
+//                renderModel(modelList[m]);
+//            }
+//        }
+//    }
 
     //timer.end200();
 
@@ -514,7 +499,6 @@ void Scene::renderScene()
     glEnable(GL_DITHER);
     glDisable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-
 }
 
 
