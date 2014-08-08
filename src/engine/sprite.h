@@ -31,6 +31,8 @@
 class Sprite : public QObject, public Model
 {
     Q_OBJECT
+    Q_PROPERTY(QVector3D position READ position WRITE setPosition)
+
 public:
     Sprite();
     Sprite(Texture *texture);
@@ -38,6 +40,9 @@ public:
     void setTexture(Texture *p_texture);
     void setName(const QString &p_name);
     void onPicked();
+
+    void setPosition(const QVector3D &p);
+    QVector3D position() const;
 
 signals:
 

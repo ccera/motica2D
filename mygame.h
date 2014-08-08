@@ -30,6 +30,8 @@ private:
     Sprite sprBottle;
     Sprite sprFish;
     Label labela;
+
+    QPropertyAnimation animation;
 };
 
 #endif // MYGAME_H

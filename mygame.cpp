@@ -51,10 +51,19 @@ MyGame::MyGame(QObject *parent) :
     labela.color.setRgb(255,255,255);
     game.addLabel(&labela);
 
-    connect(&game, SIGNAL(update(float)), this, SLOT(update(float)));
+    animation.setTargetObject(&sprFish);
+    animation.setPropertyName("position");
+    animation.setDuration(4000);
+    animation.setStartValue(QVector3D(300,400,12));
+    animation.setEndValue(QVector3D(700,400,12));
+    animation.setEasingCurve(QEasingCurve::CosineCurve);
+    animation.setLoopCount(-1);
+    animation.start();
+
+    //connect(&game, SIGNAL(update(float)), this, SLOT(update(float)));
 }
 
 void MyGame::update(float dt)
 {
-    //sprCrate.transform->rotateFor(0,0,3.0f);
+
 }
