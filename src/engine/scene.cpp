@@ -439,7 +439,7 @@ void Scene::pickPos(int x, int y)
 
 void Scene::renderScene()
 {
-    timer.start();
+    //timer.start();
 
     for(int n=0; n < modelList.size(); n++) {
         modelList[n]->transform->isDirty = true;
@@ -490,7 +490,7 @@ void Scene::renderScene()
 //        }
 //    }
 
-    timer.end200();
+    //timer.end200();
 
     // Vratiti sve na defaultne postavke jer QT treba da iscrta svoje
     glDepthMask(GL_TRUE);

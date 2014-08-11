@@ -51,6 +51,7 @@ Game::Game(QWindow *parent)
     isPressed = false;
     scene = NULL;
     isGLInitialized = false;
+    renderDt = 0.0f;
 
     m_renderFrameTime = new QElapsedTimer();
     m_renderFrameTime->invalidate();
@@ -106,15 +107,6 @@ void Game::render()
         m_device = new QOpenGLPaintDevice(this->size()); //mora biti size
     }
 
-    float renderDt = 0.0f;
-    if(m_renderFrameTime->isValid()) {
-        renderDt = (float)m_renderFrameTime->nsecsElapsed() / 1000000.0f;
-    }
-
-    // Emit update event to everybody dt is im miliseconds
-    qDebug() << renderDt;
-    emit update(renderDt);
-
     if (!isGLInitialized) {
         initialize();
     }
@@ -132,6 +124,13 @@ void Game::render()
     render(&painter);
 
     painter.end();
+
+    renderDt = 0.0f;
+    if(m_renderFrameTime->isValid()) {
+        renderDt = (float)(m_renderFrameTime->nsecsElapsed() / 1000000.0f);
+    }
+
+    emit update(renderDt);
 
     m_renderFrameTime->start();
 }

@@ -32,6 +32,7 @@ private:
     Label labela;
 
     QPropertyAnimation animation;
+    float animTm;
 };
 
 #endif // MYGAME_H

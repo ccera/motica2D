@@ -84,6 +84,7 @@ private:
     QOpenGLPaintDevice *m_device;
     QElapsedTimer *m_renderFrameTime;
     Timer m_testTimer;
+    float renderDt;
 };
 
 #endif // GAME_H

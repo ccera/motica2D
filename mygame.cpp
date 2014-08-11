@@ -40,7 +40,7 @@ MyGame::MyGame(QObject *parent) :
 
     sprFish.setTexture(&fish);
     sprFish.setName("Fish");
-    sprFish.transform->setPosition(300,400,12);
+    sprFish.transform->setPosition(10,300,12);
     sprFish.transform->setSize(153,393,0);
     game.addSprite(&sprFish);
 
@@ -54,16 +54,22 @@ MyGame::MyGame(QObject *parent) :
     animation.setTargetObject(&sprFish);
     animation.setPropertyName("position");
     animation.setDuration(4000);
-    animation.setStartValue(QVector3D(300,400,12));
-    animation.setEndValue(QVector3D(700,400,12));
-    animation.setEasingCurve(QEasingCurve::CosineCurve);
+    animation.setStartValue(QVector3D(100,100,12));
+    animation.setEndValue(QVector3D(100,800,12));
+    animation.setEasingCurve(QEasingCurve::Linear);
     animation.setLoopCount(-1);
-    //animation.start();
+    animation.start();
+    animation.setCurrentTime(0);
+    animTm = 0;
 
-    connect(&game, SIGNAL(update(float)), this, SLOT(update(float)));
+
+    //connect(&game, SIGNAL(update(float)), this, SLOT(update(float)));
 }
 
 void MyGame::update(float dt)
 {
-sprFish.transform->translateFor(1,1,0);
+    //animTm += dt;
+    //qDebug() << dt;
+    //sprFish.transform->translateFor(dt/3.0f,0,0);
+    //animation.setCurrentTime((int)animTm);
 }
