@@ -58,12 +58,12 @@ MyGame::MyGame(QObject *parent) :
     animation.setEndValue(QVector3D(700,400,12));
     animation.setEasingCurve(QEasingCurve::CosineCurve);
     animation.setLoopCount(-1);
-    animation.start();
+    //animation.start();
 
-    //connect(&game, SIGNAL(update(float)), this, SLOT(update(float)));
+    connect(&game, SIGNAL(update(float)), this, SLOT(update(float)));
 }
 
 void MyGame::update(float dt)
 {
-
+sprFish.transform->translateFor(1,1,0);
 }

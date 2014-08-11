@@ -36,6 +36,7 @@ Game::Game(QWindow *parent)
     format.setSamples(4);
     format.setDepthBufferSize(16); //32 ne radi na linux
     format.setStencilBufferSize(8);
+    format.setSwapInterval(1);
     this->setFormat(format);
 #elif OPENGL32
     QSurfaceFormat format;
@@ -111,6 +112,7 @@ void Game::render()
     }
 
     // Emit update event to everybody dt is im miliseconds
+    qDebug() << renderDt;
     emit update(renderDt);
 
     if (!isGLInitialized) {
