@@ -4,6 +4,7 @@ MyGame::MyGame(QObject *parent) :
     QObject(parent)
 {
     game.setWindowSize(1024, 576);
+    game.setCamera2DSize(1024,576);
     game.setAnimating(true);
     game.setBackgroundColor(0.5f, 0.0f, 0.3f, 1.0f);
     game.showWindow();
@@ -53,10 +54,10 @@ MyGame::MyGame(QObject *parent) :
 
     animation.setTargetObject(&sprFish);
     animation.setPropertyName("position");
-    animation.setDuration(4000);
-    animation.setStartValue(QVector3D(100,100,12));
-    animation.setEndValue(QVector3D(100,800,12));
-    animation.setEasingCurve(QEasingCurve::CosineCurve);
+    animation.setDuration(8000);
+    animation.setStartValue(QVector3D(10,300,12));
+    animation.setEndValue(QVector3D(800,300,12));
+    animation.setEasingCurve(QEasingCurve::Linear);
     animation.setLoopCount(-1);
     //animation.start();
     //animation.stop();
@@ -69,13 +70,14 @@ MyGame::MyGame(QObject *parent) :
 
 void MyGame::update(float dt)
 {
-//    animTm += dt;
+    animTm += dt;
 //    qDebug() << dt;
-    sprFish.transform->translateFor(dt,0,0);
-//    animation.setCurrentTime((int)animTm);
+//    sprFish.transform->translateFor(dt/2.0f,0,0);
+    //animation.setCurrentTime((int)animTm);
+    //animation.resume();
 }
 
 void MyGame::updateSlot(float dt)
 {
-//    sprFish.transform->translateFor(dt,0,0);
+    sprFish.transform->translateFor(dt/10,0,0);
 }

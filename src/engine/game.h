@@ -50,16 +50,18 @@ public:
     virtual void mousePressEvent(QMouseEvent *ev);
     virtual void mouseMoveEvent(QMouseEvent *ev);
     virtual void mouseReleaseEvent(QMouseEvent *ev);
+    virtual void resizeEvent(QResizeEvent * ev);
 
     void setAnimating(bool animating);
     void setWindowSize(float width, float height);
-    void setCamera2D(float x, float y, float width, float height);
     void setBackgroundColor(float r, float g, float b, float a);
     void showWindow();
     void addTexture(Texture *texture);
     void addSprite(Sprite *sprite);
     void addLabel(Label *label);
     void connectToEvents(GameEvent *e);
+
+    void setCamera2DSize(float w, float h);
 
     Scene *scene;
     bool isPressed;
@@ -81,6 +83,15 @@ protected:
     void exposeEvent(QExposeEvent *event);
 
 private:
+    void calculateCamera();
+    float m_camera_x;
+    float m_camera_y;
+    float m_camera_width;
+    float m_camera_height;
+    float m_camera_near;
+    float m_camera_far;
+    int   m_camera_type;
+
     bool m_update_pending;
     bool m_animating;
     QOpenGLContext *m_context;

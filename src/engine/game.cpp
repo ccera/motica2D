@@ -55,6 +55,35 @@ Game::Game(QWindow *parent)
     qApp->installEventFilter(this);
 
     scene = new Scene();
+
+    m_camera_x = 0.0f;
+    m_camera_y = 0.0f;
+    m_camera_width = 0;
+    m_camera_height = 0;
+    m_camera_near = -100.0f;
+    m_camera_far = 100.0f;
+    m_camera_type = 3; //0-pixel 1-lockv 2-lockh 3-strech
+
+//
+// Default screen settings for different platforms
+//
+#if _WIN64 || _WIN32 || (__linux && !__ANDROID_API__)
+    this->resize(1024, 576);
+#elif __APPLE__
+   #include "TargetConditionals.h"
+   #if TARGET_OS_IPHONE
+        this->resize(this->screen()->size());
+        this->resize(this->screen()->size());
+   #elif TARGET_OS_MAC
+        this->resize(1024, 576);
+   #endif
+#elif __ANDROID_API__
+    this->resize(this->screen()->size());
+#elif __linux
+    this->resize(1024, 576);
+#endif
+////
+
 }
 
 Game::~Game()
@@ -99,26 +128,26 @@ void Game::initialize()
 void Game::render()
 {
     if (!m_device) {
-        m_device = new QOpenGLPaintDevice(this->size()); //mora biti size
+        m_device = new QOpenGLPaintDevice(); //new QOpenGLPaintDevice(this->size()); //mora biti size
     }
 
     if (!isGLInitialized) {
         initialize();
     }
 
-    QPainter painter;
-    //m_device->setPaintFlipped(true); // ovako su normalne GL
-    painter.begin(m_device);
+//    QPainter painter;
+//    //m_device->setPaintFlipped(true); // ovako su normalne GL
+//    painter.begin(m_device);
 
-    painter.beginNativePainting();
+//    painter.beginNativePainting();
     if(scene) {
         scene->renderScene();
     }
-    painter.endNativePainting();
+//    painter.endNativePainting();
 
-    render(&painter);
+//    render(&painter);
 
-    painter.end();
+//    painter.end();
 
     // Send update to everybody. Delta time is in ms
     for(int n=0; n < arrEvents.size(); n++) {
@@ -276,32 +305,50 @@ bool Game::eventFilter(QObject *watched, QEvent* e)
     return QWindow::eventFilter(watched, e);
 }
 
+void Game::resizeEvent(QResizeEvent *ev)
+{
+    this->calculateCamera();
+}
+
 void Game::setWindowSize(float width, float height)
 {
     this->resize(width, height);
-    this->scene->viewportWidth = width;
-    this->scene->viewportHeight = height;
-    this->scene->orthoLeft = 0.0f;
-    this->scene->orthoRight = width;
-    this->scene->orthoBottom = 0.0f;
-    this->scene->orthoTop = height;
-    this->scene->orthoNear = -100.0f;
-    this->scene->orthoFar = 100.0f;
-    if(this->isGLInitialized) {
-        this->scene->setProjection();
-    }
+    this->calculateCamera();
 }
 
-void Game::setCamera2D(float x, float y, float width, float height)
+void Game::setCamera2DSize(float w, float h)
 {
-    this->scene->orthoLeft = x;
-    this->scene->orthoRight = width;
-    this->scene->orthoBottom = y;
-    this->scene->orthoTop = height;
-    this->scene->orthoNear = -100.0f;
-    this->scene->orthoFar = 100.0f;
-    if(this->isGLInitialized) {
-        this->scene->setProjection();
+    m_camera_width = w;
+    m_camera_height = h;
+}
+
+void Game::calculateCamera()
+{
+    if(m_camera_type == 0) { //0-pixel
+        this->scene->viewportWidth = m_camera_width;
+        this->scene->viewportHeight = m_camera_height;
+        this->scene->orthoLeft = m_camera_x;
+        this->scene->orthoRight = m_camera_width;
+        this->scene->orthoBottom = m_camera_y;
+        this->scene->orthoTop =  m_camera_height;
+
+        this->scene->orthoNear = m_camera_near;
+        this->scene->orthoFar = m_camera_far;
+        if(this->isGLInitialized) { this->scene->setProjection(); }
+    }
+
+    if(m_camera_type == 3) { //1-strech
+        qDebug() << this->size().width() / m_camera_width;
+        this->scene->viewportWidth = this->size().width();
+        this->scene->viewportHeight = this->size().height();
+        this->scene->orthoLeft = m_camera_x;
+        this->scene->orthoRight = m_camera_width / ( this->size().width() / m_camera_width);
+        this->scene->orthoBottom = m_camera_y;
+        this->scene->orthoTop =  m_camera_height;
+
+        this->scene->orthoNear = m_camera_near;
+        this->scene->orthoFar = m_camera_far;
+        if(this->isGLInitialized) { this->scene->setProjection(); }
     }
 }
 
@@ -315,9 +362,20 @@ void Game::setBackgroundColor(float r, float g, float b, float a)
 
 void Game::showWindow()
 {
-    // TODO kasnije nacin prikazivanja razlicit po platformama ili da se
-    // proslijedi kao parametar
+#if _WIN64 || _WIN32 || (__linux && !__ANDROID_API__)
+   this->show();
+#elif __APPLE__
+    #include "TargetConditionals.h"
+    #if TARGET_OS_IPHONE
+        this->showFullScreen();
+    #elif TARGET_OS_MAC
+         this->show();
+    #endif
+#elif __ANDROID_API__
+    this->showFullScreen();
+#elif __linux
     this->show();
+#endif
 }
 
 void Game::addTexture(Texture *texture)
