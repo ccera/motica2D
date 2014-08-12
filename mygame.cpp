@@ -56,20 +56,26 @@ MyGame::MyGame(QObject *parent) :
     animation.setDuration(4000);
     animation.setStartValue(QVector3D(100,100,12));
     animation.setEndValue(QVector3D(100,800,12));
-    animation.setEasingCurve(QEasingCurve::Linear);
+    animation.setEasingCurve(QEasingCurve::CosineCurve);
     animation.setLoopCount(-1);
-    animation.start();
-    animation.setCurrentTime(0);
+    //animation.start();
+    //animation.stop();
+    //animation.setCurrentTime(0);
     animTm = 0;
 
-
-    //connect(&game, SIGNAL(update(float)), this, SLOT(update(float)));
+    game.connectToEvents(this);
+    connect(&game, SIGNAL(update(float)), this, SLOT(updateSlot(float)));
 }
 
 void MyGame::update(float dt)
 {
-    //animTm += dt;
-    //qDebug() << dt;
-    //sprFish.transform->translateFor(dt/3.0f,0,0);
-    //animation.setCurrentTime((int)animTm);
+//    animTm += dt;
+//    qDebug() << dt;
+    sprFish.transform->translateFor(dt,0,0);
+//    animation.setCurrentTime((int)animTm);
+}
+
+void MyGame::updateSlot(float dt)
+{
+//    sprFish.transform->translateFor(dt,0,0);
 }

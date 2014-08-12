@@ -36,7 +36,7 @@ Game::Game(QWindow *parent)
     format.setSamples(4);
     format.setDepthBufferSize(16); //32 ne radi na linux
     format.setStencilBufferSize(8);
-    format.setSwapInterval(1);
+    //format.setSwapInterval(1);
     this->setFormat(format);
 #elif OPENGL32
     QSurfaceFormat format;
@@ -51,10 +51,6 @@ Game::Game(QWindow *parent)
     isPressed = false;
     scene = NULL;
     isGLInitialized = false;
-    renderDt = 0.0f;
-
-    m_renderFrameTime = new QElapsedTimer();
-    m_renderFrameTime->invalidate();
 
     qApp->installEventFilter(this);
 
@@ -65,7 +61,6 @@ Game::~Game()
 {
     delete m_device;
     delete scene;
-    delete m_renderFrameTime;
 }
 
 void Game::render(QPainter *painter)
@@ -125,14 +120,12 @@ void Game::render()
 
     painter.end();
 
-    renderDt = 0.0f;
-    if(m_renderFrameTime->isValid()) {
-        renderDt = (float)(m_renderFrameTime->nsecsElapsed() / 1000000.0f);
+    // Send update to everybody. Delta time is in ms
+    for(int n=0; n < arrEvents.size(); n++) {
+        arrEvents.at(n)->update((1.0f / (float)screen()->refreshRate()) * 1000.0f);
     }
 
-    emit update(renderDt);
-
-    m_renderFrameTime->start();
+    emit update((1.0f / (float)screen()->refreshRate()) * 1000.0f);
 }
 
 void Game::renderLater()
@@ -343,3 +336,9 @@ void Game::addLabel(Label *label)
     this->scene->addModel(label);
     this->arrLabela.push_back(label);
 }
+
+void Game::connectToEvents(GameEvent *e)
+{
+    this->arrEvents.push_back(e);
+}
+

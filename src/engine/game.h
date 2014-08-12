@@ -31,6 +31,7 @@
 #include "label.h"
 #include "timer.h"
 #include "scene.h"
+#include "gameevent.h"
 
 class Game : public QWindow
 {
@@ -58,12 +59,14 @@ public:
     void addTexture(Texture *texture);
     void addSprite(Sprite *sprite);
     void addLabel(Label *label);
+    void connectToEvents(GameEvent *e);
 
     Scene *scene;
     bool isPressed;
     bool isGLInitialized;
     QVector<Label*> arrLabela;
     QVector<Sprite*> arrSprites;
+    QVector<GameEvent*> arrEvents;
 
 signals:
     void update(float dt);
@@ -82,9 +85,6 @@ private:
     bool m_animating;
     QOpenGLContext *m_context;
     QOpenGLPaintDevice *m_device;
-    QElapsedTimer *m_renderFrameTime;
-    Timer m_testTimer;
-    float renderDt;
 };
 
 #endif // GAME_H

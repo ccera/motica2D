@@ -7,17 +7,19 @@
 #include "sprite.h"
 #include "label.h"
 #include "utils.h"
+#include "gameevent.h"
 
-class MyGame : public QObject
+class MyGame : public QObject, GameEvent
 {
     Q_OBJECT
 public:
     explicit MyGame(QObject *parent = 0);
+        void update(float dt);
 
 signals:
 
 public slots:
-    void update(float dt);
+        void updateSlot(float dt);
 
 private:
     Game game;
