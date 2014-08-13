@@ -71,10 +71,6 @@ MyGame::MyGame(QObject *parent) :
 void MyGame::update(float dt)
 {
     animTm += dt;
-//    qDebug() << dt;
-//    sprFish.transform->translateFor(dt/2.0f,0,0);
-    //animation.setCurrentTime((int)animTm);
-    //animation.resume();
 }
 
 void MyGame::updateSlot(float dt)

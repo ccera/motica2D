@@ -60,8 +60,9 @@ public:
     void addSprite(Sprite *sprite);
     void addLabel(Label *label);
     void connectToEvents(GameEvent *e);
-
     void setCamera2DSize(float w, float h);
+    void setCamera2DPos(float x, float y);
+    void setViewport2DType(ViewportType type);
 
     Scene *scene;
     bool isPressed;
@@ -90,7 +91,7 @@ private:
     float m_camera_height;
     float m_camera_near;
     float m_camera_far;
-    int   m_camera_type;
+    ViewportType m_viewport_type;
 
     bool m_update_pending;
     bool m_animating;

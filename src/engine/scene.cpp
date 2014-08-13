@@ -99,7 +99,7 @@ void Scene::setProjection()
     projectionMatrix.ortho(orthoLeft, orthoRight,
                              orthoBottom, orthoTop,
                              orthoNear, orthoFar);
-    glViewport(0, 0, viewportWidth, viewportHeight);
+    glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
 }
 
 void Scene::addMesh(Mesh *mesh)
@@ -439,7 +439,7 @@ void Scene::pickPos(int x, int y)
 
 void Scene::renderScene()
 {
-    timer.start();
+    //timer.start();
 
     for(int n=0; n < modelList.size(); n++) {
         modelList[n]->transform->isDirty = true;
@@ -452,20 +452,20 @@ void Scene::renderScene()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DITHER);
     glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE); // Ukljuciti depth write (ovo je ionako deafultno)
+    glDepthMask(GL_TRUE);
 
     if(isCurrentlyPicking) {
         glUseProgram(m_progPick);
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
         glClearColor(0.0, 0.0, 0.0, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         int pickedModelID = renderScenePick();
         emit objectPicked(pickedModelID);
         isCurrentlyPicking = false;
     }
 
     glClearColor(bgR, bgG, bgB, bgA);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Samo se čisti color, depth se ne smije dirati
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(m_progSpr);
     for(int m=0; m < modelList.size(); m++) {
@@ -490,7 +490,7 @@ void Scene::renderScene()
 //        }
 //    }
 
-    timer.end200();
+    //timer.end200();
 
     // Vratiti sve na defaultne postavke jer QT treba da iscrta svoje
     glDepthMask(GL_TRUE);

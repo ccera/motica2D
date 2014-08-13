@@ -62,7 +62,7 @@ Game::Game(QWindow *parent)
     m_camera_height = 0;
     m_camera_near = -100.0f;
     m_camera_far = 100.0f;
-    m_camera_type = 3; //0-pixel 1-lockv 2-lockh 3-strech
+    m_viewport_type = VIEWPORT_STRECH_Y;
 
 //
 // Default screen settings for different platforms
@@ -95,6 +95,7 @@ Game::~Game()
 void Game::render(QPainter *painter)
 {
     //Painter labela.
+    // TODO: postaviti viewport da odgovara kameri
     float height = painter->device()->height();
     for(int n=0; n < arrLabela.size(); n++) {
         painter->save();
@@ -128,26 +129,28 @@ void Game::initialize()
 void Game::render()
 {
     if (!m_device) {
-        m_device = new QOpenGLPaintDevice(); //new QOpenGLPaintDevice(this->size()); //mora biti size
+        m_device = new QOpenGLPaintDevice();
     }
 
     if (!isGLInitialized) {
         initialize();
     }
 
-//    QPainter painter;
-//    //m_device->setPaintFlipped(true); // ovako su normalne GL
-//    painter.begin(m_device);
+    QPainter painter;
+    //m_device->setPaintFlipped(true); // ovako su normalne GL
+    m_device->setSize(this->size());
+    painter.begin(m_device);
 
-//    painter.beginNativePainting();
+    painter.beginNativePainting();
     if(scene) {
+        this->calculateCamera();
         scene->renderScene();
     }
-//    painter.endNativePainting();
+    painter.endNativePainting();
 
-//    render(&painter);
+    render(&painter);
 
-//    painter.end();
+    painter.end();
 
     // Send update to everybody. Delta time is in ms
     for(int n=0; n < arrEvents.size(); n++) {
@@ -320,32 +323,83 @@ void Game::setCamera2DSize(float w, float h)
 {
     m_camera_width = w;
     m_camera_height = h;
+    this->calculateCamera();
+}
+
+void Game::setCamera2DPos(float x, float y)
+{
+    m_camera_x = x;
+    m_camera_y = y;
+    this->calculateCamera();
+}
+
+void Game::setViewport2DType(ViewportType type)
+{
+    m_viewport_type = type;
+    this->calculateCamera();
 }
 
 void Game::calculateCamera()
 {
-    if(m_camera_type == 0) { //0-pixel
+    if(m_viewport_type == VIEWPORT_PIXEL) {
+        this->scene->viewportX = 0;
+        this->scene->viewportY = 0;
         this->scene->viewportWidth = m_camera_width;
         this->scene->viewportHeight = m_camera_height;
         this->scene->orthoLeft = m_camera_x;
         this->scene->orthoRight = m_camera_width;
         this->scene->orthoBottom = m_camera_y;
         this->scene->orthoTop =  m_camera_height;
-
         this->scene->orthoNear = m_camera_near;
         this->scene->orthoFar = m_camera_far;
         if(this->isGLInitialized) { this->scene->setProjection(); }
     }
 
-    if(m_camera_type == 3) { //1-strech
-        qDebug() << this->size().width() / m_camera_width;
+    if(m_viewport_type == VIEWPORT_STRECH_X) {
+        float screen_height = (float)this->size().height();
+        float screen_width = (float)this->size().width();
+        float e = screen_width / m_camera_width;
+        float d = (screen_height - (m_camera_height * e)) / 2.0f;
+        this->scene->viewportX = 0;
+        this->scene->viewportY = 0 + d;
+        this->scene->viewportWidth = m_camera_width * e;
+        this->scene->viewportHeight = m_camera_height * e;
+        this->scene->orthoLeft = m_camera_x;
+        this->scene->orthoRight = m_camera_width;
+        this->scene->orthoBottom = m_camera_y ;
+        this->scene->orthoTop =  m_camera_height;
+        this->scene->orthoNear = m_camera_near;
+        this->scene->orthoFar = m_camera_far;
+        if(this->isGLInitialized) { this->scene->setProjection(); }
+    }
+
+    if(m_viewport_type == VIEWPORT_STRECH_Y) {
+        float screen_height = (float)this->size().height();
+        float screen_width = (float)this->size().width();
+        float e = screen_height / m_camera_height;
+        float d = (screen_width - (m_camera_width * e)) / 2.0f;
+        this->scene->viewportX = 0 + d;
+        this->scene->viewportY = 0;
+        this->scene->viewportWidth = m_camera_width * e;
+        this->scene->viewportHeight = m_camera_height * e;
+        this->scene->orthoLeft = m_camera_x;
+        this->scene->orthoRight = m_camera_width;
+        this->scene->orthoBottom = m_camera_y ;
+        this->scene->orthoTop =  m_camera_height;
+        this->scene->orthoNear = m_camera_near;
+        this->scene->orthoFar = m_camera_far;
+        if(this->isGLInitialized) { this->scene->setProjection(); }
+    }
+
+    if(m_viewport_type == VIEWPORT_STRECH_XY) {
+        this->scene->viewportX = 0;
+        this->scene->viewportY = 0;
         this->scene->viewportWidth = this->size().width();
         this->scene->viewportHeight = this->size().height();
         this->scene->orthoLeft = m_camera_x;
-        this->scene->orthoRight = m_camera_width / ( this->size().width() / m_camera_width);
+        this->scene->orthoRight = m_camera_width;
         this->scene->orthoBottom = m_camera_y;
         this->scene->orthoTop =  m_camera_height;
-
         this->scene->orthoNear = m_camera_near;
         this->scene->orthoFar = m_camera_far;
         if(this->isGLInitialized) { this->scene->setProjection(); }

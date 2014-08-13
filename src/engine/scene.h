@@ -75,6 +75,8 @@ public:
 
     GLuint viewportWidth;
     GLuint viewportHeight;
+    GLuint viewportX;
+    GLuint viewportY;
 
     float orthoLeft;
     float orthoRight;
