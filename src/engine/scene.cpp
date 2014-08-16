@@ -23,7 +23,6 @@ Scene::Scene()
 {
     qDebug() << "Constructing Scene...";
     isSceneGLPrepared = false;
-    curBoundVAO = 0;
     next_model_id = 1;
     isCurrentlyPicking = false;
     pick_x = 0;
@@ -36,6 +35,7 @@ Scene::Scene()
     bgB = 0.1f;
     bgA = 1.0f;
     supportsVAO = false;
+    curTexID = -1;
 
     initSpriteMesh();
 }
@@ -450,8 +450,10 @@ void Scene::renderScene()
     glUseProgram(m_progSpr);
     for(int m=0; m < modelList.size(); m++) {
         if(modelList[m]->isVisible) {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, modelList[m]->texture->ID);
+            if(curTexID == -1 || curTexID != modelList[m]->texture->ID) {
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, modelList[m]->texture->ID);
+            }
             renderModel(modelList[m]);
         }
     }
@@ -470,15 +472,6 @@ void Scene::renderScene()
 //            }
 //        }
 //    }
-
-
-    // Vratiti sve na defaultne postavke jer QT treba da iscrta svoje
-    // glDepthMask(GL_TRUE);
-    // glBlendFunc(GL_ZERO, GL_ZERO);
-    // glDisable(GL_BLEND);
-    // glEnable(GL_DITHER);
-    // glDisable(GL_DEPTH_TEST);
-    // glDepthFunc(GL_LESS);
 }
 
 

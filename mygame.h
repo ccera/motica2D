@@ -5,7 +5,6 @@
 #include "game.h"
 #include "texture.h"
 #include "sprite.h"
-#include "label.h"
 #include "utils.h"
 #include "gameevent.h"
 
@@ -31,8 +30,9 @@ private:
     Sprite sprPlanet;
     Sprite sprBottle;
     Sprite sprFish;
-    Label labela;
 
+    Sprite sprNiz[100];
+    QPropertyAnimation animNiz[100];
     QPropertyAnimation animation;
     float animTm;
 };

@@ -28,7 +28,6 @@
 #include <QInputMethod>
 #include "texture.h"
 #include "sprite.h"
-#include "label.h"
 #include "timer.h"
 #include "scene.h"
 #include "gameevent.h"
@@ -41,7 +40,6 @@ public:
     explicit Game(QWindow *parent = 0);
     ~Game();
 
-    virtual void render(QPainter *painter);
     virtual void render();
     virtual void initialize();
     virtual void keyPressEvent(QKeyEvent *ev);
@@ -59,7 +57,6 @@ public:
     void showWindow();
     void addTexture(Texture *texture);
     void addSprite(Sprite *sprite);
-    void addLabel(Label *label);
     void connectToEvents(GameEvent *e);
     void setCamera2DSize(float w, float h);
     void setCamera2DPos(float x, float y);
@@ -68,7 +65,6 @@ public:
     Scene *scene;
     bool isPressed;
     bool isGLInitialized;
-    QVector<Label*> arrLabela;
     QVector<Sprite*> arrSprites;
     QVector<GameEvent*> arrEvents;
 
@@ -98,8 +94,6 @@ private:
     bool m_animating;
     QOpenGLContext *m_context;
     QOpenGLPaintDevice *m_device;
-
-    QElapsedTimer ft;
 };
 
 #endif // GAME_H

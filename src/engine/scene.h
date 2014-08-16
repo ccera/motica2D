@@ -136,12 +136,13 @@ protected:
     GLint m_progPick_Color;
 
     int next_model_id; // Id koji se dodjeljuje svakom modelu
-    GLuint curBoundVAO; // ID trenutno boundanog vaoa
     bool isCurrentlyPicking; // Da li se ovaj frame pickaju opbjekti
     int pick_x;
     int pick_y;
     
     Timer timer;
+
+    GLuint curTexID;
 
 private:
 

@@ -8,7 +8,6 @@ HEADERS += \
     src/engine/texture.h \
     src/engine/sprite.h \
     src/engine/game.h \
-    src/engine/label.h \
     src/engine/utils.h \
     src/engine/mesh.h \
     src/engine/model.h \
@@ -24,7 +23,6 @@ SOURCES += \
     src/engine/texture.cpp \
     src/engine/sprite.cpp \
     src/engine/game.cpp \
-    src/engine/label.cpp \
     src/engine/utils.cpp \
     src/engine/mesh.cpp \
     src/engine/model.cpp \

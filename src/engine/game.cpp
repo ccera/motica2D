@@ -42,9 +42,9 @@ Game::Game(QWindow *parent)
     QSurfaceFormat format;
     format.setVersion(3,2);
     format.setProfile(QSurfaceFormat::CoreProfile);
-    format.setSamples(4);
-    format.setDepthBufferSize(32);
-    format.setStencilBufferSize(8);
+    //format.setSamples(4);
+    //format.setDepthBufferSize(32);
+    //format.setStencilBufferSize(8);
     this->setFormat(format);
 #endif
 
@@ -68,19 +68,19 @@ Game::Game(QWindow *parent)
 // Default screen settings for different platforms
 //
 #if _WIN64 || _WIN32 || (__linux && !__ANDROID_API__)
-    this->resize(1024, 576);
+    this->resize(1024, 512);
 #elif __APPLE__
    #include "TargetConditionals.h"
    #if TARGET_OS_IPHONE
         this->resize(this->screen()->size());
         this->resize(this->screen()->size());
    #elif TARGET_OS_MAC
-        this->resize(1024, 576);
+        this->resize(1024, 512);
    #endif
 #elif __ANDROID_API__
     this->resize(this->screen()->size());
 #elif __linux
-    this->resize(1024, 576);
+    this->resize(1024, 512);
 #endif
 ////
 
@@ -90,31 +90,6 @@ Game::~Game()
 {
     delete m_device;
     delete scene;
-}
-
-void Game::render(QPainter *painter)
-{
-    //Painter labela.
-    // TODO: postaviti viewport da odgovara kameri
-    float height = painter->device()->height();
-    for(int n=0; n < arrLabela.size(); n++) {
-        painter->save();
-        QRect rct(0 - (arrLabela[n]->transform->size_x/2.0f),
-                  0 - (arrLabela[n]->transform->size_y/2.0f),
-                  arrLabela[n]->transform->size_x,
-                  arrLabela[n]->transform->size_y);
-        painter->translate(arrLabela[n]->transform->x, height - arrLabela[n]->transform->y);
-        painter->rotate(arrLabela[n]->transform->rot_z);
-        QFont font;
-        font.setFamily(arrLabela[n]->fontName);
-        font.setPointSize(arrLabela[n]->fontSize);
-        painter->setFont(font);
-        painter->setPen(arrLabela[n]->color);
-        painter->fillRect(rct, arrLabela[n]->backgroundColor);
-        painter->drawText(rct, Qt::AlignCenter, arrLabela[n]->text);
-        painter->restore();
-    }
-
 }
 
 void Game::initialize()
@@ -150,31 +125,17 @@ void Game::render()
         initialize();
     }
 
-// TODO da li nam uopšte treba QTov painter?
-//    QPainter painter;
-//    //m_device->setPaintFlipped(true); // ovako su normalne GL
-//    m_device->setSize(this->size());
-//    painter.begin(m_device);
-//    painter.beginNativePainting();
+    // Send update to everybody. Delta time is in ms
+    for(int n=0; n < arrEvents.size(); n++) {
+        arrEvents.at(n)->update((1.0f / (float)screen()->refreshRate()) * 1000.0f);
+    }
+
+    emit update((1.0f / (float)screen()->refreshRate()) * 1000.0f);
 
     if(scene) {
         this->calculateCamera();
         scene->renderScene();
     }
-//    painter.endNativePainting();
-//    render(&painter);
-//    painter.end();
-
-    float dt = ft.nsecsElapsed() / 1000000.0f;
-    ft.start();
-
-    // Send update to everybody. Delta time is in ms
-    for(int n=0; n < arrEvents.size(); n++) {
-        arrEvents.at(n)->update((1.0f / (float)screen()->refreshRate()) * 1000.0f);
-        //arrEvents.at(n)->update(dt);
-    }
-
-    emit update((1.0f / (float)screen()->refreshRate()) * 1000.0f);
 }
 
 void Game::renderLater()
@@ -247,12 +208,6 @@ void Game::objectPicked(int modelId)
     for(int n=0; n < arrSprites.size(); n++) {
         if(arrSprites[n]->model_id == modelId) {
            arrSprites[n]->onPicked();
-        }
-    }
-
-    for(int n=0; n < arrLabela.size(); n++) {
-        if(arrLabela[n]->model_id == modelId) {
-           arrLabela[n]->onPicked();
         }
     }
 }
@@ -459,12 +414,6 @@ void Game::addSprite(Sprite *sprite)
 {
     this->scene->addModel(sprite);
     this->arrSprites.push_back(sprite);
-}
-
-void Game::addLabel(Label *label)
-{
-    this->scene->addModel(label);
-    this->arrLabela.push_back(label);
 }
 
 void Game::connectToEvents(GameEvent *e)
