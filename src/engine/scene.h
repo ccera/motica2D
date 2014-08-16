@@ -27,7 +27,7 @@
 #include "timer.h"
 #include <QImage>
 #include <QOpenGLFunctions>
-#include <QtOpenGLExtensions/QOpenGLExtensions>
+#include <QOpenGLExtensions>
 #include <QReadWriteLock>
 #include <QMatrix4x4>
 #include <QQuaternion>
@@ -96,6 +96,8 @@ public:
     QVector <Mesh*> meshList;
     QVector <Model*> modelList;
 
+    bool supportsVAO;
+
 
 signals:
     void objectPicked(int modelID);
@@ -104,7 +106,6 @@ public slots:
 
 protected:
     void    renderModel(Model *model);
-    void    renderOnlyDepth(Model *model);
     void    renderPick(Model *model);
     int     renderScenePick();
     void    initSpriteMesh();
@@ -112,20 +113,13 @@ protected:
 
     bool isSceneGLPrepared;
 
-    //TODO provjeriti da li upšte treba jer kada se includajeu extenzije
-    //kao da ne treba ??
 #if  __ANDROID_API__
     QOpenGLExtension_OES_vertex_array_object *androOES;
 #endif
 
     // ID GLSL programa
-    GLuint m_progDepth; // Samo depth
     GLuint m_progSpr; // Za rendanje spriteova nema lighta i shadinga normala itd
     GLuint m_progPick; // Za rendanje samo boja koristi se kod 3d pickanja objekata
-
-    // Lokacije uniform varijbli shadow map programa
-    GLint m_progDepth_MVPMatrix;
-    GLint m_progDepth_Vertex;
 
     // Lokacije uniform varijabli sprite programa
     GLint m_progSpr_MVPMatrix;
@@ -140,7 +134,6 @@ protected:
     GLint m_progPick_MVPMatrix;
     GLint m_progPick_Vertex;
     GLint m_progPick_Color;
-
 
     int next_model_id; // Id koji se dodjeljuje svakom modelu
     GLuint curBoundVAO; // ID trenutno boundanog vaoa

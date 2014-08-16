@@ -120,6 +120,20 @@ void Game::render(QPainter *painter)
 void Game::initialize()
 {
     qDebug() << "Application initializing...";
+
+#if OPENGLES_ANDRO
+    if(m_context->hasExtension("GL_OES_vertex_array_object")) {
+        scene->supportsVAO = true;
+        qDebug() << "Supports GL_OES_vertex_array_object";
+    }
+    else {
+        scene->supportsVAO = false;
+        qDebug() << "Does not support GL_OES_vertex_array_object";
+    }
+#elif OPENGLES_IOS || OPENGL32
+    scene->supportsVAO = true;
+#endif
+
     scene->prepareScene();
     scene->setProjection();
     connect(scene, SIGNAL(objectPicked(int)), this, SLOT(objectPicked(int)));
@@ -136,25 +150,28 @@ void Game::render()
         initialize();
     }
 
-    QPainter painter;
-    //m_device->setPaintFlipped(true); // ovako su normalne GL
-    m_device->setSize(this->size());
-    painter.begin(m_device);
+// TODO da li nam uopšte treba QTov painter?
+//    QPainter painter;
+//    //m_device->setPaintFlipped(true); // ovako su normalne GL
+//    m_device->setSize(this->size());
+//    painter.begin(m_device);
+//    painter.beginNativePainting();
 
-    painter.beginNativePainting();
     if(scene) {
         this->calculateCamera();
         scene->renderScene();
     }
-    painter.endNativePainting();
+//    painter.endNativePainting();
+//    render(&painter);
+//    painter.end();
 
-    render(&painter);
-
-    painter.end();
+    float dt = ft.nsecsElapsed() / 1000000.0f;
+    ft.start();
 
     // Send update to everybody. Delta time is in ms
     for(int n=0; n < arrEvents.size(); n++) {
         arrEvents.at(n)->update((1.0f / (float)screen()->refreshRate()) * 1000.0f);
+        //arrEvents.at(n)->update(dt);
     }
 
     emit update((1.0f / (float)screen()->refreshRate()) * 1000.0f);
@@ -426,7 +443,8 @@ void Game::showWindow()
          this->show();
     #endif
 #elif __ANDROID_API__
-    this->showFullScreen();
+    //this->showFullScreen();
+    this->show();
 #elif __linux
     this->show();
 #endif

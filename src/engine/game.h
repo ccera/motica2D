@@ -32,6 +32,7 @@
 #include "timer.h"
 #include "scene.h"
 #include "gameevent.h"
+#include <QOpenGLExtensions>
 
 class Game : public QWindow
 {
@@ -97,6 +98,8 @@ private:
     bool m_animating;
     QOpenGLContext *m_context;
     QOpenGLPaintDevice *m_device;
+
+    QElapsedTimer ft;
 };
 
 #endif // GAME_H

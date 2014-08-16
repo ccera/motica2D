@@ -34,8 +34,8 @@
     #if TARGET_OS_IPHONE
         #define OPENGLES_IOS 1
     #elif TARGET_OS_MAC
-         #define OPENGL21 1
-         //#define OPENGL32 1
+         //#define OPENGL21 1
+         #define OPENGL32 1
     #endif
 #elif __ANDROID_API__
     #define OPENGLES_ANDRO 1

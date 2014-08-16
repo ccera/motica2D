@@ -35,6 +35,7 @@ Scene::Scene()
     bgG = 0.2f;
     bgB = 0.1f;
     bgA = 1.0f;
+    supportsVAO = false;
 
     initSpriteMesh();
 }
@@ -43,11 +44,13 @@ void Scene::prepareScene()
 {
     initializeOpenGLFunctions();
 
+    QString versionString1(QLatin1String(reinterpret_cast<const char*>(glGetString(GL_VERSION))));
+    qDebug() << "OpenGL Driver Version String:" << versionString1;
+
     qDebug() << "Scene prepare - GL error check:" << glGetError();
 
     m_progSpr = loadShaders(Shader("SprShader.vsh"), Shader("SprShader.fsh"));
     m_progPick = loadShaders(Shader("PickShader.vsh"), Shader("PickShader.fsh"));
-    m_progDepth = loadShaders(Shader("DepthShader.vsh"), Shader("DepthShader.fsh"));
 
     qDebug() << "Scene prepare - Load shaders error check: " << glGetError();
 
@@ -63,17 +66,16 @@ void Scene::prepareScene()
     m_progPick_Vertex = glGetAttribLocation(m_progPick, "Vertex");
     m_progPick_Color = glGetUniformLocation(m_progPick, "PickColor");
 
-    m_progDepth_Vertex = glGetAttribLocation(m_progDepth, "Vertex");
-    m_progDepth_MVPMatrix = glGetUniformLocation(m_progDepth, "MVPMatrix");
-
     qDebug() << "Scene prepare - Get Atribute/Uniform error check: " << glGetError();
 
     // Identity
     cameraMatrix.setToIdentity();
 
 #if  __ANDROID_API__
-    this->androOES = new QOpenGLExtension_OES_vertex_array_object();
-    this->androOES->initializeOpenGLFunctions();
+    if(supportsVAO) {
+        this->androOES = new QOpenGLExtension_OES_vertex_array_object();
+        this->androOES->initializeOpenGLFunctions();
+    }
 #endif
 
     // Kada se dodaju meshevi i texture u scenu, ako je ovo true
@@ -90,7 +92,6 @@ void Scene::prepareScene()
     for(int n=0; n < meshList.size(); n++) {
         bindMesh(meshList[n]);
     }
-
 }
 
 void Scene::setProjection()
@@ -119,7 +120,6 @@ void Scene::bindMesh(Mesh *mesh)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->indexDataSize, mesh->indexData, GL_STATIC_DRAW);
 
-
     // uv, normale i vertex podaci su svi u jednom areju te ge kreirati u
     // openglu i upisati podatke
     glGenBuffers(1, &mesh->VBO);
@@ -127,59 +127,36 @@ void Scene::bindMesh(Mesh *mesh)
     glBufferData(GL_ARRAY_BUFFER, mesh->vertexDataSize, mesh->vertexData, GL_STATIC_DRAW);
 
 
-    /////////// VAOi za shadow map render
-#if OPENGLES_IOS
-    glGenVertexArraysOES(1, &mesh->VAOShdMap);
-    glBindVertexArrayOES(mesh->VAOShdMap);
-#elif OPENGLES_ANDRO
-    androOES->glGenVertexArraysOES(1, &mesh->VAOShdMap);
-    androOES->glBindVertexArrayOES(mesh->VAOShdMap);
-#elif OPENGL32
-    glGenVertexArrays(1, &mesh->VAOShdMap);
-    glBindVertexArray(mesh->VAOShdMap);
-#endif
-
-#if OPENGLES_IOS || OPENGLES_ANDRO || OPENGL32
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);
-    glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
-    glEnableVertexAttribArray(m_progDepth_Vertex);
-    glVertexAttribPointer(m_progDepth_Vertex, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(20));
-    glEnableVertexAttribArray(0);
-#endif
-
-#if OPENGLES_IOS
-    glBindVertexArrayOES(0);
-#elif  OPENGLES_ANDRO
-    androOES->glBindVertexArrayOES(0);
-#elif OPENGL32
-    glBindVertexArray(0);
-#endif
-
-
-    /////////// VAOi za 3d color pick render
+    /////////// VAOi za color pick render
 #if OPENGLES_IOS
     glGenVertexArraysOES(1, &mesh->VAOPick);
     glBindVertexArrayOES(mesh->VAOPick);
 #elif OPENGLES_ANDRO
-    androOES->glGenVertexArraysOES(1, &mesh->VAOPick);
-    androOES->glBindVertexArrayOES(mesh->VAOPick);
+    if(supportsVAO) {
+        androOES->glGenVertexArraysOES(1, &mesh->VAOPick);
+        androOES->glBindVertexArrayOES(mesh->VAOPick);
+    }
 #elif OPENGL32
     glGenVertexArrays(1, &mesh->VAOPick);
     glBindVertexArray(mesh->VAOPick);
 #endif
 
 #if OPENGLES_IOS || OPENGLES_ANDRO || OPENGL32
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);
-    glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
-    glEnableVertexAttribArray(m_progPick_Vertex);
-    glVertexAttribPointer(m_progPick_Vertex, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(20));
-    glEnableVertexAttribArray(0);
+    if(supportsVAO) {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
+        glEnableVertexAttribArray(m_progPick_Vertex);
+        glVertexAttribPointer(m_progPick_Vertex, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(20));
+        glEnableVertexAttribArray(0);
+    }
 #endif
 
 #if OPENGLES_IOS
     glBindVertexArrayOES(0);
 #elif OPENGLES_ANDRO
-    androOES->glBindVertexArrayOES(0);
+    if(supportsVAO) {
+        androOES->glBindVertexArrayOES(0);
+    }
 #elif OPENGL32
     glBindVertexArray(0);
 #endif
@@ -189,30 +166,37 @@ void Scene::bindMesh(Mesh *mesh)
     glGenVertexArraysOES(1, &mesh->VAOSpr);
     glBindVertexArrayOES(mesh->VAOSpr);
 #elif OPENGLES_ANDRO
-    androOES->glGenVertexArraysOES(1, &mesh->VAOSpr);
-    androOES->glBindVertexArrayOES(mesh->VAOSpr);
+    if(supportsVAO) {
+        androOES->glGenVertexArraysOES(1, &mesh->VAOSpr);
+        androOES->glBindVertexArrayOES(mesh->VAOSpr);
+    }
 #elif OPENGL32
     glGenVertexArrays(1, &mesh->VAOSpr);
     glBindVertexArray(mesh->VAOSpr);
 #endif
 
 #if OPENGLES_IOS || OPENGLES_ANDRO || OPENGL32
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);
-    glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
-    glEnableVertexAttribArray(m_progSpr_UV);
-    glVertexAttribPointer(m_progSpr_UV, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(m_progSpr_Vertex);
-    glVertexAttribPointer(m_progSpr_Vertex, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(20));
-    glEnableVertexAttribArray(0);
+    if(supportsVAO) {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
+        glEnableVertexAttribArray(m_progSpr_UV);
+        glVertexAttribPointer(m_progSpr_UV, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(0));
+        glEnableVertexAttribArray(m_progSpr_Vertex);
+        glVertexAttribPointer(m_progSpr_Vertex, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(20));
+        glEnableVertexAttribArray(0);
+    }
 #endif
 
 #if OPENGLES_IOS
     glBindVertexArrayOES(0);
 #elif OPENGLES_ANDRO
-    androOES->glBindVertexArrayOES(0);
+    if(supportsVAO) {
+        androOES->glBindVertexArrayOES(0);
+    }
 #elif OPENGL32
     glBindVertexArray(0);
 #endif
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
@@ -244,25 +228,20 @@ void Scene::bindTexture(Texture *texture)
 
     QImage t;
     QImage b;
-
     b.load(texture->filename);
-
     t = QGLWidget::convertToGLFormat( b );
 
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+    //GL_NEAREST_MIPMAP_LINEAR GL_NEAREST_MIPMAP_NEAREST GL_NEAREST
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    //glEnable(GL_TEXTURE_2D); // Ovo ne treba testirano na desk, androis još samo ios testirati
-
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits());
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    //TODO ako platforma podrzava mipmapiranje
     //Automatsko generisanje mipmap opngl 3+ i opengl es 2.0+
     //glBindTexture(GL_TEXTURE_2D, texture->ID);
     //glGenerateMipmap(GL_TEXTURE_2D);
@@ -312,7 +291,17 @@ void Scene::renderModel(Model *model)
 #if OPENGLES_IOS
     glBindVertexArrayOES(model->mesh->VAOSpr);
 #elif OPENGLES_ANDRO
-    androOES->glBindVertexArrayOES(model->mesh->VAOSpr);
+    if(supportsVAO) {
+        androOES->glBindVertexArrayOES(model->mesh->VAOSpr);
+    }
+    else {
+        glBindBuffer(GL_ARRAY_BUFFER, model->mesh->VBO);
+        glVertexAttribPointer(m_progSpr_UV, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(0));
+        glEnableVertexAttribArray(m_progSpr_UV);
+        glVertexAttribPointer(m_progSpr_Vertex, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(20));
+        glEnableVertexAttribArray(m_progSpr_Vertex);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->mesh->IBO);
+    }
 #elif OPENGL32
     glBindVertexArray(model->mesh->VAOSpr);
 #elif OPENGL21
@@ -329,39 +318,13 @@ void Scene::renderModel(Model *model)
 #if OPENGLES_IOS
     glBindVertexArrayOES(0);
 #elif OPENGLES_ANDRO
-    androOES->glBindVertexArrayOES(0);
-#elif OPENGL32
-    glBindVertexArray(0);
-#elif OPENGL21
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-#endif
-}
-
-void Scene::renderOnlyDepth(Model *model)
-{
-    QMatrix4x4 MVP = projectionMatrix * cameraMatrix * model->transform->transformMatrix;
-    glUniformMatrix4fv(m_progDepth_MVPMatrix, 1, 0, MVP.data());
-
-#if OPENGLES_IOS
-    glBindVertexArrayOES(model->mesh->VAOShdMap);
-#elif OPENGLES_ANDRO
-    androOES->glBindVertexArrayOES(model->mesh->VAOShdMap);
-#elif OPENGL32
-    glBindVertexArray(model->mesh->VAOShdMap);
-#elif OPENGL21
-    glBindBuffer(GL_ARRAY_BUFFER, model->mesh->VBO);
-    glVertexAttribPointer(m_progDepth_Vertex, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(20));
-    glEnableVertexAttribArray(m_progDepth_Vertex);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->mesh->IBO);
-#endif
-
-    glDrawElements(GL_TRIANGLES,model->mesh->triangleCount*3,GL_UNSIGNED_INT,0);
-
-#if OPENGLES_IOS
-    glBindVertexArrayOES(0);
-#elif OPENGLES_ANDRO
-    androOES->glBindVertexArrayOES(0);
+    if(supportsVAO) {
+        androOES->glBindVertexArrayOES(0);
+    }
+    else {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
 #elif OPENGL32
     glBindVertexArray(0);
 #elif OPENGL21
@@ -384,7 +347,15 @@ void Scene::renderPick(Model *model)
 #if OPENGLES_IOS
     glBindVertexArrayOES(model->mesh->VAOPick);
 #elif OPENGLES_ANDRO
-    androOES->glBindVertexArrayOES(model->mesh->VAOPick);
+    if(supportsVAO) {
+        androOES->glBindVertexArrayOES(model->mesh->VAOPick);
+    }
+    else {
+        glBindBuffer(GL_ARRAY_BUFFER, model->mesh->VBO);
+        glVertexAttribPointer(m_progPick_Vertex, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(20));
+        glEnableVertexAttribArray(m_progPick_Vertex);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->mesh->IBO);
+    }
 #elif OPENGL32
     glBindVertexArray(model->mesh->VAOPick);
 #elif OPENGL21
@@ -399,7 +370,13 @@ void Scene::renderPick(Model *model)
 #if OPENGLES_IOS
     glBindVertexArrayOES(0);
 #elif OPENGLES_ANDRO
-    androOES->glBindVertexArrayOES(0);
+    if(supportsVAO) {
+        androOES->glBindVertexArrayOES(0);
+    }
+    else {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
 #elif OPENGL32
     glBindVertexArray(0);
 #elif OPENGL21
@@ -447,6 +424,9 @@ void Scene::renderScene()
     }
     qSort(modelList.begin(), modelList.end(), sortModels); //Prvo ih sortirati po z
 
+    //TODO Hints po platfromama ako uopste trebaju?
+    //glHint(GL_TEXTURE_COMPRESSION_HINT, GL_FASTEST);
+    //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -476,6 +456,7 @@ void Scene::renderScene()
         }
     }
 
+    //timer.end200();
 
 // Ovako moze samo kod spriteova koji nemaju alpha
 //    glUseProgram(m_progSpr);
@@ -490,15 +471,14 @@ void Scene::renderScene()
 //        }
 //    }
 
-    //timer.end200();
 
     // Vratiti sve na defaultne postavke jer QT treba da iscrta svoje
-    glDepthMask(GL_TRUE);
-    glBlendFunc(GL_ZERO, GL_ZERO);
-    glDisable(GL_BLEND);
-    glEnable(GL_DITHER);
-    glDisable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    // glDepthMask(GL_TRUE);
+    // glBlendFunc(GL_ZERO, GL_ZERO);
+    // glDisable(GL_BLEND);
+    // glEnable(GL_DITHER);
+    // glDisable(GL_DEPTH_TEST);
+    // glDepthFunc(GL_LESS);
 }
 
 
@@ -727,7 +707,7 @@ Scene::~Scene()
     //glDeleteProgram(m_progShd);
     glDeleteProgram(m_progSpr);
     //glDeleteProgram(m_progStd);
-    glDeleteProgram(m_progDepth);
+    //glDeleteProgram(m_progDepth);
     glDeleteProgram(m_progPick);
 }
 

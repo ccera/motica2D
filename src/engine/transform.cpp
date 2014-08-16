@@ -21,9 +21,9 @@
 
 Transform::Transform()
 {
-    size_x = 1.0;
-    size_y = 1.0;
-    size_z = 1.0;
+    size_x = 1.0f;
+    size_y = 1.0f;
+    size_z = 1.0f;
     x = 0.0f;
     y = 0.0f;
     z = 0.0f;
