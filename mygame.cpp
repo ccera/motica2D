@@ -46,14 +46,14 @@ MyGame::MyGame(QObject *parent) :
     sprFish.transform->setSize(128,256,0);
     game.addSprite(&sprFish);
 
-    for(int n=0; n < 100; n++) {
+    /*for(int n=0; n < 100; n++) {
         sprNiz[n].setTexture(&fish);
         float x = qrand() % 1024;
         float y = qrand() % 512;
         sprNiz[n].transform->setPosition(x,y,20+(n/2));
         sprNiz[n].transform->setSize(128,256,0);
         game.addSprite(&sprNiz[n]);
-    }
+    }*/
 
     game.connectToEvents(this);
     connect(&game, SIGNAL(update(float)), this, SLOT(updateSlot(float)));

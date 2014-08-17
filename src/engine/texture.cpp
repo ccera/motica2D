@@ -28,10 +28,27 @@ Texture::Texture(const QString &file) :
     QObject()
 {
     this->setFile(file);
+    this->textureData.load(file);
 }
 
 void Texture::setFile(const QString &file)
 {
     filename = file;
     name = file;
+    this->textureData.load(file);
+}
+
+QImage* Texture::GetTextureData()
+{
+    return &this->textureData;
+}
+
+int Texture::TextureWidth()
+{
+    return this->textureData.width();
+}
+
+int Texture::TextureHeight()
+{
+    return this->textureData.height();
 }

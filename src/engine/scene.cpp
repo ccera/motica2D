@@ -227,9 +227,7 @@ void Scene::bindTexture(Texture *texture)
     glBindTexture(GL_TEXTURE_2D, texture->ID);
 
     QImage t;
-    QImage b;
-    b.load(texture->filename);
-    t = QGLWidget::convertToGLFormat( b );
+    t = QGLWidget::convertToGLFormat( *texture->GetTextureData() );
 
     //GL_NEAREST_MIPMAP_LINEAR GL_NEAREST_MIPMAP_NEAREST GL_NEAREST
 

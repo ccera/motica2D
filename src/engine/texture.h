@@ -32,10 +32,16 @@ public:
     Texture(const QString &file);
 
     void setFile(const QString &file);
+    QImage* GetTextureData();
+    int TextureWidth();
+    int TextureHeight();
 
     GLuint ID;
     QString name;
     QString filename;
+
+private:
+    QImage textureData;
 
 signals:
 
