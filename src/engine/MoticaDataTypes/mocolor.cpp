@@ -61,10 +61,6 @@ float MoColor::GetA() const
 //Operators
 MoColor& MoColor::operator=(const MoColor &other)
 {
-    float r = other.GetR();
-    float g = other.GetG();
-    float b = other.GetB();
-    float a = other.GetA();
-    this->SetColor(r,g,b,a);
+    this->SetColor(other.GetR(), other.GetG(), other.GetB(), other.GetA());
     return *this;
 }
