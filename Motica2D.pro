@@ -15,7 +15,8 @@ HEADERS += \
     src/engine/transform.h \
     src/engine/timer.h \
     mygame.h \
-    src/engine/gameevent.h
+    src/engine/gameevent.h \
+    src/engine/MoticaDataTypes/mocolor.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
@@ -30,7 +31,8 @@ SOURCES += \
     src/engine/transform.cpp \
     src/engine/timer.cpp \
     mygame.cpp \
-    src/engine/gameevent.cpp
+    src/engine/gameevent.cpp \
+    src/engine/MoticaDataTypes/mocolor.cpp
 
 # Ovdje dodati sve što se treba koirati uz app
 resources_dir.source = resources

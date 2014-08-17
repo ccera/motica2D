@@ -1,4 +1,5 @@
 #include "mygame.h"
+#include "MoticaDataTypes/mocolor.h"
 
 MyGame::MyGame(QObject *parent) :
     QObject(parent)
