@@ -19,11 +19,16 @@ HEADERS += \
     src/rendering/transform.h \
     src/rendering/timer.h \
     mygame.h \
+<<<<<<< HEAD
     src/moengine.h \
     src/gameobject.h \
     src/physics/collider.h \
     src/physics/rigidbody.h \
     src/physics/chipmunk/chipmunk.h
+=======
+    src/engine/gameevent.h \
+    src/engine/MoticaDataTypes/mocolor.h
+>>>>>>> generalStructure
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
@@ -37,6 +42,7 @@ SOURCES += \
     src/rendering/transform.cpp \
     src/rendering/timer.cpp \
     mygame.cpp \
+<<<<<<< HEAD
     src/moengine.cpp \
     src/gameobject.cpp \
     src/physics/collider.cpp \
@@ -70,6 +76,10 @@ SOURCES += \
     src/physics/chipmunk/cpSpatialIndex.c \
     src/physics/chipmunk/cpSweep1D.c \
     src/physics/chipmunk/cpVect.c \
+=======
+    src/engine/gameevent.cpp \
+    src/engine/MoticaDataTypes/mocolor.cpp
+>>>>>>> generalStructure
 
 # Ovdje dodati sve što se treba koirati uz app
 resources_dir.source = resources
