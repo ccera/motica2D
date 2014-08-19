@@ -17,9 +17,9 @@
 //  along with Motica2D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "game.h"
+#include "moengine.h"
 
-Game::Game(QWindow *parent)
+MoEngine::MoEngine(QWindow *parent)
     : QWindow(parent)
     , m_update_pending(false)
     , m_animating(false)
@@ -86,13 +86,13 @@ Game::Game(QWindow *parent)
 
 }
 
-Game::~Game()
+MoEngine::~MoEngine()
 {
     delete m_device;
     delete scene;
 }
 
-void Game::initialize()
+void MoEngine::initialize()
 {
     qDebug() << "Application initializing...";
 
@@ -115,7 +115,7 @@ void Game::initialize()
     isGLInitialized = true;
 }
 
-void Game::render()
+void MoEngine::render()
 {
     if (!m_device) {
         m_device = new QOpenGLPaintDevice();
@@ -126,8 +126,8 @@ void Game::render()
     }
 
     // Send update to everybody. Delta time is in ms
-    for(int n=0; n < arrEvents.size(); n++) {
-        arrEvents.at(n)->update((1.0f / (float)screen()->refreshRate()) * 1000.0f);
+    for(int n=0; n < arrGameObjects.size(); n++) {
+        arrGameObjects.at(n)->update((1.0f / (float)screen()->refreshRate()) * 1000.0f);
     }
 
     emit update((1.0f / (float)screen()->refreshRate()) * 1000.0f);
@@ -138,7 +138,7 @@ void Game::render()
     }
 }
 
-void Game::renderLater()
+void MoEngine::renderLater()
 {
     if (!m_update_pending) {
         m_update_pending = true;
@@ -146,7 +146,7 @@ void Game::renderLater()
     }
 }
 
-bool Game::event(QEvent *event)
+bool MoEngine::event(QEvent *event)
 {
     switch (event->type()) {
     case QEvent::UpdateRequest:
@@ -158,7 +158,7 @@ bool Game::event(QEvent *event)
     }
 }
 
-void Game::exposeEvent(QExposeEvent *event)
+void MoEngine::exposeEvent(QExposeEvent *event)
 {
     Q_UNUSED(event);
 
@@ -167,7 +167,7 @@ void Game::exposeEvent(QExposeEvent *event)
     }
 }
 
-void Game::renderNow()
+void MoEngine::renderNow()
 {
     if (!isExposed()) {
         return;
@@ -194,7 +194,7 @@ void Game::renderNow()
     }
 }
 
-void Game::setAnimating(bool animating)
+void MoEngine::setAnimating(bool animating)
 {
     m_animating = animating;
 
@@ -203,7 +203,7 @@ void Game::setAnimating(bool animating)
     }
 }
 
-void Game::objectPicked(int modelId)
+void MoEngine::objectPicked(int modelId)
 {
     for(int n=0; n < arrSprites.size(); n++) {
         if(arrSprites[n]->model_id == modelId) {
@@ -213,7 +213,7 @@ void Game::objectPicked(int modelId)
 }
 
 
-void Game::touchEvent(QTouchEvent *ev)
+void MoEngine::touchEvent(QTouchEvent *ev)
 {
     if(ev->type() == QTouchEvent::TouchBegin)
     {
@@ -240,36 +240,36 @@ void Game::touchEvent(QTouchEvent *ev)
     }
 }
 
-void Game::mousePressEvent(QMouseEvent *ev)
+void MoEngine::mousePressEvent(QMouseEvent *ev)
 {
     isPressed = true;
     //TODO pozvati sve koji su prijavljeni na event
 }
 
-void Game::mouseMoveEvent(QMouseEvent *ev)
+void MoEngine::mouseMoveEvent(QMouseEvent *ev)
 {
     if(isPressed) {
         //TODO pozvati sve koji su prijavljeni na event
     }
 }
 
-void Game::mouseReleaseEvent(QMouseEvent *ev)
+void MoEngine::mouseReleaseEvent(QMouseEvent *ev)
 {
     isPressed = false;
     //TODO pozvati sve koji su prijavljeni na event
 }
 
-void Game::keyPressEvent(QKeyEvent *ev)
+void MoEngine::keyPressEvent(QKeyEvent *ev)
 {
     //TODO pozvati sve koji su prijavljeni na event
 }
 
-void Game::keyReleaseEvent(QKeyEvent *ev)
+void MoEngine::keyReleaseEvent(QKeyEvent *ev)
 {
     //TODO pozvati sve koji su prijavljeni na event
 }
 
-bool Game::eventFilter(QObject *watched, QEvent* e)
+bool MoEngine::eventFilter(QObject *watched, QEvent* e)
 {
     if(e->type() == QEvent::InputMethod) {
         QInputMethodEvent *m = (QInputMethodEvent*) e;
@@ -280,38 +280,38 @@ bool Game::eventFilter(QObject *watched, QEvent* e)
     return QWindow::eventFilter(watched, e);
 }
 
-void Game::resizeEvent(QResizeEvent *ev)
+void MoEngine::resizeEvent(QResizeEvent *ev)
 {
     this->calculateCamera();
 }
 
-void Game::setWindowSize(float width, float height)
+void MoEngine::setWindowSize(float width, float height)
 {
     this->resize(width, height);
     this->calculateCamera();
 }
 
-void Game::setCamera2DSize(float w, float h)
+void MoEngine::setCamera2DSize(float w, float h)
 {
     m_camera_width = w;
     m_camera_height = h;
     this->calculateCamera();
 }
 
-void Game::setCamera2DPos(float x, float y)
+void MoEngine::setCamera2DPos(float x, float y)
 {
     m_camera_x = x;
     m_camera_y = y;
     this->calculateCamera();
 }
 
-void Game::setViewport2DType(ViewportType type)
+void MoEngine::setViewport2DType(ViewportType type)
 {
     m_viewport_type = type;
     this->calculateCamera();
 }
 
-void Game::calculateCamera()
+void MoEngine::calculateCamera()
 {
     if(m_viewport_type == VIEWPORT_PIXEL) {
         this->scene->viewportX = 0;
@@ -378,7 +378,7 @@ void Game::calculateCamera()
     }
 }
 
-void Game::setBackgroundColor(float r, float g, float b, float a)
+void MoEngine::setBackgroundColor(float r, float g, float b, float a)
 {
     this->scene->bgR = r;
     this->scene->bgG = g;
@@ -386,7 +386,7 @@ void Game::setBackgroundColor(float r, float g, float b, float a)
     this->scene->bgA = a;
 }
 
-void Game::showWindow()
+void MoEngine::showWindow()
 {
 #if _WIN64 || _WIN32 || (__linux && !__ANDROID_API__)
    this->show();
@@ -405,19 +405,19 @@ void Game::showWindow()
 #endif
 }
 
-void Game::addTexture(Texture *texture)
+void MoEngine::addTexture(Texture *texture)
 {
     this->scene->addTexture(texture);
 }
 
-void Game::addSprite(Sprite *sprite)
+void MoEngine::addSprite(Sprite *sprite)
 {
     this->scene->addModel(sprite);
     this->arrSprites.push_back(sprite);
 }
 
-void Game::connectToEvents(GameEvent *e)
+void MoEngine::addGameObject(GameObject *e)
 {
-    this->arrEvents.push_back(e);
+    this->arrGameObjects.push_back(e);
 }
 

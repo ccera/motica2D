@@ -17,8 +17,8 @@
 //  along with Motica2D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef GAME_H
-#define GAME_H
+#ifndef MOENGINE_H
+#define MOENGINE_H
 
 #include <QtGui/QWindow>
 #include <QtGui/QOpenGLFunctions>
@@ -30,15 +30,15 @@
 #include "sprite.h"
 #include "timer.h"
 #include "scene.h"
-#include "gameevent.h"
+#include "gameobject.h"
 #include <QOpenGLExtensions>
 
-class Game : public QWindow
+class MoEngine : public QWindow
 {
     Q_OBJECT
 public:
-    explicit Game(QWindow *parent = 0);
-    ~Game();
+    explicit MoEngine(QWindow *parent = 0);
+    ~MoEngine();
 
     virtual void render();
     virtual void initialize();
@@ -57,7 +57,7 @@ public:
     void showWindow();
     void addTexture(Texture *texture);
     void addSprite(Sprite *sprite);
-    void connectToEvents(GameEvent *e);
+    void addGameObject(GameObject *e);
     void setCamera2DSize(float w, float h);
     void setCamera2DPos(float x, float y);
     void setViewport2DType(ViewportType type);
@@ -66,7 +66,7 @@ public:
     bool isPressed;
     bool isGLInitialized;
     QVector<Sprite*> arrSprites;
-    QVector<GameEvent*> arrEvents;
+    QVector<GameObject*> arrGameObjects;
 
 signals:
     void update(float dt);
@@ -96,5 +96,5 @@ private:
     QOpenGLPaintDevice *m_device;
 };
 
-#endif // GAME_H
+#endif // MOENGINE_H
 

@@ -20,12 +20,21 @@
 #include <QtGui/QGuiApplication>
 #include <QDebug>
 #include "mygame.h"
+#include "moengine.h"
 
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
 
-    MyGame mygame;
+    MoEngine mo;
+    mo.setWindowSize(1024, 512);
+    mo.setCamera2DSize(1024,512);
+    mo.setAnimating(true);
+    mo.setViewport2DType(VIEWPORT_STRECH_XY);
+    mo.setBackgroundColor(0.5f, 0.0f, 0.3f, 1.0f);
+    //mo.showWindow();
+
+    MyGame mygame(&mo);
 
     return app.exec();
 }

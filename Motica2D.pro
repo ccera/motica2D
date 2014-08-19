@@ -1,48 +1,87 @@
 
 QT += gui opengl openglextensions
 
+QMAKE_CFLAGS_RELEASE += -std=c99
+QMAKE_CFLAGS_DEBUG += -std=c99
+
 INCLUDEPATH +=  \
-    src/engine \
+    src/rendering \
+    src/physics/chipmunk \
+    src/
 
 HEADERS += \
-    src/engine/texture.h \
-    src/engine/sprite.h \
-    src/engine/game.h \
-    src/engine/utils.h \
-    src/engine/mesh.h \
-    src/engine/model.h \
-    src/engine/scene.h \
-    src/engine/transform.h \
-    src/engine/timer.h \
+    src/rendering/texture.h \
+    src/rendering/sprite.h \
+    src/rendering/utils.h \
+    src/rendering/mesh.h \
+    src/rendering/model.h \
+    src/rendering/scene.h \
+    src/rendering/transform.h \
+    src/rendering/timer.h \
     mygame.h \
-    src/engine/gameevent.h
+    src/moengine.h \
+    src/gameobject.h \
+    src/physics/collider.h \
+    src/physics/rigidbody.h \
+    src/physics/chipmunk/chipmunk.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
     main.cpp \
-    src/engine/texture.cpp \
-    src/engine/sprite.cpp \
-    src/engine/game.cpp \
-    src/engine/utils.cpp \
-    src/engine/mesh.cpp \
-    src/engine/model.cpp \
-    src/engine/scene.cpp \
-    src/engine/transform.cpp \
-    src/engine/timer.cpp \
+    src/rendering/texture.cpp \
+    src/rendering/sprite.cpp \
+    src/rendering/utils.cpp \
+    src/rendering/mesh.cpp \
+    src/rendering/model.cpp \
+    src/rendering/scene.cpp \
+    src/rendering/transform.cpp \
+    src/rendering/timer.cpp \
     mygame.cpp \
-    src/engine/gameevent.cpp
+    src/moengine.cpp \
+    src/gameobject.cpp \
+    src/physics/collider.cpp \
+    src/physics/rigidbody.cpp \
+    src/physics/chipmunk/chipmunk.c \
+    src/physics/chipmunk/constraints/cpConstraint.c \
+    src/physics/chipmunk/constraints/cpDampedRotarySpring.c \
+    src/physics/chipmunk/constraints/cpDampedSpring.c \
+    src/physics/chipmunk/constraints/cpGearJoint.c \
+    src/physics/chipmunk/constraints/cpGrooveJoint.c \
+    src/physics/chipmunk/constraints/cpPinJoint.c \
+    src/physics/chipmunk/constraints/cpPivotJoint.c \
+    src/physics/chipmunk/constraints/cpRatchetJoint.c \
+    src/physics/chipmunk/constraints/cpRotaryLimitJoint.c \
+    src/physics/chipmunk/constraints/cpSimpleMotor.c \
+    src/physics/chipmunk/constraints/cpSlideJoint.c \
+    src/physics/chipmunk/cpArbiter.c \
+    src/physics/chipmunk/cpArray.c \
+    src/physics/chipmunk/cpBB.c \
+    src/physics/chipmunk/cpBBTree.c \
+    src/physics/chipmunk/cpBody.c \
+    src/physics/chipmunk/cpCollision.c \
+    src/physics/chipmunk/cpHashSet.c \
+    src/physics/chipmunk/cpPolyShape.c \
+    src/physics/chipmunk/cpShape.c \
+    src/physics/chipmunk/cpSpace.c \
+    src/physics/chipmunk/cpSpaceComponent.c \
+    src/physics/chipmunk/cpSpaceHash.c \
+    src/physics/chipmunk/cpSpaceQuery.c \
+    src/physics/chipmunk/cpSpaceStep.c \
+    src/physics/chipmunk/cpSpatialIndex.c \
+    src/physics/chipmunk/cpSweep1D.c \
+    src/physics/chipmunk/cpVect.c \
 
 # Ovdje dodati sve što se treba koirati uz app
 resources_dir.source = resources
 resources_dir.target = Resursi
 
-shaders_150_dir.source = src/engine/Shaders_150
+shaders_150_dir.source = src/rendering/Shaders_150
 shaders_150_dir.target = Shaders
 
-shaders_ES_dir.source = src/engine/Shaders_ES
+shaders_ES_dir.source = src/rendering/Shaders_ES
 shaders_ES_dir.target = Shaders
 
-shaders_120_dir.source = src/engine/Shaders_120
+shaders_120_dir.source = src/rendering/Shaders_120
 shaders_120_dir.target = Shaders
 
 DEPLOYMENTFOLDERS += resources_dir shaders_ES_dir shaders_150_dir shaders_120_dir

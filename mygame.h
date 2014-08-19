@@ -2,26 +2,25 @@
 #define MYGAME_H
 
 #include <QObject>
-#include "game.h"
+#include "moengine.h"
 #include "texture.h"
 #include "sprite.h"
 #include "utils.h"
-#include "gameevent.h"
+#include "gameobject.h"
 
-class MyGame : public QObject, GameEvent
+class MyGame : GameObject
 {
     Q_OBJECT
 public:
-    explicit MyGame(QObject *parent = 0);
+    explicit MyGame(MoEngine *m_engine = 0);
         void update(float dt);
 
 signals:
 
 public slots:
-        void updateSlot(float dt);
 
 private:
-    Game game;
+    MoEngine *m_engine;
     Texture planet;
     Texture bottle;
     Texture background;
@@ -31,9 +30,7 @@ private:
     Sprite sprBottle;
     Sprite sprFish;
 
-    Sprite sprNiz[100];
-    QPropertyAnimation animNiz[100];
-    QPropertyAnimation animation;
+    Sprite sprNiz[1000];
     float animTm;
 };
 
