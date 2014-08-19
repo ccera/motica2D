@@ -6,7 +6,9 @@ QMAKE_CFLAGS_DEBUG += -std=c99
 
 INCLUDEPATH +=  \
     src/rendering \
+    src/physics \
     src/physics/chipmunk \
+    src/core \
     src/
 
 HEADERS += \
@@ -19,16 +21,12 @@ HEADERS += \
     src/rendering/transform.h \
     src/rendering/timer.h \
     mygame.h \
-<<<<<<< HEAD
-    src/moengine.h \
-    src/gameobject.h \
+    src/core/moengine.h \
+    src/core/gameobject.h \
     src/physics/collider.h \
     src/physics/rigidbody.h \
-    src/physics/chipmunk/chipmunk.h
-=======
-    src/engine/gameevent.h \
-    src/engine/MoticaDataTypes/mocolor.h
->>>>>>> generalStructure
+    src/physics/chipmunk/chipmunk.h \
+    src/core/mocolor.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
@@ -42,9 +40,8 @@ SOURCES += \
     src/rendering/transform.cpp \
     src/rendering/timer.cpp \
     mygame.cpp \
-<<<<<<< HEAD
-    src/moengine.cpp \
-    src/gameobject.cpp \
+    src/core/moengine.cpp \
+    src/core/gameobject.cpp \
     src/physics/collider.cpp \
     src/physics/rigidbody.cpp \
     src/physics/chipmunk/chipmunk.c \
@@ -76,10 +73,7 @@ SOURCES += \
     src/physics/chipmunk/cpSpatialIndex.c \
     src/physics/chipmunk/cpSweep1D.c \
     src/physics/chipmunk/cpVect.c \
-=======
-    src/engine/gameevent.cpp \
-    src/engine/MoticaDataTypes/mocolor.cpp
->>>>>>> generalStructure
+    src/core/mocolor.cpp
 
 # Ovdje dodati sve što se treba koirati uz app
 resources_dir.source = resources
