@@ -61,6 +61,10 @@ void Scene::prepareScene()
     m_progSpr_AlphaColor = glGetUniformLocation(m_progSpr, "AlphaColor");
     m_progSpr_Brightness = glGetUniformLocation(m_progSpr, "Brightness");
     m_progSpr_Contrast = glGetUniformLocation(m_progSpr, "Contrast");
+    m_progSpr_NumOfFrames = glGetUniformLocation(m_progSpr, "numOfFrames");
+    m_progSpr_CurrFrame = glGetUniformLocation(m_progSpr, "currFrame");
+    m_progSpr_horizontalMirror = glGetUniformLocation(m_progSpr, "horizontalMirror");
+    m_progSpr_verticalMirror = glGetUniformLocation(m_progSpr, "verticalMirror");
     
     m_progPick_MVPMatrix = glGetUniformLocation(m_progPick, "MVPMatrix");
     m_progPick_Vertex = glGetAttribLocation(m_progPick, "Vertex");
@@ -285,6 +289,17 @@ void Scene::renderModel(Model *model)
     glUniform1f(m_progSpr_Brightness, model->brightness);
     glUniform1f(m_progSpr_Contrast, model->contrast);
     glUniform1i(m_progSpr_Texture, 0);
+    if(model->isAnimated) {
+        glUniform1i(m_progSpr_NumOfFrames, model->numOfFrames);
+        glUniform1i(m_progSpr_CurrFrame, model->currentFrame);
+    }
+    else {
+        glUniform1i(m_progSpr_NumOfFrames, 1);
+        glUniform1i(m_progSpr_CurrFrame, 0);
+    }
+    glUniform1i(m_progSpr_horizontalMirror, model->horizontalMirror);
+    glUniform1i(m_progSpr_verticalMirror, model->verticalMirror);
+
 
 #if OPENGLES_IOS
     glBindVertexArrayOES(model->mesh->VAOSpr);

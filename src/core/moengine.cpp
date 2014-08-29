@@ -36,7 +36,7 @@ MoEngine::MoEngine(QWindow *parent)
     format.setSamples(4);
     format.setDepthBufferSize(16); //32 ne radi na linux
     format.setStencilBufferSize(8);
-    //format.setSwapInterval(1);
+    format.setSwapInterval(1);
     this->setFormat(format);
 #elif OPENGL32
     QSurfaceFormat format;
@@ -130,7 +130,9 @@ void MoEngine::render()
         arrGameObjects.at(n)->update((1.0f / (float)screen()->refreshRate()) * 1000.0f);
     }
 
-    emit update((1.0f / (float)screen()->refreshRate()) * 1000.0f);
+    for(int n=0; n < arrAnimSprites.size(); n++) {
+        arrAnimSprites.at(n)->update((1.0f / (float)screen()->refreshRate()) * 1000.0f);
+    }
 
     if(scene) {
         this->calculateCamera();
@@ -261,12 +263,30 @@ void MoEngine::mouseReleaseEvent(QMouseEvent *ev)
 
 void MoEngine::keyPressEvent(QKeyEvent *ev)
 {
-    //TODO pozvati sve koji su prijavljeni na event
+    if(ev->key() == Qt::Key_Up) Keyboard::keyUP = true;
+    if(ev->key() == Qt::Key_Down) Keyboard::keyDOWN = true;
+    if(ev->key() == Qt::Key_Left) Keyboard::keyLEFT = true;
+    if(ev->key() == Qt::Key_Right) Keyboard::keyRIGHT = true;
+
+    if(!ev->isAutoRepeat()) {
+        for(int n=0; n < arrGameObjects.size(); n++) {
+            arrGameObjects.at(n)->keyPress(ev->key());
+        }
+    }
 }
 
 void MoEngine::keyReleaseEvent(QKeyEvent *ev)
 {
-    //TODO pozvati sve koji su prijavljeni na event
+    if(ev->key() == Qt::Key_Up) Keyboard::keyUP = false;
+    if(ev->key() == Qt::Key_Down) Keyboard::keyDOWN = false;
+    if(ev->key() == Qt::Key_Left) Keyboard::keyLEFT = false;
+    if(ev->key() == Qt::Key_Right) Keyboard::keyRIGHT = false;
+
+    if(!ev->isAutoRepeat()) {
+        for(int n=0; n < arrGameObjects.size(); n++) {
+            arrGameObjects.at(n)->keyRelease(ev->key());
+        }
+    }
 }
 
 bool MoEngine::eventFilter(QObject *watched, QEvent* e)
@@ -414,6 +434,12 @@ void MoEngine::addSprite(Sprite *sprite)
 {
     this->scene->addModel(sprite);
     this->arrSprites.push_back(sprite);
+}
+
+void MoEngine::addAnimatedSprite(AnimatedSprite *sprite)
+{
+    this->scene->addModel(sprite);
+    this->arrAnimSprites.push_back(sprite);
 }
 
 void MoEngine::addGameObject(GameObject *e)

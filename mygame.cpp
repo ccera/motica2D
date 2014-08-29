@@ -6,6 +6,8 @@ MyGame::MyGame(MoEngine *engine) :
     m_engine = engine;
     m_engine->addGameObject(this);
 
+    prince = new Player(engine);
+
     planet.setFile(Resource("textures/Planet.png"));
     m_engine->addTexture(&planet);
 
@@ -41,7 +43,7 @@ MyGame::MyGame(MoEngine *engine) :
     sprFish.transform->setPosition(300,300,99);
     sprFish.transform->setSize(128,256,0);
     m_engine->addSprite(&sprFish);
-
+/*
     for(int n=0; n < 100; n++) {
         sprNiz[n].setTexture(&fish);
         float x = qrand() % 1024;
@@ -50,7 +52,7 @@ MyGame::MyGame(MoEngine *engine) :
         sprNiz[n].transform->setSize(128,256,0);
         m_engine->addSprite(&sprNiz[n]);
     }
-
+*/
     m_engine->showWindow();
 }
 
@@ -58,7 +60,6 @@ void MyGame::update(float dt)
 {
     if(sprFish.transform->x > 1000) sprFish.transform->setPosition(0, 300, 99);
     sprFish.transform->translateFor(3,0,0);
-
 
     for(int n=0; n < 100; n++) {
         sprNiz[n].transform->rotateFor(0,0,1);

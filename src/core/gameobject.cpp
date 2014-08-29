@@ -8,3 +8,11 @@ GameObject::GameObject(QObject *parent)
 void GameObject::update(float dt)
 {
 }
+
+void GameObject::keyPress(int key)
+{
+}
+
+void GameObject::keyRelease(int key)
+{
+}

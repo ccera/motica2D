@@ -26,9 +26,26 @@ attribute vec2 UV;
 
 varying vec2 fshUV;
 
+uniform int numOfFrames;
+uniform int currFrame;
+uniform bool horizontalMirror;
+uniform bool verticalMirror;
+
 void main()
 {
-    fshUV = UV;
+    float sw = (1.0/numOfFrames);
+
+    if(horizontalMirror) {
+        fshUV = (UV * vec2(sw,1.0) + vec2((sw*(numOfFrames-1-currFrame)),1.0)) * vec2(-1.0, 1.0); //h-flip
+    }
+    else {
+          fshUV = UV * vec2(sw,1.0) + vec2((sw*currFrame),1.0);
+    }
+
+    if(verticalMirror) {
+            fshUV = fshUV * vec2(1.0, -1.0); //v-flip
+    }
+
     gl_Position =  MVPMatrix * Vertex;
 }
 

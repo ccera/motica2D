@@ -31,7 +31,9 @@
 #include "timer.h"
 #include "scene.h"
 #include "gameobject.h"
+#include "animatedsprite.h"
 #include <QOpenGLExtensions>
+#include "keyboard.h"
 
 class MoEngine : public QWindow
 {
@@ -58,6 +60,7 @@ public:
     void addTexture(Texture *texture);
     void addSprite(Sprite *sprite);
     void addGameObject(GameObject *e);
+    void addAnimatedSprite(AnimatedSprite *sprite);
     void setCamera2DSize(float w, float h);
     void setCamera2DPos(float x, float y);
     void setViewport2DType(ViewportType type);
@@ -66,6 +69,7 @@ public:
     bool isPressed;
     bool isGLInitialized;
     QVector<Sprite*> arrSprites;
+    QVector<AnimatedSprite*> arrAnimSprites;
     QVector<GameObject*> arrGameObjects;
 
 signals:
@@ -89,7 +93,6 @@ private:
     float m_camera_near;
     float m_camera_far;
     ViewportType m_viewport_type;
-
     bool m_update_pending;
     bool m_animating;
     QOpenGLContext *m_context;

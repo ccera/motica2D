@@ -6,7 +6,7 @@
 #include "texture.h"
 #include "sprite.h"
 #include "utils.h"
-#include "gameobject.h"
+#include "player.h"
 
 class MyGame : GameObject
 {
@@ -29,6 +29,8 @@ private:
     Sprite sprPlanet;
     Sprite sprBottle;
     Sprite sprFish;
+
+    Player *prince;
 
     Sprite sprNiz[1000];
     float animTm;

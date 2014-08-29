@@ -43,6 +43,11 @@ public:
     int     isVisible;
     bool    isSelectable;
     bool    isLabel;
+    bool    isAnimated;
+    int     currentFrame;
+    int     numOfFrames;
+    bool    horizontalMirror;
+    bool    verticalMirror;
     Mesh      *mesh;
     Texture   *texture;
     Transform *transform;

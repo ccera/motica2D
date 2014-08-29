@@ -14,6 +14,8 @@ public:
     QString name;
 
     virtual void update(float dt);
+    virtual void keyPress(int key);
+    virtual void keyRelease(int key);
 };
 
 #endif // GAMEOBJECT_H
