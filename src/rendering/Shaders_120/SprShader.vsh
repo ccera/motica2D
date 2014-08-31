@@ -20,6 +20,7 @@
 #version 120
 
 uniform mat4 MVPMatrix;
+uniform mat3 UVTransform;
 
 attribute vec4 Vertex;
 attribute vec2 UV;
@@ -28,7 +29,7 @@ varying vec2 fshUV;
 
 void main()
 {
-    fshUV = UV;
+    fshUV = (vec3(UV,1.0) * UVTransform).xy;
     gl_Position =  MVPMatrix * Vertex;
 }
 

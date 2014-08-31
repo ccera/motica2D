@@ -16,43 +16,52 @@
 //  You should have received a copy of the GNU General Public License
 //  along with Motica2D.  If not, see <http://www.gnu.org/licenses/>.
 //
-
-#ifndef MYGAME_H
-#define MYGAME_H
+#ifndef ANIMATEDSPRITE_H
+#define ANIMATEDSPRITE_H
 
 #include <QObject>
-#include "moengine.h"
-#include "texture.h"
-#include "sprite.h"
+#include <QMatrix3x3>
+#include "scene.h"
 #include "utils.h"
-#include "player.h"
+#include "scene.h"
+#include "transform.h"
+#include "model.h"
+#include "texture.h"
 
-class MyGame : GameObject
+class AnimatedSprite : public QObject, public Model
 {
     Q_OBJECT
+
 public:
-    explicit MyGame(MoEngine *m_engine = 0);
-        void update(float dt);
+    AnimatedSprite();
+    AnimatedSprite(int rows, int columns, Texture *texture);
+
+    void setTexture(Texture *p_texture);
+    void setName(const QString &p_name);
+    void setRows(int r);
+    void setColumns(int c);
+    void setFrameLength(float msec);
+    void onPicked();
+    void update(float dt);
+    void setLoop(int from, int to);
+    void setCurrentFrame(int n);
+    int  getCurrentFrame();
 
 signals:
 
 public slots:
 
 private:
-    MoEngine *m_engine;
-    Texture planet;
-    Texture bottle;
-    Texture background;
-    Texture fish;
-    Sprite sprBackground;
-    Sprite sprPlanet;
-    Sprite sprBottle;
-    Sprite sprFish;
+    int counter;
+    int m_frame_length;
+    int m_loop_from;
+    int m_loop_to;
+    int direction;
+    int rows;
+    int columns;
+    int m_currentFrame;
+    int numOfFrames;
 
-    Player *prince;
-
-    Sprite sprNiz[1000];
-    float animTm;
 };
 
-#endif // MYGAME_H
+#endif // ANIMATEDSPRITE_H

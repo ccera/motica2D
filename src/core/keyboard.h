@@ -17,42 +17,18 @@
 //  along with Motica2D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef MYGAME_H
-#define MYGAME_H
+#ifndef KEYBOARD_H
+#define KEYBOARD_H
 
-#include <QObject>
-#include "moengine.h"
-#include "texture.h"
-#include "sprite.h"
-#include "utils.h"
-#include "player.h"
-
-class MyGame : GameObject
+class Keyboard
 {
-    Q_OBJECT
 public:
-    explicit MyGame(MoEngine *m_engine = 0);
-        void update(float dt);
 
-signals:
+    static bool keyUP;
+    static bool keyDOWN;
+    static bool keyLEFT;
+    static bool keyRIGHT;
 
-public slots:
-
-private:
-    MoEngine *m_engine;
-    Texture planet;
-    Texture bottle;
-    Texture background;
-    Texture fish;
-    Sprite sprBackground;
-    Sprite sprPlanet;
-    Sprite sprBottle;
-    Sprite sprFish;
-
-    Player *prince;
-
-    Sprite sprNiz[1000];
-    float animTm;
 };
 
-#endif // MYGAME_H
+#endif // KEYBOARD_H

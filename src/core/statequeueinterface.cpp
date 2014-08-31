@@ -17,42 +17,12 @@
 //  along with Motica2D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef MYGAME_H
-#define MYGAME_H
+#include "statequeueinterface.h"
 
-#include <QObject>
-#include "moengine.h"
-#include "texture.h"
-#include "sprite.h"
-#include "utils.h"
-#include "player.h"
-
-class MyGame : GameObject
+void StateQueueInterface::onStateEntered(int state)
 {
-    Q_OBJECT
-public:
-    explicit MyGame(MoEngine *m_engine = 0);
-        void update(float dt);
+}
 
-signals:
-
-public slots:
-
-private:
-    MoEngine *m_engine;
-    Texture planet;
-    Texture bottle;
-    Texture background;
-    Texture fish;
-    Sprite sprBackground;
-    Sprite sprPlanet;
-    Sprite sprBottle;
-    Sprite sprFish;
-
-    Player *prince;
-
-    Sprite sprNiz[1000];
-    float animTm;
-};
-
-#endif // MYGAME_H
+void StateQueueInterface::onStateExited(int state)
+{
+}

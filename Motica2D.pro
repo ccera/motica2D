@@ -26,7 +26,12 @@ HEADERS += \
     src/physics/collider.h \
     src/physics/rigidbody.h \
     src/physics/chipmunk/chipmunk.h \
-    src/core/mocolor.h
+    src/core/mocolor.h \
+    src/rendering/animatedsprite.h \
+    src/core/statequeue.h \
+    src/core/statequeueinterface.h \
+    src/core/keyboard.h \
+    player.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
@@ -73,7 +78,12 @@ SOURCES += \
     src/physics/chipmunk/cpSpatialIndex.c \
     src/physics/chipmunk/cpSweep1D.c \
     src/physics/chipmunk/cpVect.c \
-    src/core/mocolor.cpp
+    src/core/mocolor.cpp \
+    src/rendering/animatedsprite.cpp \
+    src/core/statequeue.cpp \
+    src/core/statequeueinterface.cpp \
+    src/core/keyboard.cpp \
+    player.cpp
 
 # Ovdje dodati sve što se treba koirati uz app
 resources_dir.source = resources

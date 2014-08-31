@@ -17,42 +17,38 @@
 //  along with Motica2D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef MYGAME_H
-#define MYGAME_H
+#ifndef STATEQUEUE_H
+#define STATEQUEUE_H
 
 #include <QObject>
-#include "moengine.h"
-#include "texture.h"
-#include "sprite.h"
-#include "utils.h"
-#include "player.h"
+#include <QQueue>
+#include <QPair>
+#include <QDebug>
+#include <QThread>
+#include "statequeueinterface.h"
 
-class MyGame : GameObject
+class StateQueue : public QObject
 {
     Q_OBJECT
 public:
-    explicit MyGame(MoEngine *m_engine = 0);
-        void update(float dt);
+    explicit StateQueue(QObject *parent = 0);
+
+    void setInterface(StateQueueInterface *interface);
+    void enqueue(int state, int timer);
+    void dequeue();
+    void removeAll();
+    void removeAllExceptCurrent();
+    void update(float dt);
+    int  currentState();
 
 signals:
 
 public slots:
 
 private:
-    MoEngine *m_engine;
-    Texture planet;
-    Texture bottle;
-    Texture background;
-    Texture fish;
-    Sprite sprBackground;
-    Sprite sprPlanet;
-    Sprite sprBottle;
-    Sprite sprFish;
-
-    Player *prince;
-
-    Sprite sprNiz[1000];
-    float animTm;
+    QQueue<QPair<int, int> > m_stateQueue; //State, timer
+    StateQueueInterface *m_interface;
+    int timer;
 };
 
-#endif // MYGAME_H
+#endif // STATEQUEUE_H
