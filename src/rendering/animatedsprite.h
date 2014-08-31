@@ -20,6 +20,7 @@
 #define ANIMATEDSPRITE_H
 
 #include <QObject>
+#include <QMatrix3x3>
 #include "scene.h"
 #include "utils.h"
 #include "scene.h"
@@ -33,20 +34,22 @@ class AnimatedSprite : public QObject, public Model
 
 public:
     AnimatedSprite();
-    AnimatedSprite(int numFrames, Texture *texture);
+    AnimatedSprite(int rows, int columns, Texture *texture);
 
     void setTexture(Texture *p_texture);
     void setName(const QString &p_name);
-    void setNumOfFrames(int num);
+    void setRows(int r);
+    void setColumns(int c);
     void setFrameLength(float msec);
     void onPicked();
     void update(float dt);
     void setLoop(int from, int to);
+    void setCurrentFrame(int n);
+    int  getCurrentFrame();
 
 signals:
 
 public slots:
-
 
 private:
     int counter;
@@ -54,6 +57,11 @@ private:
     int m_loop_from;
     int m_loop_to;
     int direction;
+    int rows;
+    int columns;
+    int m_currentFrame;
+    int numOfFrames;
+
 };
 
 #endif // ANIMATEDSPRITE_H

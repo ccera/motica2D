@@ -32,7 +32,8 @@ Player::Player(MoEngine *engine) :
     asPlayer.setName("Prince");
     asPlayer.transform->setPosition(1000,90,60);
     asPlayer.transform->setSize(128,128,0);
-    asPlayer.setNumOfFrames(55);
+    asPlayer.setRows(2);
+    asPlayer.setColumns(55);
     asPlayer.setFrameLength(3);
     m_engine->addAnimatedSprite(&asPlayer);
 
@@ -118,7 +119,7 @@ void Player::onStateEntered(int state)
         moving = true;
         break;
     case PLAYER_STANDING:
-        asPlayer.currentFrame = 0;
+        asPlayer.setCurrentFrame(0);
         asPlayer.setLoop(0,0);
         moving = false;
         break;
@@ -149,11 +150,11 @@ void Player::onStateExited(int state)
     case PLAYER_TURN:
         if(orientState == PLAYER_LEFT) {
             orientState = PLAYER_RIGHT;
-            asPlayer.horizontalMirror = true;
+            asPlayer.transform->setSize(-128,128,0);
         }
         else {
             orientState = PLAYER_LEFT;
-            asPlayer.horizontalMirror = false;
+            asPlayer.transform->setSize(128,128,0);
         }
         break;
     default:

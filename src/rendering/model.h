@@ -21,6 +21,7 @@
 #define __Model__
 
 #include <iostream>
+#include <QMatrix3x3>
 #include "utils.h"
 #include "texture.h"
 #include "mesh.h"
@@ -42,12 +43,7 @@ public:
     float   contrast;
     int     isVisible;
     bool    isSelectable;
-    bool    isLabel;
-    bool    isAnimated;
-    int     currentFrame;
-    int     numOfFrames;
-    bool    horizontalMirror;
-    bool    verticalMirror;
+    QMatrix3x3 UVTransform;
     Mesh      *mesh;
     Texture   *texture;
     Transform *transform;

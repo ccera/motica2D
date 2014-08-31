@@ -42,15 +42,25 @@ void StateQueue::enqueue(int state, int timer)
 
 void StateQueue::dequeue()
 {
+    if(m_stateQueue.isEmpty()) {
+        return;
+    }
+
     if(m_interface) {
         m_interface->onStateExited(this->currentState());
     }
+
     m_stateQueue.dequeue();
+
     timer = 0;
 }
 
 void StateQueue::removeAll()
 {
+    if(m_stateQueue.isEmpty()) {
+        return;
+    }
+
     if(m_interface) {
         m_interface->onStateExited(this->currentState());
     }
@@ -69,6 +79,10 @@ void StateQueue::removeAllExceptCurrent()
 
 void StateQueue::update(float dt)
 {
+    if(m_stateQueue.isEmpty()) {
+        return;
+    }
+
     timer++;
 
     if(m_stateQueue.head().second == timer) {
@@ -81,5 +95,10 @@ void StateQueue::update(float dt)
 
 int  StateQueue::currentState()
 {
-    return m_stateQueue.head().first;
+    if(m_stateQueue.isEmpty()) {
+        return -1;
+    }
+    else {
+        return m_stateQueue.head().first;
+    }
 }

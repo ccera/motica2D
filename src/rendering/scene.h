@@ -129,11 +129,7 @@ protected:
     GLint m_progSpr_AlphaColor;
     GLint m_progSpr_Brightness;
     GLint m_progSpr_Contrast;
-    GLint m_progSpr_NumOfFrames;
-    GLint m_progSpr_CurrFrame;
-    GLboolean m_progSpr_horizontalMirror;
-    GLboolean m_progSpr_verticalMirror;
-
+    GLint m_progSpr_UVTransform;
     
     // Lokacije uniform varijabli 3d picker programa
     GLint m_progPick_MVPMatrix;

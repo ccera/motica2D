@@ -22,29 +22,29 @@
 AnimatedSprite::AnimatedSprite() :
     QObject(), Model(NULL, texture, "")
 {
-    this->isAnimated = true;
-    this->currentFrame = 0;
-    this->numOfFrames = 1;
-    //m_time = 0;
+    m_currentFrame = 0;
+    numOfFrames = 1;
     m_frame_length = 3;
     m_loop_from = 0;
     m_loop_to = 0;
     counter = 0;
     direction = 1;
+    rows = 1;
+    columns = 1;
 }
 
-AnimatedSprite::AnimatedSprite(int numFrames, Texture *texture) :
+AnimatedSprite::AnimatedSprite(int rows, int columns, Texture *texture) :
     QObject(), Model(NULL, texture, "")
 {
-    this->isAnimated = true;
-    this->currentFrame = 0;
-    this->numOfFrames = numFrames;
-    //m_time = 0;
+    m_currentFrame = 0;
+    numOfFrames = rows * columns;
     m_frame_length = 3;
     m_loop_from = 0;
     m_loop_to = 0;
     counter = 0;
     direction = 1;
+    rows = rows;
+    columns = columns;
 }
 
 void AnimatedSprite::setFrameLength(float msec)
@@ -57,9 +57,16 @@ void AnimatedSprite::setFrameLength(float msec)
     }
 }
 
-void AnimatedSprite::setNumOfFrames(int num)
+void AnimatedSprite::setRows(int r)
 {
-    this->numOfFrames = num;
+    rows = r;
+    numOfFrames = rows * columns;
+}
+
+void AnimatedSprite::setColumns(int c)
+{
+    columns = c;
+    numOfFrames = rows * columns;
 }
 
 void AnimatedSprite::setTexture(Texture *p_texture)
@@ -70,6 +77,44 @@ void AnimatedSprite::setTexture(Texture *p_texture)
 void AnimatedSprite::setName(const QString &p_name)
 {
     this->name = p_name;
+}
+
+void AnimatedSprite::setCurrentFrame(int n)
+{
+    if(n > (numOfFrames-1)) {
+        m_currentFrame = (numOfFrames-1);
+    }
+    else if(n < 0) {
+        m_currentFrame = 0;
+    }
+    else {
+        m_currentFrame = n;
+    }
+
+    // Transform trenutni UV da bi se dobio trazeni frame
+    UVTransform.setToIdentity();
+
+    float csz = (1.0 / columns);
+    float rsz = (1.0 / rows);
+    QMatrix3x3 size;
+    size.setToIdentity();
+    size(0,0) = csz; //x-size
+    size(1,1) = rsz; //y-size
+
+    int b = m_currentFrame / columns;
+    int c = m_currentFrame - (b*columns);
+    QMatrix3x3 pos;
+    pos.setToIdentity();
+    pos(0,2) = (csz * c); //x-pos
+    pos(1,2) = (rsz * ((rows-1)-b)); //y-pos
+    pos = pos.transposed();
+
+    UVTransform = size * pos ;
+}
+
+int AnimatedSprite::getCurrentFrame()
+{
+    return m_currentFrame;
 }
 
 void AnimatedSprite::onPicked()
@@ -88,11 +133,10 @@ void AnimatedSprite::setLoop(int from, int to)
     else {
         direction = 0;
     }
-    currentFrame = from;
+    setCurrentFrame(from);
     m_loop_from = from;
     m_loop_to = to;
     counter = 0;
-    //m_time = 0;
 }
 
 void AnimatedSprite::update(float dt)
@@ -102,10 +146,10 @@ void AnimatedSprite::update(float dt)
     }
 
     if(counter  == (m_frame_length-1)) {
-        currentFrame = currentFrame + direction;
+        setCurrentFrame(getCurrentFrame() + direction);
 
-        if( (direction == 1 && currentFrame > m_loop_to) || (direction == -1 && currentFrame < m_loop_to) ) {
-                currentFrame = m_loop_from;
+        if( (direction == 1 && getCurrentFrame() > m_loop_to) || (direction == -1 && getCurrentFrame() < m_loop_to) ) {
+                setCurrentFrame(m_loop_from);
         }
     }
 

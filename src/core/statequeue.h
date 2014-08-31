@@ -24,6 +24,7 @@
 #include <QQueue>
 #include <QPair>
 #include <QDebug>
+#include <QThread>
 #include "statequeueinterface.h"
 
 class StateQueue : public QObject

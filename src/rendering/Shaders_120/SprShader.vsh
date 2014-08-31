@@ -20,32 +20,16 @@
 #version 120
 
 uniform mat4 MVPMatrix;
+uniform mat3 UVTransform;
 
 attribute vec4 Vertex;
 attribute vec2 UV;
 
 varying vec2 fshUV;
 
-uniform int numOfFrames;
-uniform int currFrame;
-uniform bool horizontalMirror;
-uniform bool verticalMirror;
-
 void main()
 {
-    float sw = (1.0/numOfFrames);
-
-    if(horizontalMirror) {
-        fshUV = (UV * vec2(sw,1.0) + vec2((sw*(numOfFrames-1-currFrame)),1.0)) * vec2(-1.0, 1.0); //h-flip
-    }
-    else {
-          fshUV = UV * vec2(sw,1.0) + vec2((sw*currFrame),1.0);
-    }
-
-    if(verticalMirror) {
-            fshUV = fshUV * vec2(1.0, -1.0); //v-flip
-    }
-
+    fshUV = (vec3(UV,1.0) * UVTransform).xy;
     gl_Position =  MVPMatrix * Vertex;
 }
 
