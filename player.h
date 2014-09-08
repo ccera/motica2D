@@ -39,7 +39,9 @@ enum _PlayerAnimationState {
     PLAYER_BEGIN_RUNNING,
     PLAYER_END_BEGIN_RUNNING,
     PLAYER_END_RUNNING,
-    PLAYER_TURN
+    PLAYER_TURN,
+    PLAYER_JUMP_FROM_RUN,
+    PLAYER_TURN_FROM_RUN
 };
 typedef enum _PlayerAnimationState PlayerAnimationState;
 
@@ -88,7 +90,9 @@ private:
     AnimatedSprite asPlayer;
     StateQueue stateQueue;
     bool moving;
+    bool jumping;
     float move_x;
+    float move_y;
 };
 
 #endif // PLAYER_H

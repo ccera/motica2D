@@ -32,8 +32,8 @@ Player::Player(MoEngine *engine) :
     asPlayer.setName("Prince");
     asPlayer.transform->setPosition(1000,90,60);
     asPlayer.transform->setSize(128,128,0);
-    asPlayer.setRows(2);
-    asPlayer.setColumns(55);
+    asPlayer.setRows(4);
+    asPlayer.setColumns(32);
     asPlayer.setFrameLength(3);
     m_engine->addAnimatedSprite(&asPlayer);
 
@@ -65,10 +65,14 @@ void Player::checkState()
             stateQueue.enqueue(PLAYER_STANDING, 0); //??
         }
         if(stateQueue.currentState() == PLAYER_RUNNING && orientState == PLAYER_RIGHT) {
-            stateQueue.dequeue();
-            stateQueue.enqueue(PLAYER_END_RUNNING, 23);
-            stateQueue.enqueue(PLAYER_TURN, 26);
-            stateQueue.enqueue(PLAYER_STANDING, 0); //??
+            stateQueue.removeAll();
+            stateQueue.enqueue(PLAYER_TURN_FROM_RUN, 26);
+            stateQueue.enqueue(PLAYER_RUNNING, 0);
+        }
+        if(stateQueue.currentState() == PLAYER_END_RUNNING && orientState == PLAYER_RIGHT) {
+            stateQueue.removeAll();
+            stateQueue.enqueue(PLAYER_TURN_FROM_RUN, 26);
+            stateQueue.enqueue(PLAYER_RUNNING, 0);
         }
     }
     else if(controlsState == CONTROLS_RIGHT)
@@ -90,10 +94,14 @@ void Player::checkState()
             stateQueue.enqueue(PLAYER_STANDING, 0); //??
         }
         if(stateQueue.currentState() == PLAYER_RUNNING && orientState == PLAYER_LEFT) {
-            stateQueue.dequeue();
-            stateQueue.enqueue(PLAYER_END_RUNNING, 23);
-            stateQueue.enqueue(PLAYER_TURN, 26);
-            stateQueue.enqueue(PLAYER_STANDING, 0); //??
+            stateQueue.removeAll();
+            stateQueue.enqueue(PLAYER_TURN_FROM_RUN, 26);
+            stateQueue.enqueue(PLAYER_RUNNING, 0);
+        }
+        if(stateQueue.currentState() == PLAYER_END_RUNNING && orientState == PLAYER_LEFT) {
+            stateQueue.removeAll();
+            stateQueue.enqueue(PLAYER_TURN_FROM_RUN, 26);
+            stateQueue.enqueue(PLAYER_RUNNING, 0);
         }
     }
     else if(controlsState == CONTROLS_NOTHING)
@@ -109,35 +117,64 @@ void Player::checkState()
             stateQueue.enqueue(PLAYER_STANDING, 0);
         }
     }
+    else if(controlsState == CONTROLS_UP)
+    {
+        if(stateQueue.currentState() == PLAYER_RUNNING) {
+            stateQueue.removeAll();
+            stateQueue.enqueue(PLAYER_JUMP_FROM_RUN, 29);
+            stateQueue.enqueue(PLAYER_RUNNING, 0);
+        }
+        if(stateQueue.currentState() == PLAYER_BEGIN_RUNNING) {
+            stateQueue.removeAll();
+            stateQueue.enqueue(PLAYER_JUMP_FROM_RUN, 29);
+            stateQueue.enqueue(PLAYER_RUNNING, 0);
+        }
+    }
 }
 
 void Player::onStateEntered(int state)
 {
     switch (state) {
     case PLAYER_BEGIN_RUNNING:
-        asPlayer.setLoop(50,54);
+        asPlayer.setLoop(32,36);
         moving = true;
+        jumping = false;
         break;
     case PLAYER_STANDING:
         asPlayer.setCurrentFrame(0);
         asPlayer.setLoop(0,0);
         moving = false;
+        jumping = false;
         break;
     case PLAYER_RUNNING:
         asPlayer.setLoop(10,17);
         moving = true;
+        jumping = false;
         break;
     case PLAYER_END_BEGIN_RUNNING:
-        asPlayer.setLoop(54,50);
+        asPlayer.setLoop(36,32);
         moving = false;
+        jumping = false;
         break;
     case PLAYER_END_RUNNING:
         asPlayer.setLoop(19,26);
         moving = false;
+        jumping = false;
         break;
     case PLAYER_TURN:
         asPlayer.setLoop(0,8);
         moving = false;
+        jumping = false;
+        break;
+    case PLAYER_TURN_FROM_RUN:
+        asPlayer.setLoop(50,58);
+        moving = false;
+        jumping = false;
+        break;
+    case PLAYER_JUMP_FROM_RUN:
+        asPlayer.setLoop(38,48);
+        moving = true;
+        jumping = true;
         break;
     default:
         break;
@@ -147,6 +184,7 @@ void Player::onStateEntered(int state)
 void Player::onStateExited(int state)
 {
     switch (state) {
+    case PLAYER_TURN_FROM_RUN:
     case PLAYER_TURN:
         if(orientState == PLAYER_LEFT) {
             orientState = PLAYER_RIGHT;
@@ -171,6 +209,21 @@ void Player::checkKey()
 
     if(Keyboard::keyLEFT && Keyboard::keyRIGHT) {
         controlsState = CONTROLS_NOTHING;
+        return;
+    }
+
+    if(Keyboard::keyLEFT && Keyboard::keyUP) {
+        controlsState = CONTROLS_UP;
+        return;
+    }
+
+    if(Keyboard::keyRIGHT && Keyboard::keyUP) {
+        controlsState = CONTROLS_UP;
+        return;
+    }
+
+    if(Keyboard::keyUP) {
+        controlsState = CONTROLS_UP;
         return;
     }
 
@@ -201,6 +254,16 @@ void Player::update(float dt)
         move_x -= 0.3;
         if(move_x <= 0.0) move_x = 0.0;
     }
+
+    if(jumping) {
+        move_y += 0.3;
+        if(move_y > 5.0) move_y = 5.0;
+    }
+    else {
+        move_y -= 0.3;
+        if(move_y <= 0.0) move_y = 0.0;
+    }
+
 
 
     float mx = 0.0;
