@@ -35,6 +35,7 @@ public:
     virtual void update(float dt);
     virtual void keyPress(int key);
     virtual void keyRelease(int key);
+    virtual void collide(GameObject *obj, GameObject *with);
 };
 
 #endif // GAMEOBJECT_H

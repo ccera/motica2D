@@ -3,13 +3,10 @@
 
 #include <QObject>
 #include "chipmunk.h"
+#include "physicsobject.h"
+#include "physicstypes.h"
 
-enum RigidBodyType {
-    RIGIDBODY_CIRCLE,
-    RIGIDBODY_HOLOW_CIRCLE,
-    RIGIDBODY_BOX,
-    RIGIDBODY_POLYGON
-};
+class PhysicsObject;
 
 class PhysicsWorld : public QObject
 {
@@ -21,12 +18,18 @@ public:
     void setGravity(float x, float y);
     void setDamping(float d);
 
+    PhysicsObject* createBox(float mass, float width, float height, PhysicsBodyState bState = PHYSICSBODY_SIMULATED);
+    PhysicsObject* createCircle(float mass, float diametar, PhysicsBodyState bState = PHYSICSBODY_SIMULATED);
+
+    cpSpace *space;
 signals:
 
 public slots:
 
 private:
-    cpSpace *space;
+    static void postSolve(cpArbiter *arb, cpSpace *space, void *ignore);
+
+
 
 };
 

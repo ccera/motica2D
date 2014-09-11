@@ -73,6 +73,9 @@ MyGame::MyGame(MoEngine *engine) :
     }
 */
     m_engine->showWindow();
+
+    pod = m_engine->physicsWorld->createBox(0,1000,100, PHYSICSBODY_STATIC);
+    pod->setPosition(0,0);
 }
 
 void MyGame::update(float dt)

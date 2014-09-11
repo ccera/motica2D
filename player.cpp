@@ -42,6 +42,10 @@ Player::Player(MoEngine *engine) :
     orientState = PLAYER_LEFT;
     move_x = 0;
     moving = false;
+
+    m_engine->physicsWorld->setGravity(0, -98.0f);
+    playerBody = m_engine->physicsWorld->createBox(80.0f, 128.0f, 128.0f);
+    playerBody->setPosition(300,600);
 }
 
 void Player::checkState()
@@ -246,6 +250,9 @@ void Player::update(float dt)
     checkKey();
     checkState();
 
+    asPlayer.transform->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y(), 0.0f);
+    asPlayer.transform->setRotation(0,0,playerBody->getRotation());
+/*
     if(moving) {
         move_x += 0.3;
         if(move_x > 5.0) move_x = 5.0;
@@ -275,4 +282,5 @@ void Player::update(float dt)
     }
 
     asPlayer.transform->translateFor(mx,0,0);
+    */
 }

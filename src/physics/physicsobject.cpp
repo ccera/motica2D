@@ -17,8 +17,35 @@
 //  along with Motica2D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "rigidbody.h"
+#include "physicsobject.h"
 
-RigidBody::RigidBody()
+PhysicsObject::PhysicsObject(PhysicsWorld *world)
 {
+    m_world = world;
+}
+
+void PhysicsObject::setPosition(float x, float y)
+{
+    body->p = cpv(x, y);
+    if(this->bodyState == PHYSICSBODY_STATIC) {
+        cpSpaceReindexStatic(m_world->space);
+    }
+}
+
+QVector2D PhysicsObject::getPosition()
+{
+    return QVector2D(body->p.x, body->p.y);
+}
+
+void PhysicsObject::setRotation(float deg)
+{
+    cpBodySetAngle(body, degToRad(deg));
+    if(this->bodyState == PHYSICSBODY_STATIC) {
+        cpSpaceReindexStatic(m_world->space);
+    }
+}
+
+float PhysicsObject::getRotation()
+{
+    return radToDeg(cpBodyGetAngle(body));
 }

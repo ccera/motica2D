@@ -26,6 +26,7 @@
 #include "sprite.h"
 #include "utils.h"
 #include "player.h"
+#include "physicsobject.h"
 
 class MyGame : GameObject
 {
@@ -50,6 +51,7 @@ private:
     Sprite sprFish;
 
     Player *prince;
+    PhysicsObject *pod;
 
     Sprite sprNiz[1000];
     float animTm;

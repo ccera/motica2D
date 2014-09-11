@@ -35,3 +35,7 @@ void GameObject::keyPress(int key)
 void GameObject::keyRelease(int key)
 {
 }
+
+void GameObject::collide(GameObject *obj, GameObject *with)
+{
+}

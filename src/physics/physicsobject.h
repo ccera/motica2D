@@ -20,10 +20,31 @@
 #ifndef RIGIDBODY_H
 #define RIGIDBODY_H
 
-class RigidBody
+#include "physicsworld.h"
+#include "physicstypes.h"
+#include <QVector2D>
+#include "utils.h"
+#include "chipmunk.h"
+
+class PhysicsWorld;
+
+class PhysicsObject
 {
 public:
-    RigidBody();
+    PhysicsObject(PhysicsWorld *world);
+
+    void        setPosition(float x, float y);
+    QVector2D   getPosition();
+    void        setRotation(float deg);
+    float       getRotation();
+
+    cpBody *body;
+    cpShape *shape;
+    PhysicsObjectType type;
+    PhysicsBodyState bodyState;
+
+private:
+    PhysicsWorld *m_world;
 };
 
 #endif // RIGIDBODY_H

@@ -30,6 +30,8 @@
 #include "animatedsprite.h"
 #include "statequeueinterface.h"
 #include "statequeue.h"
+#include "physicsobject.h"
+#include "chipmunk.h"
 
 enum _PlayerAnimationState {
     PLAYER_RUNNING,
@@ -89,6 +91,7 @@ private:
     Texture txPlayer;
     AnimatedSprite asPlayer;
     StateQueue stateQueue;
+    PhysicsObject *playerBody;
     bool moving;
     bool jumping;
     float move_x;

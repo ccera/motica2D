@@ -24,7 +24,6 @@ HEADERS += \
     src/core/moengine.h \
     src/core/gameobject.h \
     src/physics/collider.h \
-    src/physics/rigidbody.h \
     src/physics/chipmunk/chipmunk.h \
     src/core/mocolor.h \
     src/rendering/animatedsprite.h \
@@ -32,7 +31,9 @@ HEADERS += \
     src/core/statequeueinterface.h \
     src/core/keyboard.h \
     player.h \
-    src/physics/physicsworld.h
+    src/physics/physicsworld.h \
+    src/physics/physicstypes.h \
+    src/physics/physicsobject.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
@@ -49,7 +50,6 @@ SOURCES += \
     src/core/moengine.cpp \
     src/core/gameobject.cpp \
     src/physics/collider.cpp \
-    src/physics/rigidbody.cpp \
     src/physics/chipmunk/chipmunk.c \
     src/physics/chipmunk/constraints/cpConstraint.c \
     src/physics/chipmunk/constraints/cpDampedRotarySpring.c \
@@ -85,7 +85,8 @@ SOURCES += \
     src/core/statequeueinterface.cpp \
     src/core/keyboard.cpp \
     player.cpp \
-    src/physics/physicsworld.cpp
+    src/physics/physicsworld.cpp \
+    src/physics/physicsobject.cpp
 
 # Ovdje dodati sve što se treba koirati uz app
 resources_dir.source = resources
