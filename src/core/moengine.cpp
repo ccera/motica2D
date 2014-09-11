@@ -55,6 +55,7 @@ MoEngine::MoEngine(QWindow *parent)
     qApp->installEventFilter(this);
 
     scene = new Scene();
+    physicsWorld = new PhysicsWorld();
 
     m_camera_x = 0.0f;
     m_camera_y = 0.0f;
@@ -124,6 +125,9 @@ void MoEngine::render()
     if (!isGLInitialized) {
         initialize();
     }
+
+    // Update physics
+    physicsWorld->updateWorld((1.0f / (float)screen()->refreshRate()) * 1000.0f);
 
     // Send update to everybody. Delta time is in ms
     for(int n=0; n < arrGameObjects.size(); n++) {

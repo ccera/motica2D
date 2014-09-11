@@ -31,7 +31,8 @@ HEADERS += \
     src/core/statequeue.h \
     src/core/statequeueinterface.h \
     src/core/keyboard.h \
-    player.h
+    player.h \
+    src/physics/physicsworld.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
@@ -83,7 +84,8 @@ SOURCES += \
     src/core/statequeue.cpp \
     src/core/statequeueinterface.cpp \
     src/core/keyboard.cpp \
-    player.cpp
+    player.cpp \
+    src/physics/physicsworld.cpp
 
 # Ovdje dodati sve što se treba koirati uz app
 resources_dir.source = resources

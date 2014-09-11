@@ -34,6 +34,7 @@
 #include "animatedsprite.h"
 #include <QOpenGLExtensions>
 #include "keyboard.h"
+#include "physicsworld.h"
 
 class MoEngine : public QWindow
 {
@@ -66,6 +67,7 @@ public:
     void setViewport2DType(ViewportType type);
 
     Scene *scene;
+    PhysicsWorld *physicsWorld;
     bool isPressed;
     bool isGLInitialized;
     QVector<Sprite*> arrSprites;
