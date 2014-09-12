@@ -96,6 +96,7 @@ private:
     bool jumping;
     float move_x;
     float move_y;
+    bool isFlying;
 };
 
 #endif // PLAYER_H

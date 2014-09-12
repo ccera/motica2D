@@ -42,10 +42,12 @@ Player::Player(MoEngine *engine) :
     orientState = PLAYER_LEFT;
     move_x = 0;
     moving = false;
+    isFlying = false;
 
-    m_engine->physicsWorld->setGravity(0, -98.0f);
-    playerBody = m_engine->physicsWorld->createBox(80.0f, 128.0f, 128.0f);
-    playerBody->setPosition(300,600);
+    playerBody = m_engine->physicsWorld->createCircle(80,60); //m_engine->physicsWorld->createBox(80.0f, 128.0f, 128.0f);
+    playerBody->setPosition(900,100);
+    //playerBody->setFriction(20.0f);
+    playerBody->setMaxVelocity(150);
 }
 
 void Player::checkState()
@@ -149,6 +151,7 @@ void Player::onStateEntered(int state)
         asPlayer.setLoop(0,0);
         moving = false;
         jumping = false;
+        isFlying = false;
         break;
     case PLAYER_RUNNING:
         asPlayer.setLoop(10,17);
@@ -251,7 +254,39 @@ void Player::update(float dt)
     checkState();
 
     asPlayer.transform->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y(), 0.0f);
-    asPlayer.transform->setRotation(0,0,playerBody->getRotation());
+    //asPlayer.transform->setRotation(0,0,playerBody->getRotation());
+
+    if(moving) {
+        if(orientState == PLAYER_LEFT)
+            playerBody->applyImpulse(-500,0);
+        else
+            playerBody->applyImpulse(500,0);
+    }
+    else {
+
+        if(playerBody->getVelocity().x() < 8 && playerBody->getVelocity().x() > -8)
+            playerBody->setVelocity(0,0);
+
+        if(orientState == PLAYER_LEFT) {
+            if(playerBody->getVelocity().x() < -10.0)
+                playerBody->applyImpulse(600,0);
+        }
+        else {
+            if(playerBody->getVelocity().x() > 10.0) {
+                playerBody->applyImpulse(-600,0);
+            }
+        }
+
+    }
+
+    if(jumping && !isFlying) {
+        playerBody->applyImpulse(0,18500);
+        isFlying = true;
+    }
+    else {
+
+    }
+
 /*
     if(moving) {
         move_x += 0.3;
@@ -271,7 +306,7 @@ void Player::update(float dt)
         if(move_y <= 0.0) move_y = 0.0;
     }
 
-
+/*
 
     float mx = 0.0;
     if(orientState == PLAYER_LEFT) {

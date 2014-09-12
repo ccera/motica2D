@@ -49,3 +49,44 @@ float PhysicsObject::getRotation()
 {
     return radToDeg(cpBodyGetAngle(body));
 }
+
+void PhysicsObject::applyForce(float x, float y)
+{
+    cpBodyApplyForce(body, cpv(x,y), cpvzero);
+}
+
+void PhysicsObject::applyForceWithOffset(float x, float y, float offset_x, float offset_y)
+{
+    cpBodyApplyForce(body, cpv(x,y), cpv(offset_x, offset_y));
+}
+
+void PhysicsObject::applyImpulse(float x, float y)
+{
+    cpBodyApplyImpulse(body, cpv(x,y), cpvzero);
+}
+
+void PhysicsObject::applyImpulseWithOffset(float x, float y, float offset_x, float offset_y)
+{
+    cpBodyApplyImpulse(body, cpv(x,y), cpv(offset_x, offset_y));
+}
+
+void PhysicsObject::setFriction(float f)
+{
+    cpShapeSetFriction(shape, f);
+}
+
+QVector2D PhysicsObject::getVelocity()
+{
+    cpVect v = cpBodyGetVel(body);
+    return QVector2D(v.x, v.y);
+}
+
+void PhysicsObject::setVelocity(float x, float y)
+{
+    cpBodySetVel(body, cpv(x,y));
+}
+
+void PhysicsObject::setMaxVelocity(float max)
+{
+    cpBodySetVelLimit(body, max);
+}

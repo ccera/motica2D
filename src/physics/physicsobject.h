@@ -37,6 +37,14 @@ public:
     QVector2D   getPosition();
     void        setRotation(float deg);
     float       getRotation();
+    void        applyForce(float x, float y);
+    void        applyForceWithOffset(float x, float y, float offset_x, float offset_y);
+    void        applyImpulse(float x, float y);
+    void        applyImpulseWithOffset(float x, float y, float offset_x, float offset_y);
+    void        setFriction(float f);
+    void        setMaxVelocity(float max);
+    QVector2D   getVelocity();
+    void        setVelocity(float x, float y);
 
     cpBody *body;
     cpShape *shape;
