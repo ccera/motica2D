@@ -452,3 +452,8 @@ void MoEngine::addGameObject(GameObject *e)
     this->arrGameObjects.push_back(e);
 }
 
+void MoEngine::addPhysicsObject(PhysicsObject *object)
+{
+    this->scene->addPhysicsObject(object);
+    this->arrPhysicsObjects.push_back(object);
+}

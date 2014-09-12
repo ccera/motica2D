@@ -48,6 +48,7 @@ Player::Player(MoEngine *engine) :
     playerBody->setPosition(900,100);
     //playerBody->setFriction(20.0f);
     playerBody->setMaxVelocity(150);
+    m_engine->addPhysicsObject(playerBody);
 }
 
 void Player::checkState()
@@ -264,8 +265,10 @@ void Player::update(float dt)
     }
     else {
 
+        if(!isFlying) {
         if(playerBody->getVelocity().x() < 8 && playerBody->getVelocity().x() > -8)
             playerBody->setVelocity(0,0);
+        }
 
         if(orientState == PLAYER_LEFT) {
             if(playerBody->getVelocity().x() < -10.0)
@@ -276,7 +279,6 @@ void Player::update(float dt)
                 playerBody->applyImpulse(-600,0);
             }
         }
-
     }
 
     if(jumping && !isFlying) {

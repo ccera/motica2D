@@ -31,6 +31,7 @@
 #include <QReadWriteLock>
 #include <QMatrix4x4>
 #include <QQuaternion>
+#include "physicsobject.h"
 
 class Scene  : public QObject, protected QOpenGLFunctions
 {
@@ -47,6 +48,7 @@ public:
     void    addTexture(Texture *texture);
     void    addModel(Model *model);
     void    addMesh(Mesh *mesh);
+    void    addPhysicsObject(PhysicsObject *object);
     void    bindMesh(Mesh *mesh);
     void    bindTexture(Texture *texture);
     void    renderScene();
@@ -95,6 +97,7 @@ public:
     QVector <Texture*> textureList;
     QVector <Mesh*> meshList;
     QVector <Model*> modelList;
+    QVector <PhysicsObject*> physicsObjectList;
 
     bool supportsVAO;
 
@@ -108,6 +111,7 @@ protected:
     void    renderModel(Model *model);
     void    renderPick(Model *model);
     int     renderScenePick();
+    void    renderPhysics(PhysicsObject *obj);
     void    initSpriteMesh();
     static bool sortModels(Model *a, Model *b);
 

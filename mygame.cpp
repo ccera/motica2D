@@ -79,6 +79,7 @@ MyGame::MyGame(MoEngine *engine) :
     //pod->setFriction(10.0f);
     m_engine->physicsWorld->setGravity(0, -98.0f);
     //m_engine->physicsWorld->setDamping(0.5f);
+    m_engine->addPhysicsObject(pod);
 }
 
 void MyGame::update(float dt)

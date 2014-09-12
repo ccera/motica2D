@@ -277,6 +277,11 @@ void Scene::addModel(Model *model)
     modelList.push_back(model);
 }
 
+void Scene::addPhysicsObject(PhysicsObject *object)
+{
+    physicsObjectList.push_back(object);
+}
+
 void Scene::renderModel(Model *model)
 {
     QMatrix4x4 MVP = projectionMatrix * cameraMatrix * model->transform->transformMatrix;
@@ -331,6 +336,60 @@ void Scene::renderModel(Model *model)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 #endif
+}
+
+void Scene::renderPhysics(PhysicsObject *obj)
+{
+    Transform transform;
+    transform.setPosition(obj->getPosition().x(), obj->getPosition().y(), 100.0f);
+    transform.setSize(obj->shape->bb.r - obj->shape->bb.l , obj->shape->bb.t - obj->shape->bb.b,100);
+    transform.updateTransformMatrix();
+    QMatrix4x4 MVP = projectionMatrix * cameraMatrix * transform.transformMatrix;
+    glUniformMatrix4fv(m_progPick_MVPMatrix, 1, 0, MVP.data());
+    glUniform4f(m_progPick_Color, 1.0, 0.0, 0.0, 1.0f);
+    Mesh *mesh = this->getMesh("DEFAULT_SPRITE_MESH");
+
+#if OPENGLES_IOS
+    glBindVertexArrayOES(mesh->VAOPick);
+#elif OPENGLES_ANDRO
+    if(supportsVAO) {
+        androOES->glBindVertexArrayOES(mesh->VAOPick);
+    }
+    else {
+        glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
+        glVertexAttribPointer(m_progPick_Vertex, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(20));
+        glEnableVertexAttribArray(m_progPick_Vertex);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);
+    }
+#elif OPENGL32
+    glBindVertexArray(model->mesh->VAOPick);
+#elif OPENGL21
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
+    glVertexAttribPointer(m_progPick_Vertex, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(20));
+    glEnableVertexAttribArray(m_progPick_Vertex);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->IBO);
+#endif
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glDrawElements(GL_TRIANGLES,mesh->triangleCount*3,GL_UNSIGNED_INT,0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+#if OPENGLES_IOS
+    glBindVertexArrayOES(0);
+#elif OPENGLES_ANDRO
+    if(supportsVAO) {
+        androOES->glBindVertexArrayOES(0);
+    }
+    else {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+#elif OPENGL32
+    glBindVertexArray(0);
+#elif OPENGL21
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+#endif
+
 }
 
 void Scene::renderPick(Model *model)
@@ -454,6 +513,12 @@ void Scene::renderScene()
             renderModel(modelList[m]);
         }
     }
+#if DBUG_RENDER_PHYSICS
+    glUseProgram(m_progPick);
+    for(int p=0; p < physicsObjectList.size(); p++) {
+        renderPhysics(physicsObjectList.at(p));
+    }
+#endif
 
     //timer.end200();
 

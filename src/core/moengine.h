@@ -62,6 +62,7 @@ public:
     void addSprite(Sprite *sprite);
     void addGameObject(GameObject *e);
     void addAnimatedSprite(AnimatedSprite *sprite);
+    void addPhysicsObject(PhysicsObject *object);
     void setCamera2DSize(float w, float h);
     void setCamera2DPos(float x, float y);
     void setViewport2DType(ViewportType type);
@@ -73,6 +74,7 @@ public:
     QVector<Sprite*> arrSprites;
     QVector<AnimatedSprite*> arrAnimSprites;
     QVector<GameObject*> arrGameObjects;
+    QVector<PhysicsObject*> arrPhysicsObjects;
 
 signals:
     void update(float dt);

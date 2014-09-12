@@ -26,6 +26,8 @@
 #include <QtOpenGL>
 #include <QString>
 
+#define DBUG_RENDER_PHYSICS 1
+
 #if _WIN64 || _WIN32 || (__linux && !__ANDROID_API__)
     #define OPENGL21 1
     #include <qopengl.h>
