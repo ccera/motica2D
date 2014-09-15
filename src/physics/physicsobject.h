@@ -26,6 +26,7 @@
 #include "utils.h"
 #include "chipmunk.h"
 #include "gameobject.h"
+#include "types.h"
 
 class PhysicsWorld;
 class GameObject;

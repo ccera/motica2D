@@ -34,7 +34,7 @@ class AnimatedSprite : public QObject, public Model
 
 public:
     AnimatedSprite();
-    AnimatedSprite(int rows, int columns, Texture *texture);
+    AnimatedSprite(int m_rows, int m_columns, Texture *texture);
 
     void setTexture(Texture *p_texture);
     void setName(const QString &p_name);
@@ -57,10 +57,10 @@ private:
     int m_loop_from;
     int m_loop_to;
     int direction;
-    int rows;
-    int columns;
+    int m_rows;
+    int m_columns;
     int m_currentFrame;
-    int numOfFrames;
+    int m_numOfFrames;
 
 };
 

@@ -1,5 +1,14 @@
-#ifndef PHYSICSTYPES_H
-#define PHYSICSTYPES_H
+#ifndef TYPES_H
+#define TYPES_H
+
+enum _ViewportType {
+    VIEWPORT_PIXEL,
+    VIEWPORT_STRECH_X,
+    VIEWPORT_STRECH_Y,
+    VIEWPORT_STRECH_XY,
+};
+typedef enum _ViewportType ViewportType;
+
 
 enum _PhysicsObjectShapeType {
     PHYSICSOBJECT_CIRCLE,
@@ -16,5 +25,4 @@ enum _PhysicsBodyState {
 };
 typedef enum _PhysicsBodyState PhysicsBodyState;
 
-
-#endif // PHYSICSTYPES_H
+#endif // TYPES_H

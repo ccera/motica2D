@@ -23,28 +23,28 @@ AnimatedSprite::AnimatedSprite() :
     QObject(), Model(NULL, texture, "")
 {
     m_currentFrame = 0;
-    numOfFrames = 1;
+    m_numOfFrames = 1;
     m_frame_length = 3;
     m_loop_from = 0;
     m_loop_to = 0;
     counter = 0;
     direction = 1;
-    rows = 1;
-    columns = 1;
+    m_rows = 1;
+    m_columns = 1;
 }
 
 AnimatedSprite::AnimatedSprite(int rows, int columns, Texture *texture) :
     QObject(), Model(NULL, texture, "")
 {
     m_currentFrame = 0;
-    numOfFrames = rows * columns;
+    m_numOfFrames = rows * columns;
     m_frame_length = 3;
     m_loop_from = 0;
     m_loop_to = 0;
     counter = 0;
     direction = 1;
-    rows = rows;
-    columns = columns;
+    m_rows = rows;
+    m_columns = columns;
 }
 
 void AnimatedSprite::setFrameLength(float msec)
@@ -59,14 +59,14 @@ void AnimatedSprite::setFrameLength(float msec)
 
 void AnimatedSprite::setRows(int r)
 {
-    rows = r;
-    numOfFrames = rows * columns;
+    m_rows = r;
+    m_numOfFrames = m_rows * m_columns;
 }
 
 void AnimatedSprite::setColumns(int c)
 {
-    columns = c;
-    numOfFrames = rows * columns;
+    m_columns = c;
+    m_numOfFrames = m_rows * m_columns;
 }
 
 void AnimatedSprite::setTexture(Texture *p_texture)
@@ -81,8 +81,8 @@ void AnimatedSprite::setName(const QString &p_name)
 
 void AnimatedSprite::setCurrentFrame(int n)
 {
-    if(n > (numOfFrames-1)) {
-        m_currentFrame = (numOfFrames-1);
+    if(n > (m_numOfFrames-1)) {
+        m_currentFrame = (m_numOfFrames-1);
     }
     else if(n < 0) {
         m_currentFrame = 0;
@@ -94,19 +94,19 @@ void AnimatedSprite::setCurrentFrame(int n)
     // Transform trenutni UV da bi se dobio trazeni frame
     UVTransform.setToIdentity();
 
-    float csz = (1.0 / columns);
-    float rsz = (1.0 / rows);
+    float csz = (1.0 / m_columns);
+    float rsz = (1.0 / m_rows);
     QMatrix3x3 size;
     size.setToIdentity();
     size(0,0) = csz; //x-size
     size(1,1) = rsz; //y-size
 
-    int b = m_currentFrame / columns;
-    int c = m_currentFrame - (b*columns);
+    int b = m_currentFrame / m_columns;
+    int c = m_currentFrame - (b*m_columns);
     QMatrix3x3 pos;
     pos.setToIdentity();
     pos(0,2) = (csz * c); //x-pos
-    pos(1,2) = (rsz * ((rows-1)-b)); //y-pos
+    pos(1,2) = (rsz * ((m_rows-1)-b)); //y-pos
     pos = pos.transposed();
 
     UVTransform = size * pos ;

@@ -37,7 +37,6 @@ int main(int argc, char **argv)
     mo->setBackgroundColor(0.5f, 0.0f, 0.3f, 1.0f);
     mo->showWindow();
 
-
     MyGame *mygame = new MyGame(engine);
 
     return app.exec();

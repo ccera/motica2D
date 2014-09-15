@@ -431,33 +431,3 @@ void Window::showWindow()
     this->show();
 #endif
 }
-
-//void Window::addTexture(Texture *texture)
-//{
-
-//    m_engine->scene->addTexture(texture);
-//}
-
-//void Window::addSprite(Sprite *sprite)
-//{
-//    m_engine->scene->addModel(sprite);
-//    m_engine->arrSprites.push_back(sprite);
-//}
-
-//void Window::addAnimatedSprite(AnimatedSprite *sprite)
-//{
-//    m_engine->scene->addModel(sprite);
-//    m_engine->arrAnimSprites.push_back(sprite);
-//}
-
-//void Window::addGameObject(GameObject *e)
-//{
-//    Engine *d = m_engine;
-//    m_engine->arrGameObjects.push_back(e);
-//}
-
-//void Window::addPhysicsObject(PhysicsObject *object)
-//{
-//    m_engine->scene->addPhysicsObject(object);
-//    m_engine->arrPhysicsObjects.push_back(object);
-//}

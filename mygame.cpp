@@ -27,52 +27,31 @@ MyGame::MyGame(Engine *engine) :
 
     prince = new Player(engine);
 
-    planet.setFile(Resource("textures/Planet.png"));
-    m_engine->addTexture(&planet);
+    planet = m_engine->newTexture(Resource("textures/Planet.png"));
+    background = m_engine->newTexture(Resource("textures/Background.png"));
+    bottle = m_engine->newTexture(Resource("textures/Bottle.png"));
+    fish = m_engine->newTexture(Resource("textures/Fish.png"));
 
-    background.setFile(Resource("textures/Background.png"));
-    m_engine->addTexture(&background);
 
-    bottle.setFile(Resource("textures/Bottle.png"));
-    engine->addTexture(&bottle);
+    sprBackground = m_engine->newSprite(background);
+    sprBackground->setName("Background");
+    sprBackground->transform->setPosition(512,256,-10);
+    sprBackground->transform->setSize(1024,512,0);
 
-    fish.setFile(Resource("textures/Fish.png"));
-    m_engine->addTexture(&fish);
+    sprPlanet = m_engine->newSprite(planet);
+    sprPlanet->setName("Planet");
+    sprPlanet->transform->setPosition(800,320,10);
+    sprPlanet->transform->setSize(512,512,0);
 
-    sprBackground.setTexture(&background);
-    sprBackground.setName("Background");
-    sprBackground.transform->setPosition(512,256,-10);
-    sprBackground.transform->setSize(1024,512,0);
-    m_engine->addSprite(&sprBackground);
+    sprBottle = m_engine->newSprite(bottle);
+    sprBottle->setName("Bottle");
+    sprBottle->transform->setPosition(500,400,11);
+    sprBottle->transform->setSize(32,512,0);
 
-    sprPlanet.setTexture(&planet);
-    sprPlanet.setName("Planet");
-    sprPlanet.transform->setPosition(800,320,10);
-    sprPlanet.transform->setSize(512,512,0);
-    m_engine->addSprite(&sprPlanet);
-
-    sprBottle.setTexture(&bottle);
-    sprBottle.setName("Bottle");
-    sprBottle.transform->setPosition(500,400,11);
-    sprBottle.transform->setSize(32,512,0);
-    m_engine->addSprite(&sprBottle);
-
-    sprFish.setTexture(&fish);
-    sprFish.setName("Fish");
-    sprFish.transform->setPosition(300,300,99);
-    sprFish.transform->setSize(128,256,0);
-    m_engine->addSprite(&sprFish);
-/*
-    for(int n=0; n < 100; n++) {
-        sprNiz[n].setTexture(&fish);
-        float x = qrand() % 1024;
-        float y = qrand() % 512;
-        sprNiz[n].transform->setPosition(x,y,(float)20.f+(n/10.0f));
-        sprNiz[n].transform->setSize(128,256,0);
-        m_engine->addSprite(&sprNiz[n]);
-    }
-*/
-    //m_engine->engine->showWindow();
+    sprFish = m_engine->newSprite(fish);
+    sprFish->setName("Fish");
+    sprFish->transform->setPosition(300,300,99);
+    sprFish->transform->setSize(128,256,0);
 
     pod = m_engine->physicsWorld->createBox(0,10000,10, PHYSICSBODY_STATIC);
     pod->setPosition(500,0);
@@ -86,10 +65,6 @@ MyGame::MyGame(Engine *engine) :
 
 void MyGame::update(float dt)
 {
-    if(sprFish.transform->x > 1000) sprFish.transform->setPosition(0, 300, 99);
-    sprFish.transform->translateFor(3,0,0);
-
-    for(int n=0; n < 100; n++) {
-        sprNiz[n].transform->rotateFor(0,0,1);
-    }
+    if(sprFish->transform->x > 1000) sprFish->transform->setPosition(0, 300, 99);
+    sprFish->transform->translateFor(3,0,0);
 }

@@ -4,7 +4,8 @@
 #include <QObject>
 #include "chipmunk.h"
 #include "physicsobject.h"
-#include "physicstypes.h"
+#include "types.h"
+#include "engine.h"
 
 class PhysicsObject;
 

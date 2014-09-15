@@ -36,6 +36,7 @@
 #include "keyboard.h"
 #include "physicsworld.h"
 #include "engine.h"
+#include "types.h"
 
 class Engine;
 
@@ -61,11 +62,6 @@ public:
     void setWindowSize(float width, float height);
     void setBackgroundColor(float r, float g, float b, float a);
     void showWindow();
-//    void addTexture(Texture *texture);
-//    void addSprite(Sprite *sprite);
-//    void addGameObject(GameObject *e);
-//    void addAnimatedSprite(AnimatedSprite *sprite);
-//    void addPhysicsObject(PhysicsObject *object);
     void setCamera2DSize(float w, float h);
     void setCamera2DPos(float x, float y);
     void setViewport2DType(ViewportType type);
@@ -85,12 +81,12 @@ protected:
     void exposeEvent(QExposeEvent *event);
 
 private:
-    Engine *m_engine;
     void calculateCamera();
     bool m_update_pending;
     bool m_animating;
     QOpenGLContext *m_context;
     QOpenGLPaintDevice *m_device;
+    Engine *m_engine;
 };
 
 #endif // MOENGINE_H

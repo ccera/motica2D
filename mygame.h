@@ -44,19 +44,18 @@ public slots:
 
 private:
     Engine *m_engine;
-    Texture planet;
-    Texture bottle;
-    Texture background;
-    Texture fish;
-    Sprite sprBackground;
-    Sprite sprPlanet;
-    Sprite sprBottle;
-    Sprite sprFish;
+    Texture *planet;
+    Texture *bottle;
+    Texture *background;
+    Texture *fish;
+    Sprite *sprBackground;
+    Sprite *sprPlanet;
+    Sprite *sprBottle;
+    Sprite *sprFish;
 
     Player *prince;
     PhysicsObject *pod;
 
-    Sprite sprNiz[1000];
     float animTm;
 };
 

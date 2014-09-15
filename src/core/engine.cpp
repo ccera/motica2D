@@ -8,6 +8,13 @@ Engine::Engine()
     initDefaultSpriteMesh();
 }
 
+Texture* Engine::newTexture(const QString &file)
+{
+    Texture *tex = new Texture(file);
+    this->addTexture(tex);
+    return tex;
+}
+
 void Engine::addTexture(Texture *texture)
 {
     this->arrTextures.push_back(texture);
@@ -18,6 +25,20 @@ void Engine::addTexture(Texture *texture)
     }
 }
 
+Sprite* Engine::newSprite(const QString &texture_name)
+{
+    Sprite *spr = new Sprite(this->getTexture(texture_name));
+    this->addSprite(spr);
+    return spr;
+}
+
+Sprite* Engine::newSprite(Texture *texture)
+{
+    Sprite *spr = new Sprite(texture);
+    this->addSprite(spr);
+    return spr;
+}
+
 void Engine::addSprite(Sprite *sprite)
 {
     sprite->mesh = this->getMesh("DEFAULT_SPRITE_MESH");
@@ -26,6 +47,21 @@ void Engine::addSprite(Sprite *sprite)
 
     arrModels.push_back(sprite);
     this->arrSprites.push_back(sprite);
+}
+
+
+AnimatedSprite* Engine::newAnimatedSprite(int rows, int columns, const QString &texture_name)
+{
+    AnimatedSprite *as = new AnimatedSprite(rows, columns, this->getTexture(texture_name));
+    this->addAnimatedSprite(as);
+    return as;
+}
+
+AnimatedSprite* Engine::newAnimatedSprite(int rows, int columns, Texture *texture)
+{
+    AnimatedSprite *as = new AnimatedSprite(rows, columns, texture);
+    this->addAnimatedSprite(as);
+    return as;
 }
 
 void Engine::addAnimatedSprite(AnimatedSprite *sprite)
@@ -63,6 +99,16 @@ Mesh* Engine::getMesh(const QString &name)
     for(int n=0; n < arrMeshes.size(); n++) {
         if(arrMeshes[n]->name.compare(name) == 0) {
             return arrMeshes[n];
+        }
+    }
+    return 0;
+}
+
+Texture* Engine::getTexture(const QString &name)
+{
+    for(int n=0; n < arrTextures.size(); n++) {
+        if(arrTextures[n]->name.compare(name) == 0) {
+            return arrTextures[n];
         }
     }
     return 0;

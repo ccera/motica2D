@@ -97,8 +97,8 @@ public slots:
 
 private:
     Engine *m_engine;
-    Texture txPlayer;
-    AnimatedSprite asPlayer;
+    Texture *txPlayer;
+    AnimatedSprite *asPlayer;
     StateQueue stateQueue;
     PhysicsObject *playerBody;
     bool moving;

@@ -30,10 +30,10 @@ HEADERS += \
     src/core/keyboard.h \
     player.h \
     src/physics/physicsworld.h \
-    src/physics/physicstypes.h \
     src/physics/physicsobject.h \
     src/core/window.h \
-    src/core/engine.h
+    src/core/engine.h \
+    src/core/types.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \

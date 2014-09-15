@@ -25,17 +25,13 @@ Player::Player(Engine *engine) :
     m_engine = engine;
     m_engine->addGameObject(this);
 
-    txPlayer.setFile(Resource("textures/allframes.png"));
-    m_engine->addTexture(&txPlayer);
+    txPlayer = m_engine->newTexture(Resource("textures/allframes.png"));
 
-    asPlayer.setTexture(&txPlayer);
-    asPlayer.setName("Prince");
-    asPlayer.transform->setPosition(1000,90,60);
-    asPlayer.transform->setSize(128,128,0);
-    asPlayer.setRows(4);
-    asPlayer.setColumns(32);
-    asPlayer.setFrameLength(3);
-    m_engine->addAnimatedSprite(&asPlayer);
+    asPlayer = m_engine->newAnimatedSprite(4, 32, txPlayer);
+    asPlayer->setName("Prince");
+    asPlayer->transform->setPosition(1000,90,60);
+    asPlayer->transform->setSize(128,128,0);
+    asPlayer->setFrameLength(3);
 
     stateQueue.enqueue(PLAYER_STANDING, 0);
     stateQueue.setInterface(this);
@@ -145,44 +141,44 @@ void Player::onStateEntered(int state)
 {
     switch (state) {
     case PLAYER_BEGIN_RUNNING:
-        asPlayer.setLoop(32,36);
+        asPlayer->setLoop(32,36);
         moving = true;
         jumping = false;
         break;
     case PLAYER_STANDING:
-        asPlayer.setCurrentFrame(0);
-        asPlayer.setLoop(0,0);
+        asPlayer->setCurrentFrame(0);
+        asPlayer->setLoop(0,0);
         moving = false;
         jumping = false;
         isFlying = false;
         break;
     case PLAYER_RUNNING:
-        asPlayer.setLoop(10,17);
+        asPlayer->setLoop(10,17);
         moving = true;
         jumping = false;
         break;
     case PLAYER_END_BEGIN_RUNNING:
-        asPlayer.setLoop(36,32);
+        asPlayer->setLoop(36,32);
         moving = false;
         jumping = false;
         break;
     case PLAYER_END_RUNNING:
-        asPlayer.setLoop(19,26);
+        asPlayer->setLoop(19,26);
         moving = false;
         jumping = false;
         break;
     case PLAYER_TURN:
-        asPlayer.setLoop(0,8);
+        asPlayer->setLoop(0,8);
         moving = false;
         jumping = false;
         break;
     case PLAYER_TURN_FROM_RUN:
-        asPlayer.setLoop(50,58);
+        asPlayer->setLoop(50,58);
         moving = false;
         jumping = false;
         break;
     case PLAYER_JUMP_FROM_RUN:
-        asPlayer.setLoop(38,48);
+        asPlayer->setLoop(38,48);
         moving = true;
         jumping = true;
         break;
@@ -198,11 +194,11 @@ void Player::onStateExited(int state)
     case PLAYER_TURN:
         if(orientState == PLAYER_LEFT) {
             orientState = PLAYER_RIGHT;
-            asPlayer.transform->setSize(-128,128,0);
+            asPlayer->transform->setSize(-128,128,0);
         }
         else {
             orientState = PLAYER_LEFT;
-            asPlayer.transform->setSize(128,128,0);
+            asPlayer->transform->setSize(128,128,0);
         }
         break;
     default:
@@ -279,7 +275,7 @@ void Player::update(float dt)
     checkKey();
     checkState();
 
-    asPlayer.transform->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y(), 0.0f);
+    asPlayer->transform->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y(), 0.0f);
     //asPlayer.transform->setRotation(0,0,playerBody->getRotation());
 
     if(moving) {
@@ -314,36 +310,4 @@ void Player::update(float dt)
     else {
 
     }
-
-/*
-    if(moving) {
-        move_x += 0.3;
-        if(move_x > 5.0) move_x = 5.0;
-    }
-    else {
-        move_x -= 0.3;
-        if(move_x <= 0.0) move_x = 0.0;
-    }
-
-    if(jumping) {
-        move_y += 0.3;
-        if(move_y > 5.0) move_y = 5.0;
-    }
-    else {
-        move_y -= 0.3;
-        if(move_y <= 0.0) move_y = 0.0;
-    }
-
-/*
-
-    float mx = 0.0;
-    if(orientState == PLAYER_LEFT) {
-        mx = move_x * -1;
-    }
-    else {
-        mx = move_x;
-    }
-
-    asPlayer.transform->translateFor(mx,0,0);
-    */
 }

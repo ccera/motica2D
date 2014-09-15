@@ -33,8 +33,11 @@
 #include <QQuaternion>
 #include "physicsobject.h"
 #include "engine.h"
+#include "types.h"
+
 
 class Engine;
+class PhysicsObject;
 
 class Scene : public QObject, protected QOpenGLFunctions
 {

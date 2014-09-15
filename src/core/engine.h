@@ -12,6 +12,7 @@
 #include "utils.h"
 #include "mesh.h"
 #include "model.h"
+#include "types.h"
 
 class Window;
 class Scene;
@@ -19,19 +20,29 @@ class Sprite;
 class AnimatedSprite;
 class Texture;
 class Model;
+class PhysicsWorld;
+class PhysicsObject;
+class GameObject;
 
 class Engine
 {
 public:
     Engine();
 
-    void  addMesh(Mesh *mesh);
-    void  addTexture(Texture *texture);
-    void  addSprite(Sprite *sprite);
-    void  addGameObject(GameObject *e);
-    void  addAnimatedSprite(AnimatedSprite *sprite);
-    void  addPhysicsObject(PhysicsObject *object);
-    Mesh* getMesh(const QString &name);
+    Texture*        newTexture(const QString &file);
+    void            addTexture(Texture *texture);
+    Texture*        getTexture(const QString &name);
+    Sprite*         newSprite(const QString &texture_name);
+    Sprite*         newSprite(Texture *texture);
+    void            addSprite(Sprite *sprite);
+    AnimatedSprite* newAnimatedSprite(int rows, int columns, const QString &texture_name);
+    AnimatedSprite* newAnimatedSprite(int rows, int columns, Texture *texture);
+    void            addAnimatedSprite(AnimatedSprite *sprite);
+    void            addMesh(Mesh *mesh);
+    Mesh*           getMesh(const QString &name);
+    void            addGameObject(GameObject *e);
+    void            addPhysicsObject(PhysicsObject *object);
+
     void initDefaultSpriteMesh();
 
     QVector<Texture*> arrTextures;
