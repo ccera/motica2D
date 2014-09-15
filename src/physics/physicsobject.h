@@ -21,7 +21,6 @@
 #define RIGIDBODY_H
 
 #include "physicsworld.h"
-#include "physicstypes.h"
 #include <QVector2D>
 #include "utils.h"
 #include "chipmunk.h"

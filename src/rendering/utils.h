@@ -48,14 +48,6 @@
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 #define PI 3.14159265359
 
-//enum _ViewportType {
-//    VIEWPORT_PIXEL,
-//    VIEWPORT_STRECH_X,
-//    VIEWPORT_STRECH_Y,
-//    VIEWPORT_STRECH_XY,
-//};
-//typedef enum _ViewportType ViewportType;
-
 float degToRad(float deg);
 float radToDeg(float rad);
 QString Resource(const QString &resource);

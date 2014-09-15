@@ -40,7 +40,7 @@ Player::Player(Engine *engine) :
     moving = false;
     isFlying = true;
 
-    playerBody = m_engine->physicsWorld->createCircle(80,60); //m_engine->physicsWorld->createBox(80.0f, 128.0f, 128.0f);
+    playerBody = m_engine->createPhysicsObjectCircle(80,60);
     playerBody->setPosition(900,100);
     //playerBody->setFriction(20.0f);
     playerBody->setMaxVelocity(150);
@@ -262,7 +262,7 @@ void Player::collide(PhysicsObject *with)
 
 void Player::update(float dt)
 {
-    QList<PhysicsObject*> ret = m_engine->physicsWorld->checkForOverlappingObjects(playerBody);
+    QList<PhysicsObject*> ret = m_engine->checkForOverlappingPhysicsObjects(playerBody);
 
     if(ret.size() > 0) {
         isFlying = false;
@@ -276,7 +276,7 @@ void Player::update(float dt)
     checkState();
 
     asPlayer->transform->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y(), 0.0f);
-    //asPlayer.transform->setRotation(0,0,playerBody->getRotation());
+    //asPlayer->transform->setRotation(0,0,playerBody->getRotation());
 
     if(moving) {
         if(orientState == PLAYER_LEFT)

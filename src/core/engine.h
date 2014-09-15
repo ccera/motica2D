@@ -41,6 +41,10 @@ public:
     void            addMesh(Mesh *mesh);
     Mesh*           getMesh(const QString &name);
     void            addGameObject(GameObject *e);
+
+    PhysicsObject* createPhysicsObjectBox(float mass, float width, float height, PhysicsBodyState bState = PHYSICSBODY_SIMULATED);
+    PhysicsObject* createPhysicsObjectCircle(float mass, float diametar, PhysicsBodyState bState = PHYSICSBODY_SIMULATED);
+    QList<PhysicsObject*> checkForOverlappingPhysicsObjects(PhysicsObject *obj);
     void            addPhysicsObject(PhysicsObject *object);
 
     void initDefaultSpriteMesh();

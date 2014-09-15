@@ -79,6 +79,26 @@ void Engine::addGameObject(GameObject *e)
     this->arrGameObjects.push_back(e);
 }
 
+PhysicsObject*  Engine::createPhysicsObjectBox(float mass, float width, float height, PhysicsBodyState bState)
+{
+    PhysicsObject *po = physicsWorld->createBox(mass, width, height, bState);
+    this->arrPhysicsObjects.push_back(po);
+    return po;
+}
+
+PhysicsObject*  Engine::createPhysicsObjectCircle(float mass, float diametar, PhysicsBodyState bState)
+{
+    PhysicsObject *po = physicsWorld->createCircle(mass, diametar, bState);
+    this->arrPhysicsObjects.push_back(po);
+    return po;
+}
+
+QList<PhysicsObject*>  Engine::checkForOverlappingPhysicsObjects(PhysicsObject *obj)
+{
+    QList<PhysicsObject*> ls = physicsWorld->checkForOverlappingObjects(obj);
+    return ls;
+}
+
 void Engine::addPhysicsObject(PhysicsObject *object)
 {
     this->arrPhysicsObjects.push_back(object);
