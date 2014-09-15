@@ -76,6 +76,8 @@ MyGame::MyGame(MoEngine *engine) :
 
     pod = m_engine->physicsWorld->createBox(0,10000,10, PHYSICSBODY_STATIC);
     pod->setPosition(500,0);
+    pod->parentGameObject = this;
+    pod->userType = GAME_FLOOR;
     //pod->setFriction(10.0f);
     m_engine->physicsWorld->setGravity(0, -98.0f);
     //m_engine->physicsWorld->setDamping(0.5f);

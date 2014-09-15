@@ -4,6 +4,7 @@ PhysicsWorld::PhysicsWorld(QObject *parent) :
     QObject(parent)
 {
     space = cpSpaceNew();
+    cpSpaceSetDefaultCollisionHandler(space, NULL, NULL, postSolve, NULL, NULL);
 }
 
 PhysicsObject* PhysicsWorld::createBox(float mass, float width, float height, PhysicsBodyState bState)
@@ -28,10 +29,11 @@ PhysicsObject* PhysicsWorld::createBox(float mass, float width, float height, Ph
     cpSpaceAddShape(space, shape);
 
     PhysicsObject *obj = new PhysicsObject(this);
-    obj->type = PHYSICSOBJECT_BOX;
+    obj->shapeType = PHYSICSOBJECT_BOX;
     obj->bodyState = bState;
     obj->body = body;
     obj->shape = shape;
+    obj->shape->data = obj;
 
     return obj;
 }
@@ -58,10 +60,11 @@ PhysicsObject* PhysicsWorld::createCircle(float mass, float diametar, PhysicsBod
     cpSpaceAddShape(space, shape);
 
     PhysicsObject *obj = new PhysicsObject(this);
-    obj->type = PHYSICSOBJECT_CIRCLE;
+    obj->shapeType = PHYSICSOBJECT_CIRCLE;
     obj->bodyState = bState;
     obj->body = body;
     obj->shape = shape;
+    obj->shape->data = obj;
 
     return obj;
 }
@@ -69,6 +72,34 @@ PhysicsObject* PhysicsWorld::createCircle(float mass, float diametar, PhysicsBod
 void PhysicsWorld::postSolve(cpArbiter *arb, cpSpace *space, void *ignore)
 {
     CP_ARBITER_GET_SHAPES(arb, a, b);
+
+    PhysicsObject *pA = (PhysicsObject*)cpShapeGetUserData(a);
+    PhysicsObject *pB = (PhysicsObject*)cpShapeGetUserData(b);
+
+    if(pA->parentGameObject != NULL) {
+        pA->parentGameObject->collide(pB);
+    }
+
+    if(pB->parentGameObject != NULL) {
+        pB->parentGameObject->collide(pA);
+    }
+}
+
+void PhysicsWorld::checkOverlapping(cpShape *shape, cpContactPointSet *points, void *data)
+{
+    //qDebug() << "Overlapping jeee";
+    if(shape->data != NULL) {
+        ((QList<PhysicsObject*>*)data)->append((PhysicsObject*)shape->data);
+        //overlappingObjects.append((PhysicsObject*)shape->data);
+    }
+}
+
+QList<PhysicsObject*> PhysicsWorld::checkForOverlappingObjects(PhysicsObject *obj)
+{
+    QList<PhysicsObject*> lista;
+    //overlappingObjects.clear();
+    cpSpaceShapeQuery(space, obj->shape, checkOverlapping, (void*)&lista);
+    return lista;
 }
 
 void PhysicsWorld::updateWorld(float dt)

@@ -36,6 +36,6 @@ void GameObject::keyRelease(int key)
 {
 }
 
-void GameObject::collide(GameObject *obj, GameObject *with)
+void GameObject::collide(PhysicsObject *with)
 {
 }

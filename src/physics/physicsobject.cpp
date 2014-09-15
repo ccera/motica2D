@@ -22,6 +22,7 @@
 PhysicsObject::PhysicsObject(PhysicsWorld *world)
 {
     m_world = world;
+    parentGameObject = 0;
 }
 
 void PhysicsObject::setPosition(float x, float y)

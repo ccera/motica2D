@@ -21,6 +21,8 @@ public:
     PhysicsObject* createBox(float mass, float width, float height, PhysicsBodyState bState = PHYSICSBODY_SIMULATED);
     PhysicsObject* createCircle(float mass, float diametar, PhysicsBodyState bState = PHYSICSBODY_SIMULATED);
 
+    QList<PhysicsObject*> checkForOverlappingObjects(PhysicsObject *obj);
+
     cpSpace *space;
 signals:
 
@@ -28,6 +30,8 @@ public slots:
 
 private:
     static void postSolve(cpArbiter *arb, cpSpace *space, void *ignore);
+    static void checkOverlapping(cpShape *shape, cpContactPointSet *points, void *data);
+
 
 
 

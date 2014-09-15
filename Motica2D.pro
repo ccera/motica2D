@@ -33,7 +33,8 @@ HEADERS += \
     player.h \
     src/physics/physicsworld.h \
     src/physics/physicstypes.h \
-    src/physics/physicsobject.h
+    src/physics/physicsobject.h \
+    src/core/datastore.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
@@ -86,7 +87,8 @@ SOURCES += \
     src/core/keyboard.cpp \
     player.cpp \
     src/physics/physicsworld.cpp \
-    src/physics/physicsobject.cpp
+    src/physics/physicsobject.cpp \
+    src/core/datastore.cpp
 
 # Ovdje dodati sve što se treba koirati uz app
 resources_dir.source = resources

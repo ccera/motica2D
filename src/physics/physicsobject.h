@@ -25,8 +25,10 @@
 #include <QVector2D>
 #include "utils.h"
 #include "chipmunk.h"
+#include "gameobject.h"
 
 class PhysicsWorld;
+class GameObject;
 
 class PhysicsObject
 {
@@ -48,8 +50,10 @@ public:
 
     cpBody *body;
     cpShape *shape;
-    PhysicsObjectType type;
+    PhysicsObjectShapeType shapeType;
     PhysicsBodyState bodyState;
+    GameObject *parentGameObject;
+    int userType;
 
 private:
     PhysicsWorld *m_world;

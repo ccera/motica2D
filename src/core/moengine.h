@@ -35,6 +35,7 @@
 #include <QOpenGLExtensions>
 #include "keyboard.h"
 #include "physicsworld.h"
+#include "datastore.h"
 
 class MoEngine : public QWindow
 {

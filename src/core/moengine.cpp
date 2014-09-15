@@ -57,6 +57,8 @@ MoEngine::MoEngine(QWindow *parent)
     scene = new Scene();
     physicsWorld = new PhysicsWorld();
 
+    dataStore->scene = scene;
+
     m_camera_x = 0.0f;
     m_camera_y = 0.0f;
     m_camera_width = 0;

@@ -19,8 +19,10 @@
 
 #include <QtGui/QGuiApplication>
 #include <QDebug>
+#include <QGlobalStatic>
 #include "mygame.h"
 #include "moengine.h"
+#include "datastore.h"
 
 int main(int argc, char **argv)
 {

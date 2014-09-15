@@ -42,13 +42,15 @@ Player::Player(MoEngine *engine) :
     orientState = PLAYER_LEFT;
     move_x = 0;
     moving = false;
-    isFlying = false;
+    isFlying = true;
 
     playerBody = m_engine->physicsWorld->createCircle(80,60); //m_engine->physicsWorld->createBox(80.0f, 128.0f, 128.0f);
     playerBody->setPosition(900,100);
     //playerBody->setFriction(20.0f);
     playerBody->setMaxVelocity(150);
     m_engine->addPhysicsObject(playerBody);
+    playerBody->parentGameObject = this;
+    playerBody->userType = GAME_PLAYER;
 }
 
 void Player::checkState()
@@ -248,8 +250,31 @@ void Player::checkKey()
     controlsState = CONTROLS_NOTHING;
 }
 
+void Player::collide(PhysicsObject *with)
+{
+    /*
+    //qDebug() << "colidee";
+    if(with->userType == GAME_FLOOR) {
+        isFlying = false;
+    }
+    else {
+        isFlying = true;
+        qDebug() << "colidee";
+    }
+    */
+}
+
 void Player::update(float dt)
 {
+    QList<PhysicsObject*> ret = m_engine->physicsWorld->checkForOverlappingObjects(playerBody);
+
+    if(ret.size() > 0) {
+        isFlying = false;
+    }
+    else {
+        isFlying = true;
+    }
+
     stateQueue.update(dt);
     checkKey();
     checkState();
@@ -268,7 +293,7 @@ void Player::update(float dt)
         if(!isFlying) {
         if(playerBody->getVelocity().x() < 8 && playerBody->getVelocity().x() > -8)
             playerBody->setVelocity(0,0);
-        }
+
 
         if(orientState == PLAYER_LEFT) {
             if(playerBody->getVelocity().x() < -10.0)
@@ -278,6 +303,7 @@ void Player::update(float dt)
             if(playerBody->getVelocity().x() > 10.0) {
                 playerBody->applyImpulse(-600,0);
             }
+        }
         }
     }
 

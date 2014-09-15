@@ -33,6 +33,13 @@
 #include "physicsobject.h"
 #include "chipmunk.h"
 
+enum _GameObjects {
+    GAME_FLOOR,
+    GAME_PLAYER,
+    GAME_POWERUP
+};
+typedef enum _GameObjects GameObjects;
+
 enum _PlayerAnimationState {
     PLAYER_RUNNING,
     PLAYER_STANDING,
@@ -81,6 +88,7 @@ public:
 
     virtual void onStateEntered(int animState);
     virtual void onStateExited(int animState);
+    virtual void collide(PhysicsObject *with);
 
 signals:
 
