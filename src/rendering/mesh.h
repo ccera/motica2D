@@ -45,6 +45,7 @@ public:
     GLuint VAOShdMap;
     GLuint VAOSpr;
     GLuint VAOPick;
+    bool isGLBound;
 };
 
 #endif

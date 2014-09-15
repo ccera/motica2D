@@ -21,18 +21,21 @@
 #define MYGAME_H
 
 #include <QObject>
-#include "moengine.h"
+#include "window.h"
 #include "texture.h"
 #include "sprite.h"
 #include "utils.h"
 #include "player.h"
 #include "physicsobject.h"
+#include "engine.h"
+
+class Engine;
 
 class MyGame : GameObject
 {
     Q_OBJECT
 public:
-    explicit MyGame(MoEngine *m_engine = 0);
+    explicit MyGame(Engine *m_engine = 0);
         void update(float dt);
 
 signals:
@@ -40,7 +43,7 @@ signals:
 public slots:
 
 private:
-    MoEngine *m_engine;
+    Engine *m_engine;
     Texture planet;
     Texture bottle;
     Texture background;

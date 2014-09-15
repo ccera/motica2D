@@ -87,17 +87,14 @@ void PhysicsWorld::postSolve(cpArbiter *arb, cpSpace *space, void *ignore)
 
 void PhysicsWorld::checkOverlapping(cpShape *shape, cpContactPointSet *points, void *data)
 {
-    //qDebug() << "Overlapping jeee";
     if(shape->data != NULL) {
         ((QList<PhysicsObject*>*)data)->append((PhysicsObject*)shape->data);
-        //overlappingObjects.append((PhysicsObject*)shape->data);
     }
 }
 
 QList<PhysicsObject*> PhysicsWorld::checkForOverlappingObjects(PhysicsObject *obj)
 {
     QList<PhysicsObject*> lista;
-    //overlappingObjects.clear();
     cpSpaceShapeQuery(space, obj->shape, checkOverlapping, (void*)&lista);
     return lista;
 }

@@ -20,12 +20,12 @@
 #include "sprite.h"
 
 Sprite::Sprite() :
-    QObject(), Model(NULL, texture, "")
+    Model(NULL, texture, "")
 {
 }
 
 Sprite::Sprite(Texture *texture) :
-    QObject(), Model(NULL, texture, "")
+    Model(NULL, texture, "")
 {
 }
 
@@ -39,15 +39,15 @@ void Sprite::setName(const QString &p_name)
     this->name = p_name;
 }
 
-void Sprite::setPosition(const QVector3D &p)
-{
-    this->transform->setPosition(p.x(), p.y(), p.z());
-}
+//void Sprite::setPosition(const QVector3D &p)
+//{
+//    this->transform->setPosition(p.x(), p.y(), p.z());
+//}
 
-QVector3D Sprite::position() const
-{
-    return QVector3D(this->transform->x, this->transform->y, this->transform->z);
-}
+//QVector3D Sprite::position() const
+//{
+//    return QVector3D(this->transform->x, this->transform->y, this->transform->z);
+//}
 
 void Sprite::onPicked()
 {

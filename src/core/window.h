@@ -35,14 +35,16 @@
 #include <QOpenGLExtensions>
 #include "keyboard.h"
 #include "physicsworld.h"
-#include "datastore.h"
+#include "engine.h"
 
-class MoEngine : public QWindow
+class Engine;
+
+class Window : public QWindow
 {
     Q_OBJECT
 public:
-    explicit MoEngine(QWindow *parent = 0);
-    ~MoEngine();
+    explicit Window(Engine *engine = 0);
+    ~Window();
 
     virtual void render();
     virtual void initialize();
@@ -59,23 +61,16 @@ public:
     void setWindowSize(float width, float height);
     void setBackgroundColor(float r, float g, float b, float a);
     void showWindow();
-    void addTexture(Texture *texture);
-    void addSprite(Sprite *sprite);
-    void addGameObject(GameObject *e);
-    void addAnimatedSprite(AnimatedSprite *sprite);
-    void addPhysicsObject(PhysicsObject *object);
+//    void addTexture(Texture *texture);
+//    void addSprite(Sprite *sprite);
+//    void addGameObject(GameObject *e);
+//    void addAnimatedSprite(AnimatedSprite *sprite);
+//    void addPhysicsObject(PhysicsObject *object);
     void setCamera2DSize(float w, float h);
     void setCamera2DPos(float x, float y);
     void setViewport2DType(ViewportType type);
 
-    Scene *scene;
-    PhysicsWorld *physicsWorld;
     bool isPressed;
-    bool isGLInitialized;
-    QVector<Sprite*> arrSprites;
-    QVector<AnimatedSprite*> arrAnimSprites;
-    QVector<GameObject*> arrGameObjects;
-    QVector<PhysicsObject*> arrPhysicsObjects;
 
 signals:
     void update(float dt);
@@ -90,14 +85,8 @@ protected:
     void exposeEvent(QExposeEvent *event);
 
 private:
+    Engine *m_engine;
     void calculateCamera();
-    float m_camera_x;
-    float m_camera_y;
-    float m_camera_width;
-    float m_camera_height;
-    float m_camera_near;
-    float m_camera_far;
-    ViewportType m_viewport_type;
     bool m_update_pending;
     bool m_animating;
     QOpenGLContext *m_context;

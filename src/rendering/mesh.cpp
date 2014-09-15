@@ -34,6 +34,8 @@ Mesh::Mesh(float *p_vertexData, int *p_indexData,  int p_vertexCount, int p_tria
     memcpy(indexData, p_indexData, indexDataSize);
     
     name = p_name;
+
+    isGLBound = false;
 }
 
 Mesh::~Mesh()

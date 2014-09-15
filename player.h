@@ -22,7 +22,7 @@
 
 #include <QObject>
 #include <QStateMachine>
-#include "moengine.h"
+#include "window.h"
 #include "texture.h"
 #include "sprite.h"
 #include "utils.h"
@@ -32,6 +32,7 @@
 #include "statequeue.h"
 #include "physicsobject.h"
 #include "chipmunk.h"
+#include "engine.h"
 
 enum _GameObjects {
     GAME_FLOOR,
@@ -76,7 +77,7 @@ class Player : public GameObject, StateQueueInterface
 {
     Q_OBJECT
 public:
-    explicit Player(MoEngine *engine = 0);
+    explicit Player(Engine *engine = 0);
     virtual void update(float dt);
 
     void checkKey();
@@ -95,7 +96,7 @@ signals:
 public slots:
 
 private:
-    MoEngine *m_engine;
+    Engine *m_engine;
     Texture txPlayer;
     AnimatedSprite asPlayer;
     StateQueue stateQueue;

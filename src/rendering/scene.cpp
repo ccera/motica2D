@@ -19,11 +19,11 @@
 
 #include "scene.h"
 
-Scene::Scene()
+Scene::Scene(Engine *engine)
 {
     qDebug() << "Constructing Scene...";
+    m_engine = engine;
     isSceneGLPrepared = false;
-    next_model_id = 1;
     isCurrentlyPicking = false;
     pick_x = 0;
     pick_y = 0;
@@ -36,8 +36,6 @@ Scene::Scene()
     bgA = 1.0f;
     supportsVAO = false;
     curTexID = -1;
-
-    initSpriteMesh();
 }
 
 void Scene::prepareScene()
@@ -46,14 +44,10 @@ void Scene::prepareScene()
 
     QString versionString1(QLatin1String(reinterpret_cast<const char*>(glGetString(GL_VERSION))));
     qDebug() << "OpenGL Driver Version String:" << versionString1;
-
     qDebug() << "Scene prepare - GL error check:" << glGetError();
-
     m_progSpr = loadShaders(Shader("SprShader.vsh"), Shader("SprShader.fsh"));
     m_progPick = loadShaders(Shader("PickShader.vsh"), Shader("PickShader.fsh"));
-
     qDebug() << "Scene prepare - Load shaders error check: " << glGetError();
-
     m_progSpr_Vertex = glGetAttribLocation(m_progSpr, "Vertex");
     m_progSpr_MVPMatrix = glGetUniformLocation(m_progSpr, "MVPMatrix");
     m_progSpr_UV = glGetAttribLocation(m_progSpr, "UV");
@@ -62,11 +56,9 @@ void Scene::prepareScene()
     m_progSpr_Brightness = glGetUniformLocation(m_progSpr, "Brightness");
     m_progSpr_Contrast = glGetUniformLocation(m_progSpr, "Contrast");
     m_progSpr_UVTransform = glGetUniformLocation(m_progSpr, "UVTransform");
-
     m_progPick_MVPMatrix = glGetUniformLocation(m_progPick, "MVPMatrix");
     m_progPick_Vertex = glGetAttribLocation(m_progPick, "Vertex");
     m_progPick_Color = glGetUniformLocation(m_progPick, "PickColor");
-
     qDebug() << "Scene prepare - Get Atribute/Uniform error check: " << glGetError();
 
     // Identity
@@ -86,12 +78,12 @@ void Scene::prepareScene()
     // Posto se texture i meshevi mogu dodati u scenu prije nego je ona
     // gl initialized (tj. prije nego što se dobije kontekst)
     // sada bindati sve texture i mesheve.
-    for(int n=0; n < textureList.size(); n++) {
-        bindTexture(textureList[n]);
+    for(int n=0; n < m_engine->arrTextures.size(); n++) {
+        if(!m_engine->arrTextures[n]->isGLBound) bindTexture(m_engine->arrTextures[n]);
     }
 
-    for(int n=0; n < meshList.size(); n++) {
-        bindMesh(meshList[n]);
+    for(int n=0; n < m_engine->arrMeshes.size(); n++) {
+        if(!m_engine->arrMeshes[n]->isGLBound) bindMesh(m_engine->arrMeshes[n]);
     }
 }
 
@@ -102,15 +94,6 @@ void Scene::setProjection()
                              orthoBottom, orthoTop,
                              orthoNear, orthoFar);
     glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
-}
-
-void Scene::addMesh(Mesh *mesh)
-{
-    meshList.push_back(mesh);
-
-    if(isSceneGLPrepared) {
-        bindMesh(mesh);
-    }
 }
 
 void Scene::bindMesh(Mesh *mesh)
@@ -202,26 +185,6 @@ void Scene::bindMesh(Mesh *mesh)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-
-Mesh* Scene::getMesh(const QString &name)
-{
-    for(int n=0; n < meshList.size(); n++) {
-        if(meshList[n]->name.compare(name) == 0) {
-            return meshList[n];
-        }
-    }
-    return 0;
-}
-
-void Scene::addTexture(Texture *texture)
-{
-    textureList.push_back(texture);
-
-    if(isSceneGLPrepared) {
-        bindTexture(texture);
-    }
-}
-
 void Scene::bindTexture(Texture *texture)
 {
     glGenTextures(1, &texture->ID);
@@ -245,41 +208,6 @@ void Scene::bindTexture(Texture *texture)
     //glBindTexture(GL_TEXTURE_2D, texture->ID);
     //glGenerateMipmap(GL_TEXTURE_2D);
     //glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-Texture* Scene::getTexture(const QString &name)
-{
-    for(int n=0; n < textureList.size(); n++) {
-        if(textureList[n]->name.compare(name) == 0) {
-            return textureList[n];
-        }
-    }
-    return 0;
-}
-
-void Scene::initSpriteMesh()
-{
-    float vdata[] = {   0.0,0.0,  0.0,0.0,1.0,  -0.5,-0.5,0.0,
-                        1.0,0.0,  0.0,0.0,1.0,   0.5,-0.5,0.0,
-                        1.0,1.0,  0.0,0.0,1.0,   0.5, 0.5,0.0,
-                        0.0,1.0,  0.0,0.0,1.0,  -0.5, 0.5,0.0
-    };
-    int idata[] = { 0,1,2,0,2,3, 0,2,1,0,3,2 };
-    spriteMesh = new Mesh(vdata, idata, 8, 4, "DEFAULT_SPRITE_MESH");
-    this->addMesh(spriteMesh);
-}
-
-void Scene::addModel(Model *model)
-{
-    model->mesh = this->getMesh("DEFAULT_SPRITE_MESH");
-    model->model_id = next_model_id;
-    next_model_id++;
-    modelList.push_back(model);
-}
-
-void Scene::addPhysicsObject(PhysicsObject *object)
-{
-    physicsObjectList.push_back(object);
 }
 
 void Scene::renderModel(Model *model)
@@ -347,7 +275,7 @@ void Scene::renderPhysics(PhysicsObject *obj)
     QMatrix4x4 MVP = projectionMatrix * cameraMatrix * transform.transformMatrix;
     glUniformMatrix4fv(m_progPick_MVPMatrix, 1, 0, MVP.data());
     glUniform4f(m_progPick_Color, 1.0, 0.0, 0.0, 1.0f);
-    Mesh *mesh = this->getMesh("DEFAULT_SPRITE_MESH");
+    Mesh *mesh = m_engine->getMesh("DEFAULT_SPRITE_MESH");
 
 #if OPENGLES_IOS
     glBindVertexArrayOES(mesh->VAOPick);
@@ -446,9 +374,9 @@ void Scene::renderPick(Model *model)
 
 int Scene::renderScenePick()
 {
-    for(int m=0; m < modelList.size(); m++) {
-        if(modelList[m]->isVisible && modelList[m]->isSelectable) {
-            renderPick(modelList[m]);
+    for(int m=0; m < m_engine->arrModels.size(); m++) {
+        if(m_engine->arrModels[m]->isVisible && m_engine->arrModels[m]->isSelectable) {
+            renderPick(m_engine->arrModels[m]);
         }
     }
 
@@ -474,11 +402,11 @@ void Scene::renderScene()
 {
     //timer.start();
 
-    for(int n=0; n < modelList.size(); n++) {
-        modelList[n]->transform->isDirty = true;
-        modelList[n]->transform->updateTransformMatrix();
+    for(int n=0; n < m_engine->arrModels.size(); n++) {
+        m_engine->arrModels[n]->transform->isDirty = true;
+        m_engine->arrModels[n]->transform->updateTransformMatrix();
     }
-    qSort(modelList.begin(), modelList.end(), sortModels); //Prvo ih sortirati po z
+    qSort(m_engine->arrModels.begin(), m_engine->arrModels.end(), sortModels); //Prvo ih sortirati po z
 
     //TODO Hints po platfromama ako uopste trebaju?
     //glHint(GL_TEXTURE_COMPRESSION_HINT, GL_FASTEST);
@@ -504,19 +432,19 @@ void Scene::renderScene()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(m_progSpr);
-    for(int m=0; m < modelList.size(); m++) {
-        if(modelList[m]->isVisible) {
-            if(curTexID == -1 || curTexID != modelList[m]->texture->ID) {
+    for(int m=0; m < m_engine->arrModels.size(); m++) {
+        if(m_engine->arrModels[m]->isVisible) {
+            if(curTexID == -1 || curTexID != m_engine->arrModels[m]->texture->ID) {
                 glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, modelList[m]->texture->ID);
+                glBindTexture(GL_TEXTURE_2D, m_engine->arrModels[m]->texture->ID);
             }
-            renderModel(modelList[m]);
+            renderModel(m_engine->arrModels[m]);
         }
     }
 #if DBUG_RENDER_PHYSICS
     glUseProgram(m_progPick);
-    for(int p=0; p < physicsObjectList.size(); p++) {
-        renderPhysics(physicsObjectList.at(p));
+    for(int p=0; p < m_engine->arrPhysicsObjects.size(); p++) {
+        renderPhysics(m_engine->arrPhysicsObjects.at(p));
     }
 #endif
 
@@ -744,12 +672,12 @@ int Scene::validate_program(GLuint program)
 
 Scene::~Scene()
 {
-    for(int n=0; n < textureList.size(); n++) {
-        glDeleteTextures(1, &textureList[n]->ID);
+    for(int n=0; n < m_engine->arrTextures.size(); n++) {
+        glDeleteTextures(1, &m_engine->arrTextures[n]->ID);
     }
     
-    for(int m=0; m < modelList.size(); m++) {
-        if(modelList[m]) {
+    for(int m=0; m < m_engine->arrModels.size(); m++) {
+        if(m_engine->arrModels[m]) {
         //TODO: napraviti da briše mesheve i spritove
             //glDeleteBuffers(1, &m_modelList[m]->IBO);
             //glDeleteBuffers(1, &m_modelList[m]->VBO);

@@ -19,7 +19,7 @@
 
 #include "player.h"
 
-Player::Player(MoEngine *engine) :
+Player::Player(Engine *engine) :
      GameObject()
 {
     m_engine = engine;

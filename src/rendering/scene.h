@@ -32,29 +32,26 @@
 #include <QMatrix4x4>
 #include <QQuaternion>
 #include "physicsobject.h"
+#include "engine.h"
 
-class Scene  : public QObject, protected QOpenGLFunctions
+class Engine;
+
+class Scene : public QObject, protected QOpenGLFunctions
 {
     Q_OBJECT
 
 public:
-    Scene();
+    Scene(Engine *engine);
     ~Scene();
 
     QReadWriteLock  lock;
 
     void    prepareScene();
     void    setProjection();
-    void    addTexture(Texture *texture);
-    void    addModel(Model *model);
-    void    addMesh(Mesh *mesh);
-    void    addPhysicsObject(PhysicsObject *object);
     void    bindMesh(Mesh *mesh);
     void    bindTexture(Texture *texture);
     void    renderScene();
     void    pickPos(int x, int y);
-    Texture*  getTexture(const QString &name);
-    Mesh*     getMesh(const QString &name);
     
     // Shader loader
     // TODO: ocajni su popraviti nekad
@@ -63,9 +60,6 @@ public:
     int      compileShader(GLuint *shader, GLenum type, const QString &file);
     int      linkProgram(GLuint program);
     int      validate_program(GLuint program);
-    
-    //Defaultni sprite mesh(kvadrat)
-    Mesh *spriteMesh;
 
     QMatrix4x4 projectionMatrix;
     QMatrix4x4 cameraMatrix;
@@ -93,14 +87,8 @@ public:
     float bgB;
     float bgA;
 
-    // Liste textura i glavna render lista svih modela za ovu scenu
-    QVector <Texture*> textureList;
-    QVector <Mesh*> meshList;
-    QVector <Model*> modelList;
-    QVector <PhysicsObject*> physicsObjectList;
-
     bool supportsVAO;
-
+    bool isSceneGLPrepared;
 
 signals:
     void objectPicked(int modelID);
@@ -115,7 +103,7 @@ protected:
     void    initSpriteMesh();
     static bool sortModels(Model *a, Model *b);
 
-    bool isSceneGLPrepared;
+    Engine *m_engine;
 
 #if  __ANDROID_API__
     QOpenGLExtension_OES_vertex_array_object *androOES;
@@ -140,13 +128,10 @@ protected:
     GLint m_progPick_Vertex;
     GLint m_progPick_Color;
 
-    int next_model_id; // Id koji se dodjeljuje svakom modelu
     bool isCurrentlyPicking; // Da li se ovaj frame pickaju opbjekti
     int pick_x;
     int pick_y;
-    
     Timer timer;
-
     GLuint curTexID;
 
 private:

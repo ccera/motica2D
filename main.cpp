@@ -19,24 +19,26 @@
 
 #include <QtGui/QGuiApplication>
 #include <QDebug>
-#include <QGlobalStatic>
 #include "mygame.h"
-#include "moengine.h"
-#include "datastore.h"
+#include "window.h"
+#include "engine.h"
 
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
 
-    MoEngine mo;
-    mo.setWindowSize(1024, 512);
-    mo.setCamera2DSize(1024,512);
-    mo.setAnimating(true);
-    mo.setViewport2DType(VIEWPORT_STRECH_XY);
-    mo.setBackgroundColor(0.5f, 0.0f, 0.3f, 1.0f);
-    //mo.showWindow();
+    Engine *engine = new Engine();
 
-    MyGame mygame(&mo);
+    Window *mo = new Window(engine);
+    mo->setWindowSize(1024, 512);
+    mo->setCamera2DSize(1024,512);
+    mo->setAnimating(true);
+    mo->setViewport2DType(VIEWPORT_STRECH_XY);
+    mo->setBackgroundColor(0.5f, 0.0f, 0.3f, 1.0f);
+    mo->showWindow();
+
+
+    MyGame *mygame = new MyGame(engine);
 
     return app.exec();
 }

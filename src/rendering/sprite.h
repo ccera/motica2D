@@ -28,10 +28,10 @@
 #include "model.h"
 #include "texture.h"
 
-class Sprite : public QObject, public Model
+class Sprite : public Model
 {
-    Q_OBJECT
-    Q_PROPERTY(QVector3D position READ position WRITE setPosition)
+    //Q_OBJECT
+    //Q_PROPERTY(QVector3D position READ position WRITE setPosition)
 
 public:
     Sprite();
@@ -41,8 +41,8 @@ public:
     void setName(const QString &p_name);
     void onPicked();
 
-    void setPosition(const QVector3D &p);
-    QVector3D position() const;
+    //void setPosition(const QVector3D &p);
+    //QVector3D position() const;
 
 signals:
 

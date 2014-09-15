@@ -39,6 +39,7 @@ public:
     GLuint ID;
     QString name;
     QString filename;
+    bool isGLBound;
 
 private:
     QImage textureData;

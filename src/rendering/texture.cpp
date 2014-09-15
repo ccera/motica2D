@@ -22,11 +22,13 @@
 Texture::Texture() :
     QObject()
 {
+    isGLBound = false;
 }
 
 Texture::Texture(const QString &file) :
     QObject()
 {
+    isGLBound = false;
     this->setFile(file);
     this->textureData.load(file);
 }

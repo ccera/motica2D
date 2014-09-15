@@ -19,7 +19,7 @@
 
 #include "mygame.h"
 
-MyGame::MyGame(MoEngine *engine) :
+MyGame::MyGame(Engine *engine) :
     GameObject()
 {
     m_engine = engine;
@@ -72,7 +72,7 @@ MyGame::MyGame(MoEngine *engine) :
         m_engine->addSprite(&sprNiz[n]);
     }
 */
-    m_engine->showWindow();
+    //m_engine->engine->showWindow();
 
     pod = m_engine->physicsWorld->createBox(0,10000,10, PHYSICSBODY_STATIC);
     pod->setPosition(500,0);
