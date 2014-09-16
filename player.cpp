@@ -38,7 +38,8 @@ Player::Player(Engine *engine) :
     orientState = PLAYER_LEFT;
     move_x = 0;
     moving = false;
-    isFlying = true;
+    didJump = false;
+    isFlying = false;
 
     playerBody = m_engine->createPhysicsObjectCircle(80,60);
     playerBody->setPosition(900,100);
@@ -47,6 +48,9 @@ Player::Player(Engine *engine) :
     m_engine->addPhysicsObject(playerBody);
     playerBody->parentGameObject = this;
     playerBody->userType = GAME_PLAYER;
+
+    feetSensor = m_engine->createPhysicsObjectBox(1,110,15,PHYSICSBODY_ROUGE);
+    feetSensor->setPosition(0,0);
 }
 
 void Player::checkState()
@@ -126,13 +130,13 @@ void Player::checkState()
     {
         if(stateQueue.currentState() == PLAYER_RUNNING) {
             stateQueue.removeAll();
-            stateQueue.enqueue(PLAYER_JUMP_FROM_RUN, 29);
-            stateQueue.enqueue(PLAYER_RUNNING, 0);
+            stateQueue.enqueue(PLAYER_START_JUMP_FROM_RUN, 14);
+            stateQueue.enqueue(PLAYER_FLYING, 0);
         }
         if(stateQueue.currentState() == PLAYER_BEGIN_RUNNING) {
             stateQueue.removeAll();
-            stateQueue.enqueue(PLAYER_JUMP_FROM_RUN, 29);
-            stateQueue.enqueue(PLAYER_RUNNING, 0);
+            stateQueue.enqueue(PLAYER_START_JUMP_FROM_RUN, 14);
+            stateQueue.enqueue(PLAYER_FLYING, 0);
         }
     }
 }
@@ -143,44 +147,44 @@ void Player::onStateEntered(int state)
     case PLAYER_BEGIN_RUNNING:
         asPlayer->setLoop(32,36);
         moving = true;
-        jumping = false;
         break;
     case PLAYER_STANDING:
         asPlayer->setCurrentFrame(0);
         asPlayer->setLoop(0,0);
         moving = false;
-        jumping = false;
-        isFlying = false;
         break;
     case PLAYER_RUNNING:
         asPlayer->setLoop(10,17);
         moving = true;
-        jumping = false;
         break;
     case PLAYER_END_BEGIN_RUNNING:
         asPlayer->setLoop(36,32);
         moving = false;
-        jumping = false;
         break;
     case PLAYER_END_RUNNING:
         asPlayer->setLoop(19,26);
-        moving = false;
-        jumping = false;
+        moving = false;;
         break;
     case PLAYER_TURN:
         asPlayer->setLoop(0,8);
         moving = false;
-        jumping = false;
         break;
     case PLAYER_TURN_FROM_RUN:
         asPlayer->setLoop(50,58);
         moving = false;
-        jumping = false;
         break;
-    case PLAYER_JUMP_FROM_RUN:
-        asPlayer->setLoop(38,48);
+    case PLAYER_START_JUMP_FROM_RUN:
+        asPlayer->setLoop(38,42);
         moving = true;
-        jumping = true;
+        break;
+    case PLAYER_END_JUMP_FROM_RUN:
+        asPlayer->setLoop(44,48);
+        moving = true;
+        break;
+    case PLAYER_FLYING:
+        asPlayer->setLoop(44,44);
+        moving = true;
+        didJump = true;
         break;
     default:
         break;
@@ -262,10 +266,14 @@ void Player::collide(PhysicsObject *with)
 
 void Player::update(float dt)
 {
-    QList<PhysicsObject*> ret = m_engine->checkForOverlappingPhysicsObjects(playerBody);
+    feetSensor->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y()-75);
+    QList<PhysicsObject*> ret = m_engine->checkForOverlappingPhysicsObjects(feetSensor);
 
-    if(ret.size() > 0) {
+    if(ret.size() > 0 && stateQueue.currentState() == PLAYER_FLYING) {
         isFlying = false;
+        stateQueue.removeAll();
+        stateQueue.enqueue(PLAYER_END_JUMP_FROM_RUN, 14);
+        stateQueue.enqueue(PLAYER_RUNNING, 0);
     }
     else {
         isFlying = true;
@@ -287,25 +295,25 @@ void Player::update(float dt)
     else {
 
         if(!isFlying) {
-        if(playerBody->getVelocity().x() < 8 && playerBody->getVelocity().x() > -8)
-            playerBody->setVelocity(0,0);
+            if(playerBody->getVelocity().x() < 8 && playerBody->getVelocity().x() > -8)
+                playerBody->setVelocity(0,0);
 
-
-        if(orientState == PLAYER_LEFT) {
-            if(playerBody->getVelocity().x() < -10.0)
-                playerBody->applyImpulse(600,0);
-        }
-        else {
-            if(playerBody->getVelocity().x() > 10.0) {
-                playerBody->applyImpulse(-600,0);
+             qDebug() << "END FLZZZ";
+            if(orientState == PLAYER_LEFT) {
+                if(playerBody->getVelocity().x() < -10.0)
+                    playerBody->applyImpulse(600,0);
             }
-        }
+            else {
+                if(playerBody->getVelocity().x() > 10.0) {
+                    playerBody->applyImpulse(-600,0);
+                }
+            }
         }
     }
 
-    if(jumping && !isFlying) {
+    if(didJump) {
         playerBody->applyImpulse(0,18500);
-        isFlying = true;
+        didJump = false;
     }
     else {
 

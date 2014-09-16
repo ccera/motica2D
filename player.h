@@ -44,13 +44,14 @@ typedef enum _GameObjects GameObjects;
 enum _PlayerAnimationState {
     PLAYER_RUNNING,
     PLAYER_STANDING,
-    PLAYER_JUMPING,
+    PLAYER_FLYING,
     PLAYER_TURNING,
     PLAYER_BEGIN_RUNNING,
     PLAYER_END_BEGIN_RUNNING,
     PLAYER_END_RUNNING,
     PLAYER_TURN,
-    PLAYER_JUMP_FROM_RUN,
+    PLAYER_START_JUMP_FROM_RUN,
+    PLAYER_END_JUMP_FROM_RUN,
     PLAYER_TURN_FROM_RUN
 };
 typedef enum _PlayerAnimationState PlayerAnimationState;
@@ -101,11 +102,12 @@ private:
     AnimatedSprite *asPlayer;
     StateQueue stateQueue;
     PhysicsObject *playerBody;
+    PhysicsObject *feetSensor;
     bool moving;
-    bool jumping;
+    bool didJump;
+    bool isFlying;
     float move_x;
     float move_y;
-    bool isFlying;
 };
 
 #endif // PLAYER_H
