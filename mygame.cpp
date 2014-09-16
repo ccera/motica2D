@@ -53,7 +53,7 @@ MyGame::MyGame(Engine *engine) :
     sprFish->transform->setPosition(300,300,99);
     sprFish->transform->setSize(128,256,0);
 
-    pod = m_engine->physicsWorld->createBox(0,10000,10, PHYSICSBODY_STATIC);
+    pod = m_engine->physicsWorld->createBox(0,10000,50, PHYSICSBODY_STATIC);
     pod->setPosition(500,0);
     pod->parentGameObject = this;
     pod->userType = GAME_FLOOR;

@@ -73,6 +73,15 @@ enum _ControlsState {
 };
 typedef enum _ControlsState ControlsState;
 
+enum _PlayerState {
+    STANDING,
+    RUNNING,
+    TURNING,
+    JUMP_STANDIG,
+    JUMP_RUNNING
+};
+typedef enum _PlayerState PlayerState;
+
 
 class Player : public GameObject, StateQueueInterface
 {
@@ -83,10 +92,12 @@ public:
 
     void checkKey();
     void checkState();
+    void debugPrintState();
 
     PlayerAnimationState animState;
     PlayerOrientationState orientState;
     ControlsState controlsState;
+    PlayerState playerState;
 
     virtual void onStateEntered(int animState);
     virtual void onStateExited(int animState);
@@ -108,6 +119,8 @@ private:
     bool isFlying;
     float move_x;
     float move_y;
+
+    int turnTimer;
 };
 
 #endif // PLAYER_H

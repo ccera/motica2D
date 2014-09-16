@@ -33,28 +33,115 @@ Player::Player(Engine *engine) :
     asPlayer->transform->setSize(128,128,0);
     asPlayer->setFrameLength(3);
 
-    stateQueue.enqueue(PLAYER_STANDING, 0);
-    stateQueue.setInterface(this);
+    //stateQueue.enqueue(PLAYER_STANDING, 0);
+    //stateQueue.setInterface(this);
     orientState = PLAYER_LEFT;
-    move_x = 0;
-    moving = false;
-    didJump = false;
-    isFlying = false;
+    playerState = STANDING;
+    turnTimer = 0;
+    isFlying = true;
+
+//    move_x = 0;
+//    moving = false;
+//    didJump = false;
+
 
     playerBody = m_engine->createPhysicsObjectCircle(80,60);
-    playerBody->setPosition(900,100);
+    playerBody->setPosition(900,300);
     //playerBody->setFriction(20.0f);
     playerBody->setMaxVelocity(150);
     m_engine->addPhysicsObject(playerBody);
     playerBody->parentGameObject = this;
     playerBody->userType = GAME_PLAYER;
 
-    feetSensor = m_engine->createPhysicsObjectBox(1,110,15,PHYSICSBODY_ROUGE);
+    feetSensor = m_engine->createPhysicsObjectBox(1,110,15, PHYSICSBODY_ROUGE);
     feetSensor->setPosition(0,0);
 }
 
 void Player::checkState()
 {
+    if(orientState == PLAYER_LEFT) {
+        asPlayer->transform->setSize(128,128,0);
+    }
+    else {
+        asPlayer->transform->setSize(-128,128,0);
+    }
+
+    // Check is flying
+    QList<PhysicsObject*> ret = m_engine->checkForOverlappingPhysicsObjects(feetSensor);
+    if(ret.size() > 0) {
+        isFlying = false;
+    }
+    else {
+        isFlying = true;
+    }
+    qDebug() << "isFly" << isFlying;
+
+    switch (playerState) {
+    case STANDING:
+        if(controlsState == CONTROLS_LEFT && orientState == PLAYER_RIGHT) {
+            playerState = TURNING;
+            return;
+        }
+        if(controlsState == CONTROLS_RIGHT && orientState == PLAYER_LEFT) {
+            playerState = TURNING;
+            return;
+        }
+        if(controlsState == CONTROLS_RIGHT || controlsState == CONTROLS_LEFT) {
+            playerState = RUNNING;
+            return;
+        }
+        if(controlsState == CONTROLS_UP) {
+            playerState = JUMP_STANDIG;
+            return;
+        }
+
+        break;
+    case RUNNING:
+        if(controlsState == CONTROLS_LEFT && orientState == PLAYER_RIGHT) {
+            playerState = TURNING;
+            return;
+        }
+        if(controlsState == CONTROLS_RIGHT && orientState == PLAYER_LEFT) {
+            playerState = TURNING;
+            return;
+        }
+        if(controlsState == CONTROLS_UP) {
+            playerState = JUMP_RUNNING;
+            return;
+        }
+        if(controlsState == CONTROLS_NOTHING) {
+            playerState = STANDING;
+            return;
+        }
+        break;
+    case TURNING:
+        turnTimer++;
+        if(turnTimer > 10) {
+            if(controlsState == CONTROLS_NOTHING) {
+                playerState = STANDING;
+            }
+            if(controlsState == CONTROLS_LEFT || controlsState == CONTROLS_RIGHT) {
+                playerState = RUNNING;
+            }
+            turnTimer = 0;
+
+            if(orientState == PLAYER_LEFT)
+                orientState = PLAYER_RIGHT;
+            else
+                orientState = PLAYER_LEFT;
+
+            return;
+        }
+
+        break;
+    default:
+        break;
+    }
+
+
+
+
+    /*
     if(controlsState == CONTROLS_LEFT)
     {
         if(stateQueue.currentState() == PLAYER_STANDING && orientState == PLAYER_LEFT) {
@@ -139,10 +226,12 @@ void Player::checkState()
             stateQueue.enqueue(PLAYER_FLYING, 0);
         }
     }
+    */
 }
 
 void Player::onStateEntered(int state)
 {
+    /*
     switch (state) {
     case PLAYER_BEGIN_RUNNING:
         asPlayer->setLoop(32,36);
@@ -163,7 +252,7 @@ void Player::onStateEntered(int state)
         break;
     case PLAYER_END_RUNNING:
         asPlayer->setLoop(19,26);
-        moving = false;;
+        moving = false;
         break;
     case PLAYER_TURN:
         asPlayer->setLoop(0,8);
@@ -189,10 +278,12 @@ void Player::onStateEntered(int state)
     default:
         break;
     }
+    */
 }
 
 void Player::onStateExited(int state)
 {
+    /*
     switch (state) {
     case PLAYER_TURN_FROM_RUN:
     case PLAYER_TURN:
@@ -208,6 +299,7 @@ void Player::onStateExited(int state)
     default:
         break;
     }
+    */
 }
 
 void Player::checkKey()
@@ -264,8 +356,47 @@ void Player::collide(PhysicsObject *with)
     */
 }
 
+void Player::debugPrintState()
+{
+    if(playerState == STANDING) qDebug() << "STANDING";
+    if(playerState == RUNNING) qDebug() << "RUNNING";
+    if(playerState == TURNING) qDebug() << "TURNING";
+    if(playerState == JUMP_STANDIG) qDebug() << "JUMP_STANDIG";
+    if(playerState == JUMP_RUNNING) qDebug() << "JUMP_RUNNING";
+}
+
 void Player::update(float dt)
 {
+    checkKey();
+    checkState();
+    debugPrintState();
+
+
+    if(!isFlying) {
+        if(playerState == JUMP_RUNNING) {
+            playerBody->applyImpulse(0,4500);
+        }
+
+        if(playerState == RUNNING) {
+            if(orientState == PLAYER_LEFT) playerBody->applyImpulse(-500,0);
+            else playerBody->applyImpulse(500,0);
+        }
+
+        if(playerState == STANDING || playerState == TURNING) {
+            if(playerBody->getVelocity().x() < 58 && playerBody->getVelocity().x() > -58) {
+                playerBody->setVelocity(0,0);
+            }
+            else {
+                if(orientState == PLAYER_LEFT) playerBody->applyImpulse(500,0);
+                else playerBody->applyImpulse(-500,0);
+            }
+        }
+    }
+
+    asPlayer->transform->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y(), 0.0f);
+    feetSensor->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y()-75);
+
+    /*
     feetSensor->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y()-75);
     QList<PhysicsObject*> ret = m_engine->checkForOverlappingPhysicsObjects(feetSensor);
 
@@ -318,4 +449,5 @@ void Player::update(float dt)
     else {
 
     }
+    */
 }
