@@ -57,9 +57,15 @@ MyGame::MyGame(Engine *engine) :
     pod->setPosition(500,0);
     pod->parentGameObject = this;
     pod->userType = GAME_FLOOR;
+
+    PhysicsObject *platforma = m_engine->createPhysicsObjectBox(0,300,30, PHYSICSBODY_STATIC);
+    platforma->setPosition(200, 100);
+    platforma->parentGameObject = this;
+    platforma->userType = GAME_FLOOR;
+
     //pod->setFriction(10.0f);
     m_engine->physicsWorld->setGravity(0, -98.0f);
-    //m_engine->physicsWorld->setDamping(0.5f);
+
     m_engine->addPhysicsObject(pod);
 }
 

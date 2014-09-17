@@ -13,10 +13,12 @@ PhysicsObject* PhysicsWorld::createBox(float mass, float width, float height, Ph
     cpFloat i = 0;
     switch (bState) {
     case PHYSICSBODY_SIMULATED:
-    case PHYSICSBODY_ROUGE:
         i = cpMomentForBox(mass, width, height);
         body = cpBodyNew(mass, i);
         cpSpaceAddBody(space, body);
+        break;
+    case PHYSICSBODY_ROUGE:
+        body = cpBodyNew(1, 1);
         break;
     case PHYSICSBODY_STATIC:
         body = cpBodyNewStatic();
@@ -44,10 +46,12 @@ PhysicsObject* PhysicsWorld::createCircle(float mass, float diametar, PhysicsBod
     cpFloat i = 0;
     switch (bState) {
     case PHYSICSBODY_SIMULATED:
-    case PHYSICSBODY_ROUGE:
         i = cpMomentForCircle(mass, 0.0f, diametar, cpvzero);
         body = cpBodyNew(mass, i);
         cpSpaceAddBody(space, body);
+        break;
+    case PHYSICSBODY_ROUGE:
+        body = cpBodyNew(1, 1);
         break;
     case PHYSICSBODY_STATIC:
         body = cpBodyNewStatic();
