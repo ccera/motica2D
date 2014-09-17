@@ -126,6 +126,7 @@ private:
 
     bool isFeetTouching;
     int turnTimer;
+    int flyTimer;
 };
 
 #endif // PLAYER_H

@@ -406,36 +406,43 @@ void Player::update(float dt)
     QList<PhysicsObject*> ret = m_engine->checkForOverlappingPhysicsObjects(feetSensor);
     if(ret.size() > 0) {
         isFeetTouching = true;
+        flyTimer = 0;
     }
     else {
         isFeetTouching = false;
+        flyTimer++;
     }
 
-//    switch (controlsState) {
-//    case CONTROLS_LEFT:
-//        playerBody->applyImpulse(-500,0);
-//        break;
-//    case CONTROLS_RIGHT:
-//        playerBody->applyImpulse(500,0);
-//        break;
-//    case CONTROLS_LEFT_UP:
-//        playerBody->applyImpulse(-500,1500);
-//        break;
-//    case CONTROLS_RIGHT_UP:
-//        playerBody->applyImpulse(500,1500);
-//        break;
-//    case CONTROLS_UP:
-//        playerBody->applyImpulse(0,1500);
-//        break;
-//    default:
-//        break;
-//    }
 
+    if(controlsState == CONTROLS_LEFT || controlsState == CONTROLS_LEFT_UP) {
+        playerBody->applyImpulse(-400,0);
+    }
+
+    if(controlsState == CONTROLS_RIGHT || controlsState == CONTROLS_RIGHT_UP) {
+        playerBody->applyImpulse(400,0);
+    }
+
+    if(controlsState == CONTROLS_UP || controlsState == CONTROLS_LEFT_UP || controlsState == CONTROLS_RIGHT_UP) {
+        if(flyTimer < 8)
+        playerBody->applyImpulse(0,800);
+    }
+
+    if(controlsState == CONTROLS_NOTHING) {
+        if(isFeetTouching) {
+        if(playerBody->getVelocity().x() > 0) playerBody->setVelocity(playerBody->getVelocity().x()-5, playerBody->getVelocity().y());
+        if(playerBody->getVelocity().x() < 0) playerBody->setVelocity(playerBody->getVelocity().x()+5, playerBody->getVelocity().y());
+        if(playerBody->getVelocity().x() < 8 && playerBody->getVelocity().x() > -8) playerBody->setVelocity(0,playerBody->body->v.y);
+        }
+    }
+
+    // limit Horizontalni na 150
+    if(playerBody->getVelocity().x() > 150 ) playerBody->setVelocity(150, playerBody->getVelocity().y());
+    if(playerBody->getVelocity().x() < -150 ) playerBody->setVelocity(-150, playerBody->getVelocity().y());
 
     //if(playerState != FLYING) playerBody->setMaxVelocity(150);
     //else playerBody->setMaxVelocity(5500);
 
-
+/*
     if(playerState != FLYING) {
         if(playerState == JUMP_RUNNING) {
             if(orientState == PLAYER_LEFT)
@@ -463,10 +470,9 @@ void Player::update(float dt)
             }
         }
 
-        if(playerBody->getVelocity().x() > 150 ) playerBody->setVelocity(150, playerBody->getVelocity().y());
-        if(playerBody->getVelocity().x() < -150 ) playerBody->setVelocity(-150, playerBody->getVelocity().y());
-    }
 
+    }
+*/
 
 
     /*
