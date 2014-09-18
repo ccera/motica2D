@@ -30,7 +30,7 @@ Player::Player(Engine *engine) :
     asPlayer = m_engine->newAnimatedSprite(4, 32, txPlayer);
     asPlayer->setName("Prince");
     asPlayer->transform->setPosition(1000,90,60);
-    asPlayer->transform->setSize(128,128,0);
+    asPlayer->transform->setSize(64,64,0);
     asPlayer->setFrameLength(3);
 
     //stateQueue.enqueue(PLAYER_STANDING, 0);
@@ -48,7 +48,7 @@ Player::Player(Engine *engine) :
     m_engine->physicsWorld->setDamping(0.9f);
 
 
-    playerBody = m_engine->createPhysicsObjectCircle(80,60);
+    playerBody = m_engine->createPhysicsObjectCircle(80,32);
     playerBody->setPosition(900,300);
     //playerBody->setFriction(20.0f);
     //playerBody->setMaxVelocity(150);
@@ -56,17 +56,17 @@ Player::Player(Engine *engine) :
     playerBody->parentGameObject = this;
     playerBody->userType = GAME_PLAYER;
 
-    feetSensor = m_engine->createPhysicsObjectBox(1,110,15, PHYSICSBODY_ROUGE);
+    feetSensor = m_engine->createPhysicsObjectBox(1,20,8, PHYSICSBODY_ROUGE);
     feetSensor->setPosition(900,215);
 }
 
 void Player::checkState()
 {
     if(orientState == PLAYER_LEFT) {
-        asPlayer->transform->setSize(128,128,0);
+        asPlayer->transform->setSize(64,64,0);
     }
     else {
-        asPlayer->transform->setSize(-128,128,0);
+        asPlayer->transform->setSize(-64,64,0);
     }
 
 
@@ -356,6 +356,11 @@ void Player::checkKey()
         return;
     }
 
+    if(Keyboard::keyDOWN) {
+        controlsState = CONTROLS_DOWN;
+        return;
+    }
+
     if(Keyboard::keyLEFT) {
         controlsState = CONTROLS_LEFT;
         return;
@@ -400,7 +405,7 @@ void Player::update(float dt)
     debugPrintState();
 
     asPlayer->transform->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y(), 0.0f);
-    feetSensor->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y()-75);
+    feetSensor->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y()-40);
 
     // Check is flying
     QList<PhysicsObject*> ret = m_engine->checkForOverlappingPhysicsObjects(feetSensor);
@@ -415,16 +420,22 @@ void Player::update(float dt)
 
 
     if(controlsState == CONTROLS_LEFT || controlsState == CONTROLS_LEFT_UP) {
-        playerBody->applyImpulse(-400,0);
+        playerBody->applyImpulse(-200,0);
     }
 
     if(controlsState == CONTROLS_RIGHT || controlsState == CONTROLS_RIGHT_UP) {
-        playerBody->applyImpulse(400,0);
+        playerBody->applyImpulse(200,0);
     }
 
     if(controlsState == CONTROLS_UP || controlsState == CONTROLS_LEFT_UP || controlsState == CONTROLS_RIGHT_UP) {
         if(flyTimer < 8)
-        playerBody->applyImpulse(0,800);
+        playerBody->applyImpulse(0,1400);
+    }
+
+    if(controlsState == CONTROLS_DOWN) {
+        //if(flyTimer < 8)
+        qDebug() << "jj";
+        playerBody->applyImpulse(0,-400);
     }
 
     if(controlsState == CONTROLS_NOTHING) {
