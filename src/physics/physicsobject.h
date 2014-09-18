@@ -32,6 +32,8 @@ class GameObject;
 
 class PhysicsObject
 {
+    friend class PhysicsWorld;
+
 public:
     PhysicsObject(PhysicsWorld *world);
 
@@ -47,6 +49,12 @@ public:
     void        setMaxVelocity(float max);
     QVector2D   getVelocity();
     void        setVelocity(float x, float y);
+    float       getWidth();
+    float       getHeight();
+    float       getDiameter();
+    void        disableRotation();
+    void        enableRotation();
+    void        setMomentOfInertia(float i);
 
     cpBody *body;
     cpShape *shape;
@@ -57,6 +65,11 @@ public:
 
 private:
     PhysicsWorld *m_world;
+    float width;
+    float height;
+    float diameter;
+    float mass;
+
 };
 
 #endif // RIGIDBODY_H

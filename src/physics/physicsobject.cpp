@@ -23,6 +23,10 @@ PhysicsObject::PhysicsObject(PhysicsWorld *world)
 {
     m_world = world;
     parentGameObject = 0;
+    width = 0;
+    height = 0;
+    diameter = 0;
+    mass = 0;
 }
 
 void PhysicsObject::setPosition(float x, float y)
@@ -30,6 +34,9 @@ void PhysicsObject::setPosition(float x, float y)
     body->p = cpv(x, y);
     if(this->bodyState == PHYSICSBODY_STATIC) {
         cpSpaceReindexStatic(m_world->space);
+    }
+    else {
+        cpSpaceReindexShapesForBody(m_world->space, this->body);
     }
 }
 
@@ -43,6 +50,9 @@ void PhysicsObject::setRotation(float deg)
     cpBodySetAngle(body, degToRad(deg));
     if(this->bodyState == PHYSICSBODY_STATIC) {
         cpSpaceReindexStatic(m_world->space);
+    }
+    else {
+        cpSpaceReindexShapesForBody(m_world->space, this->body);
     }
 }
 
@@ -90,4 +100,42 @@ void PhysicsObject::setVelocity(float x, float y)
 void PhysicsObject::setMaxVelocity(float max)
 {
     cpBodySetVelLimit(body, max);
+}
+
+float PhysicsObject::getWidth()
+{
+    return width;
+}
+
+float PhysicsObject::getHeight()
+{
+    return height;
+}
+
+float PhysicsObject::getDiameter()
+{
+    return diameter;
+}
+
+void PhysicsObject::disableRotation()
+{
+    cpBodySetMoment(body, INFINITY);
+}
+
+void PhysicsObject::enableRotation()
+{
+    if(shapeType == PHYSICSOBJECT_BOX) {
+        float i = cpMomentForBox(mass, width, height);
+        cpBodySetMoment(body, i);
+    }
+
+    if(shapeType == PHYSICSOBJECT_CIRCLE) {
+        float i = cpMomentForCircle(mass, 0.0f, diameter, cpvzero);
+        cpBodySetMoment(body, i);
+    }
+}
+
+void PhysicsObject::setMomentOfInertia(float i)
+{
+    cpBodySetMoment(body, i);
 }

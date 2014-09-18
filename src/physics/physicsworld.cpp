@@ -36,6 +36,11 @@ PhysicsObject* PhysicsWorld::createBox(float mass, float width, float height, Ph
     obj->body = body;
     obj->shape = shape;
     obj->shape->data = obj;
+    obj->width = width;
+    obj->height = height;
+    if(width > height) obj->diameter = width;
+    else obj->diameter = height;
+    obj->mass = mass;
 
     return obj;
 }
@@ -69,6 +74,10 @@ PhysicsObject* PhysicsWorld::createCircle(float mass, float diametar, PhysicsBod
     obj->body = body;
     obj->shape = shape;
     obj->shape->data = obj;
+    obj->width = diametar;
+    obj->height = diametar;
+    obj->diameter = diametar;
+    obj->mass = mass;
 
     return obj;
 }

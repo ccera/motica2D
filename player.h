@@ -124,7 +124,7 @@ private:
 //    float move_x;
 //    float move_y;
 
-    bool isFeetTouching;
+    bool isTouchingGround;
     int turnTimer;
     int flyTimer;
 };

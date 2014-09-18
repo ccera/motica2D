@@ -270,7 +270,8 @@ void Scene::renderPhysics(PhysicsObject *obj)
 {
     Transform transform;
     transform.setPosition(obj->getPosition().x(), obj->getPosition().y(), 100.0f);
-    transform.setSize(obj->shape->bb.r - obj->shape->bb.l , obj->shape->bb.t - obj->shape->bb.b,100);
+    transform.setSize(obj->getWidth(), obj->getHeight(),100);
+    transform.setRotation(0,0,obj->getRotation());
     transform.updateTransformMatrix();
     QMatrix4x4 MVP = projectionMatrix * cameraMatrix * transform.transformMatrix;
     glUniformMatrix4fv(m_progPick_MVPMatrix, 1, 0, MVP.data());
