@@ -61,8 +61,8 @@ MyGame::MyGame(Engine *engine) :
     pod->parentGameObject = this;
     pod->userType = GAME_FLOOR;
 
-    PhysicsObject *platforma = m_engine->createPhysicsObjectBox(0,200,30, PHYSICSBODY_STATIC);
-    platforma->setPosition(200, 100);
+    PhysicsObject *platforma = m_engine->createPhysicsObjectBox(0,210,30, PHYSICSBODY_STATIC);
+    platforma->setPosition(200, 120);
     platforma->parentGameObject = this;
     platforma->userType = GAME_FLOOR;
 

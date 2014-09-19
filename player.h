@@ -127,6 +127,7 @@ private:
     bool feetTouching;
     bool headTouchingL;
     bool headTouchingR;
+    bool headTouchingT;
     bool bodyTouching;
     int turnTimer;
     int flyTimer;

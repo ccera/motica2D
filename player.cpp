@@ -86,7 +86,7 @@ void Player::checkState()
         onFeetTimer = 0;
     }
 
-    if((headTouchingL || headTouchingR) && (playerBody->getRotation() > 45 || playerBody->getRotation() < -45)) {
+    if((headTouchingL || headTouchingR || headTouchingT) && (playerBody->getRotation() > 45 || playerBody->getRotation() < -45)) {
         playerState = FELL_DOWN;
         onFeetTimer = 0;
     }
@@ -244,9 +244,14 @@ void Player::update(float dt)
     if(ret3.size() > 0) { headTouchingR = true; }
     else { headTouchingR = false; }
 
-    // Head R check
-    QList<PhysicsObject*> ret4 = m_engine->checkForOverlappingPhysicsObjects(playerBody);
-    if(ret4.size() > 0) { bodyTouching = true; }
+    // Head T check
+    QList<PhysicsObject*> ret4 = m_engine->checkForOverlappingPhysicsObjects(headSensorT);
+    if(ret4.size() > 0) { headTouchingT = true; }
+    else { headTouchingT = false; }
+
+    // Body check
+    QList<PhysicsObject*> ret5 = m_engine->checkForOverlappingPhysicsObjects(playerBody);
+    if(ret5.size() > 0) { bodyTouching = true; }
     else { bodyTouching = false; }
 
 
@@ -275,7 +280,7 @@ void Player::update(float dt)
     }
 
     if(controlsState != CONTROLS_UP && controlsState != CONTROLS_LEFT_UP && controlsState != CONTROLS_RIGHT_UP) {
-        if(onFeetTimer > 3) {
+        if(onFeetTimer > 1) {
             jumpAllowed = true;
         }
     }
