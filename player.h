@@ -93,6 +93,7 @@ class Player : public GameObject, StateQueueInterface
 public:
     explicit Player(Engine *engine = 0);
     virtual void update(float dt);
+    QVector2D rotateAround(const QVector2D &pos, const QVector2D &around, float angle);
 
     void checkKey();
     void checkState();
@@ -118,13 +119,13 @@ private:
     StateQueue stateQueue;
     PhysicsObject *playerBody;
     PhysicsObject *feetSensor;
-//    bool moving;
-//    bool didJump;
-//    bool isFlying;
-//    float move_x;
-//    float move_y;
+    PhysicsObject *headSensorL;
+    PhysicsObject *headSensorR;
 
-    bool isTouchingGround;
+
+    bool feetSensor;
+    bool headSensorL;
+    bool headSensorR;
     int turnTimer;
     int flyTimer;
 };

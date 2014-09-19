@@ -38,7 +38,9 @@ Player::Player(Engine *engine) :
     orientState = PLAYER_LEFT;
     playerState = FLYING;
     turnTimer = 0;
-    isTouchingGround = false;
+    feetSensor = false;
+    headSensorL = false;
+    headSensorR = false;
 
     m_engine->physicsWorld->setDamping(0.9f);
 
@@ -49,8 +51,14 @@ Player::Player(Engine *engine) :
     playerBody->parentGameObject = this;
     playerBody->userType = GAME_PLAYER;
 
-    feetSensor = m_engine->createPhysicsObjectBox(1,16,4, PHYSICSBODY_ROUGE);
+    feetSensor = m_engine->createPhysicsObjectBox(1,8,4, PHYSICSBODY_ROUGE);
     feetSensor->setPosition(900,210);
+
+    headSensorL = m_engine->createPhysicsObjectBox(1,8,4, PHYSICSBODY_ROUGE);
+    headSensorL->setPosition(800,210);
+
+    headSensorR = m_engine->createPhysicsObjectBox(1,8,4, PHYSICSBODY_ROUGE);
+    headSensorR->setPosition(1000,210);
 }
 
 void Player::checkState()
@@ -62,11 +70,11 @@ void Player::checkState()
         asPlayer->transform->setSize(-64,64,0);
     }
 
-    if(!isTouchingGround) {
+    if(!feetSensor) {
         playerState = FLYING;
     }
 
-    if(isTouchingGround && (playerBody->getRotation() > 45 || playerBody->getRotation() < -45)){
+    if(feetSensor && (playerBody->getRotation() > 45 || playerBody->getRotation() < -45)){
             qDebug() << "FELLLLLLL DOWNNNNN";
     }
 
@@ -193,17 +201,35 @@ void Player::update(float dt)
 
     asPlayer->transform->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y(), 0.0f);
     asPlayer->transform->setRotation(0,0,playerBody->getRotation());
-    feetSensor->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y()-40);
+    feetSensor->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y()-38);
+    headSensorL->setPosition(playerBody->getPosition().x()-24, playerBody->getPosition().y()+10);
+    headSensorR->setPosition(playerBody->getPosition().x()+24, playerBody->getPosition().y()+10);
 
-    // Check is flying
+    QVector2D fr = rotateAround(feetSensor->getPosition(), playerBody->getPosition(), playerBody->getRotation());
+    feetSensor->setPosition(fr.x(), fr.y());
+    QVector2D hsl = rotateAround(headSensorL->getPosition(), playerBody->getPosition(), playerBody->getRotation());
+    headSensorL->setPosition(hsl.x(), hsl.y());
+    QVector2D hsr = rotateAround(headSensorR->getPosition(), playerBody->getPosition(), playerBody->getRotation());
+    headSensorR->setPosition(hsr.x(), hsr.y());
+
+    // Feet sensor check
     QList<PhysicsObject*> ret = m_engine->checkForOverlappingPhysicsObjects(feetSensor);
-    if(ret.size() > 0) {
-        isTouchingGround = true;
-        flyTimer = 0;
-    }
-    else {
-        isTouchingGround = false;
-        flyTimer++;
+    if(ret.size() > 0) { feetSensor = true; }
+    else { feetSensor = false; }
+
+    // Head L check
+    QList<PhysicsObject*> ret2 = m_engine->checkForOverlappingPhysicsObjects(headSensorL);
+    if(ret2.size() > 0) { headSensorL = true; }
+    else { headSensorL = false; }
+
+    // Head R check
+    QList<PhysicsObject*> ret3 = m_engine->checkForOverlappingPhysicsObjects(headSensorLR;
+    if(ret3.size() > 0) { headSensorR = true; }
+    else { headSensorR = false; }
+
+
+    if(playerBody->getVelocity().y() > 3) {
+        feetSensor = false;
     }
 
 
@@ -216,18 +242,18 @@ void Player::update(float dt)
     }
 
     if(controlsState == CONTROLS_UP || controlsState == CONTROLS_LEFT_UP || controlsState == CONTROLS_RIGHT_UP) {
-        if(flyTimer < 8)
-        playerBody->applyImpulse(0,1400);
+        if(flyTimer < 8 && feetSensor)
+            playerBody->applyImpulse(0,16400);
     }
 
     if(controlsState == CONTROLS_DOWN) {
         //if(flyTimer < 8)
-        qDebug() << "jj";
+        //qDebug() << "jj";
         playerBody->applyImpulse(0,-400);
     }
 
     if(controlsState == CONTROLS_NOTHING) {
-        if(isTouchingGround) {
+        if(headSensorL) {
         if(playerBody->getVelocity().x() > 0) playerBody->setVelocity(playerBody->getVelocity().x()-5, playerBody->getVelocity().y());
         if(playerBody->getVelocity().x() < 0) playerBody->setVelocity(playerBody->getVelocity().x()+5, playerBody->getVelocity().y());
         if(playerBody->getVelocity().x() < 8 && playerBody->getVelocity().x() > -8) playerBody->setVelocity(0,playerBody->body->v.y);
@@ -238,4 +264,20 @@ void Player::update(float dt)
     if(playerBody->getVelocity().x() > 150 ) playerBody->setVelocity(150, playerBody->getVelocity().y());
     if(playerBody->getVelocity().x() < -150 ) playerBody->setVelocity(-150, playerBody->getVelocity().y());
 
+}
+
+QVector2D Player::rotateAround(const QVector2D &pos, const QVector2D &around, float angle)
+{
+    QVector3D p(pos.x(), pos.y(), 0.0f);
+    QVector3D a(around.x(), around.y(), 0.0f);
+    QMatrix4x4 m;
+
+    p-=a;
+    m.rotate(0, 1.0f, 0.0f, 0.0f);
+    m.rotate(0, 0.0f, 1.0f, 0.0f);
+    m.rotate(-angle, 0.0f, 0.0f, 1.0f);
+    p = p * m;
+    p+=a;
+
+    return QVector2D(p.x(), p.y());
 }

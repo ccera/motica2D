@@ -38,6 +38,7 @@ MyGame::MyGame(Engine *engine) :
     sprBackground->transform->setPosition(512,256,-10);
     sprBackground->transform->setSize(1024,512,0);
 
+    /*
     sprPlanet = m_engine->newSprite(planet);
     sprPlanet->setName("Planet");
     sprPlanet->transform->setPosition(800,320,10);
@@ -53,6 +54,8 @@ MyGame::MyGame(Engine *engine) :
     sprFish->transform->setPosition(300,300,99);
     sprFish->transform->setSize(128,256,0);
 
+    */
+
     pod = m_engine->physicsWorld->createBox(0,10000,50, PHYSICSBODY_STATIC);
     pod->setPosition(500,0);
     pod->parentGameObject = this;
@@ -64,12 +67,12 @@ MyGame::MyGame(Engine *engine) :
     platforma->userType = GAME_FLOOR;
 
     PhysicsObject *platforma2 = m_engine->createPhysicsObjectBox(0,100,30, PHYSICSBODY_STATIC);
-    platforma2->setPosition(00, 200);
+    platforma2->setPosition(0, 200);
     platforma2->parentGameObject = this;
     platforma2->userType = GAME_FLOOR;
 
     PhysicsObject *platforma3 = m_engine->createPhysicsObjectBox(0,100,30, PHYSICSBODY_STATIC);
-    platforma3->setPosition(550, 200);
+    platforma3->setPosition(450, 200);
     platforma3->parentGameObject = this;
     platforma3->userType = GAME_FLOOR;
 
@@ -81,6 +84,6 @@ MyGame::MyGame(Engine *engine) :
 
 void MyGame::update(float dt)
 {
-    if(sprFish->transform->x > 1000) sprFish->transform->setPosition(0, 300, 99);
-    sprFish->transform->translateFor(3,0,0);
+    //if(sprFish->transform->x > 1000) sprFish->transform->setPosition(0, 300, 99);
+    //sprFish->transform->translateFor(3,0,0);
 }
