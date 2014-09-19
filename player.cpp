@@ -38,9 +38,12 @@ Player::Player(Engine *engine) :
     orientState = PLAYER_LEFT;
     playerState = FLYING;
     turnTimer = 0;
+    fellDownTimer = 0;
+    onFeetTimer = 0;
     feetSensor = false;
     headSensorL = false;
     headSensorR = false;
+    jumpAllowed = true;
 
     m_engine->physicsWorld->setDamping(0.9f);
 
@@ -59,6 +62,9 @@ Player::Player(Engine *engine) :
 
     headSensorR = m_engine->createPhysicsObjectBox(1,8,4, PHYSICSBODY_ROUGE);
     headSensorR->setPosition(1000,210);
+
+    headSensorT = m_engine->createPhysicsObjectBox(1,8,4, PHYSICSBODY_ROUGE);
+    headSensorT->setPosition(900,410);
 }
 
 void Player::checkState()
@@ -70,12 +76,24 @@ void Player::checkState()
         asPlayer->transform->setSize(-64,64,0);
     }
 
-    if(!feetSensor) {
+    if(!feetTouching && (playerBody->getVelocity().y() > 2 || playerBody->getVelocity().y() < -2)) {
         playerState = FLYING;
+        onFeetTimer = 0;
     }
 
-    if(feetSensor && (playerBody->getRotation() > 45 || playerBody->getRotation() < -45)){
-            qDebug() << "FELLLLLLL DOWNNNNN";
+    if((playerBody->getRotation() > 45 || playerBody->getRotation() < -45)) {
+        playerState = FALLING;
+        onFeetTimer = 0;
+    }
+
+    if((headTouchingL || headTouchingR) && (playerBody->getRotation() > 45 || playerBody->getRotation() < -45)) {
+        playerState = FELL_DOWN;
+        onFeetTimer = 0;
+    }
+
+    if(feetTouching) {
+        playerState = ON_FEET;
+        onFeetTimer++;
     }
 
     //qDebug() << playerBody->getRotation();
@@ -185,25 +203,22 @@ void Player::collide(PhysicsObject *with)
 
 void Player::debugPrintState()
 {
-    if(playerState == STANDING) qDebug() << "STANDING" << controlsState;
+    if(playerState == ON_FEET) qDebug() << "ON_FEET" << controlsState;
     if(playerState == RUNNING) qDebug() << "RUNNING" << controlsState;
     if(playerState == TURNING) qDebug() << "TURNING" << controlsState;
-    if(playerState == JUMP_STANDIG) qDebug() << "JUMP_STANDIG" << controlsState;
-    if(playerState == JUMP_RUNNING) qDebug() << "JUMP_RUNNING" << controlsState;
+    if(playerState == FALLING) qDebug() << "FALLING" << controlsState;
+    if(playerState == FELL_DOWN) qDebug() << "FELL_DOWN" << controlsState;
     if(playerState == FLYING) qDebug() << "FLYING" << controlsState;
 }
 
 void Player::update(float dt)
 {
-    checkKey();
-    checkState();
-    //debugPrintState();
-
     asPlayer->transform->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y(), 0.0f);
     asPlayer->transform->setRotation(0,0,playerBody->getRotation());
     feetSensor->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y()-38);
     headSensorL->setPosition(playerBody->getPosition().x()-24, playerBody->getPosition().y()+10);
     headSensorR->setPosition(playerBody->getPosition().x()+24, playerBody->getPosition().y()+10);
+    headSensorT->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y()+38);
 
     QVector2D fr = rotateAround(feetSensor->getPosition(), playerBody->getPosition(), playerBody->getRotation());
     feetSensor->setPosition(fr.x(), fr.y());
@@ -211,27 +226,45 @@ void Player::update(float dt)
     headSensorL->setPosition(hsl.x(), hsl.y());
     QVector2D hsr = rotateAround(headSensorR->getPosition(), playerBody->getPosition(), playerBody->getRotation());
     headSensorR->setPosition(hsr.x(), hsr.y());
+    QVector2D hst = rotateAround(headSensorT->getPosition(), playerBody->getPosition(), playerBody->getRotation());
+    headSensorT->setPosition(hst.x(), hst.y());
 
     // Feet sensor check
     QList<PhysicsObject*> ret = m_engine->checkForOverlappingPhysicsObjects(feetSensor);
-    if(ret.size() > 0) { feetSensor = true; }
-    else { feetSensor = false; }
+    if(ret.size() > 0) { feetTouching = true; }
+    else { feetTouching = false; }
 
     // Head L check
     QList<PhysicsObject*> ret2 = m_engine->checkForOverlappingPhysicsObjects(headSensorL);
-    if(ret2.size() > 0) { headSensorL = true; }
-    else { headSensorL = false; }
+    if(ret2.size() > 0) { headTouchingL = true; }
+    else { headTouchingL = false; }
 
     // Head R check
-    QList<PhysicsObject*> ret3 = m_engine->checkForOverlappingPhysicsObjects(headSensorLR;
-    if(ret3.size() > 0) { headSensorR = true; }
-    else { headSensorR = false; }
+    QList<PhysicsObject*> ret3 = m_engine->checkForOverlappingPhysicsObjects(headSensorR);
+    if(ret3.size() > 0) { headTouchingR = true; }
+    else { headTouchingR = false; }
+
+    // Head R check
+    QList<PhysicsObject*> ret4 = m_engine->checkForOverlappingPhysicsObjects(playerBody);
+    if(ret4.size() > 0) { bodyTouching = true; }
+    else { bodyTouching = false; }
 
 
-    if(playerBody->getVelocity().y() > 3) {
-        feetSensor = false;
+    checkKey();
+    checkState();
+    debugPrintState();
+
+    if(playerState == FELL_DOWN) {
+        fellDownTimer++;
+        if(fellDownTimer > 30) {
+            playerBody->setRotation(0);
+            fellDownTimer = 0;
+        }
     }
 
+    if(playerBody->getVelocity().y() > 3) {
+        feetTouching = false;
+    }
 
     if(controlsState == CONTROLS_LEFT || controlsState == CONTROLS_LEFT_UP) {
         playerBody->applyImpulse(-200,0);
@@ -241,22 +274,25 @@ void Player::update(float dt)
         playerBody->applyImpulse(200,0);
     }
 
+    if(controlsState != CONTROLS_UP && controlsState != CONTROLS_LEFT_UP && controlsState != CONTROLS_RIGHT_UP) {
+        if(onFeetTimer > 3) {
+            jumpAllowed = true;
+        }
+    }
+
     if(controlsState == CONTROLS_UP || controlsState == CONTROLS_LEFT_UP || controlsState == CONTROLS_RIGHT_UP) {
-        if(flyTimer < 8 && feetSensor)
+        if(feetTouching && jumpAllowed) {
+            jumpAllowed = false;
             playerBody->applyImpulse(0,16400);
+        }
     }
 
-    if(controlsState == CONTROLS_DOWN) {
-        //if(flyTimer < 8)
-        //qDebug() << "jj";
-        playerBody->applyImpulse(0,-400);
-    }
-
-    if(controlsState == CONTROLS_NOTHING) {
-        if(headSensorL) {
-        if(playerBody->getVelocity().x() > 0) playerBody->setVelocity(playerBody->getVelocity().x()-5, playerBody->getVelocity().y());
-        if(playerBody->getVelocity().x() < 0) playerBody->setVelocity(playerBody->getVelocity().x()+5, playerBody->getVelocity().y());
-        if(playerBody->getVelocity().x() < 8 && playerBody->getVelocity().x() > -8) playerBody->setVelocity(0,playerBody->body->v.y);
+    if(controlsState == CONTROLS_NOTHING || playerState == FALLING || playerState == FELL_DOWN)
+    {
+        if(bodyTouching) {
+            if(playerBody->getVelocity().x() > 0) playerBody->setVelocity(playerBody->getVelocity().x()-5, playerBody->getVelocity().y());
+            if(playerBody->getVelocity().x() < 0) playerBody->setVelocity(playerBody->getVelocity().x()+5, playerBody->getVelocity().y());
+            if(playerBody->getVelocity().x() < 8 && playerBody->getVelocity().x() > -8) playerBody->setVelocity(0,playerBody->body->v.y);
         }
     }
 

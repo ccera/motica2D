@@ -77,11 +77,11 @@ enum _ControlsState {
 typedef enum _ControlsState ControlsState;
 
 enum _PlayerState {
-    STANDING,
+    ON_FEET,
     RUNNING,
     TURNING,
-    JUMP_STANDIG,
-    JUMP_RUNNING,
+    FALLING,
+    FELL_DOWN,
     FLYING
 };
 typedef enum _PlayerState PlayerState;
@@ -121,13 +121,18 @@ private:
     PhysicsObject *feetSensor;
     PhysicsObject *headSensorL;
     PhysicsObject *headSensorR;
+    PhysicsObject *headSensorT;
 
 
-    bool feetSensor;
-    bool headSensorL;
-    bool headSensorR;
+    bool feetTouching;
+    bool headTouchingL;
+    bool headTouchingR;
+    bool bodyTouching;
     int turnTimer;
     int flyTimer;
+    int fellDownTimer;
+    int onFeetTimer;
+    bool jumpAllowed;
 };
 
 #endif // PLAYER_H
