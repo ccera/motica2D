@@ -120,13 +120,17 @@ private:
     PhysicsObject *playerBody;
     PhysicsObject *feetSensor;
     PhysicsObject *headSensorL;
+    PhysicsObject *headSensorLU;
     PhysicsObject *headSensorR;
+    PhysicsObject *headSensorRU;
     PhysicsObject *headSensorT;
 
 
     bool feetTouching;
     bool headTouchingL;
+    bool headTouchingLU;
     bool headTouchingR;
+    bool headTouchingRU;
     bool headTouchingT;
     bool bodyTouching;
     int turnTimer;
