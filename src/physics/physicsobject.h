@@ -55,6 +55,8 @@ public:
     void        disableRotation();
     void        enableRotation();
     void        setMomentOfInertia(float i);
+    QList<PhysicsObject*> listOverlappingObjects();
+    bool        isOverlapping();
 
     cpBody *body;
     cpShape *shape;
@@ -64,6 +66,8 @@ public:
     int userType;
 
 private:
+    static void checkOverlappingList(cpShape *shape, cpContactPointSet *points, void *data);
+    static void checkOverlappingBool(cpShape *shape, cpContactPointSet *points, void *data);
     PhysicsWorld *m_world;
     float width;
     float height;

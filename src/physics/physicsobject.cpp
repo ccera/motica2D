@@ -139,3 +139,31 @@ void PhysicsObject::setMomentOfInertia(float i)
 {
     cpBodySetMoment(body, i);
 }
+
+void PhysicsObject::checkOverlappingList(cpShape *shape, cpContactPointSet *points, void *data)
+{
+    if(shape->data != NULL) {
+        ((QList<PhysicsObject*>*)data)->append((PhysicsObject*)shape->data);
+    }
+}
+
+void PhysicsObject::checkOverlappingBool(cpShape *shape, cpContactPointSet *points, void *data)
+{
+    if(shape->data != NULL) {
+        (*((int*)data))++;
+    }
+}
+
+QList<PhysicsObject*> PhysicsObject::listOverlappingObjects()
+{
+    QList<PhysicsObject*> lista;
+    cpSpaceShapeQuery(m_world->space, this->shape, checkOverlappingList, (void*)&lista);
+    return lista;
+}
+
+bool PhysicsObject::isOverlapping()
+{
+    int isOverlapping = 0;
+    cpSpaceShapeQuery(m_world->space, this->shape, checkOverlappingBool, (void*)&isOverlapping);
+    return (bool)isOverlapping;
+}

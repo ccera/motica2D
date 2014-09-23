@@ -248,39 +248,25 @@ void Player::update(float dt)
     headSensorT->setPosition(hst.x(), hst.y());
 
     // Feet sensor check
-    QList<PhysicsObject*> ret = m_engine->checkForOverlappingPhysicsObjects(feetSensor);
-    if(ret.size() > 0) { feetTouching = true; }
-    else { feetTouching = false; }
+    feetTouching = feetSensor->isOverlapping();
 
     // Head L check
-    QList<PhysicsObject*> ret2 = m_engine->checkForOverlappingPhysicsObjects(headSensorL);
-    if(ret2.size() > 0) { headTouchingL = true; }
-    else { headTouchingL = false; }
+    headTouchingL = headSensorL->isOverlapping();
 
     // Head LU check
-    QList<PhysicsObject*> ret12 = m_engine->checkForOverlappingPhysicsObjects(headSensorLU);
-    if(ret12.size() > 0) { headTouchingLU = true; }
-    else { headTouchingLU = false; }
+    headTouchingLU = headSensorLU->isOverlapping();
 
     // Head R check
-    QList<PhysicsObject*> ret3 = m_engine->checkForOverlappingPhysicsObjects(headSensorR);
-    if(ret3.size() > 0) { headTouchingR = true; }
-    else { headTouchingR = false; }
+    headTouchingR = headSensorR->isOverlapping();
 
     // Head RU check
-    QList<PhysicsObject*> ret13 = m_engine->checkForOverlappingPhysicsObjects(headSensorRU);
-    if(ret13.size() > 0) { headTouchingRU = true; }
-    else { headTouchingRU = false; }
+    headTouchingRU = headSensorRU->isOverlapping();
 
     // Head T check
-    QList<PhysicsObject*> ret4 = m_engine->checkForOverlappingPhysicsObjects(headSensorT);
-    if(ret4.size() > 0) { headTouchingT = true; }
-    else { headTouchingT = false; }
+    headTouchingT = headSensorT->isOverlapping();
 
     // Body check
-    QList<PhysicsObject*> ret5 = m_engine->checkForOverlappingPhysicsObjects(playerBody);
-    if(ret5.size() > 0) { bodyTouching = true; }
-    else { bodyTouching = false; }
+    bodyTouching = playerBody->isOverlapping();
 
 
     checkKey();
@@ -289,7 +275,7 @@ void Player::update(float dt)
 
     if(playerState == FELL_DOWN) {
         fellDownTimer++;
-        if(fellDownTimer > 30) {
+        if(fellDownTimer > 130) {
             playerBody->setRotation(0);
             fellDownTimer = 0;
         }
