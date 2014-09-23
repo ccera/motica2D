@@ -26,11 +26,12 @@
 #include "chipmunk.h"
 #include "gameobject.h"
 #include "types.h"
+#include "transform.h"
 
 class PhysicsWorld;
 class GameObject;
 
-class PhysicsObject
+class PhysicsObject : public Transform
 {
     friend class PhysicsWorld;
 
@@ -41,6 +42,7 @@ public:
     QVector2D   getPosition();
     void        setRotation(float deg);
     float       getRotation();
+
     void        applyForce(float x, float y);
     void        applyForceWithOffset(float x, float y, float offset_x, float offset_y);
     void        applyImpulse(float x, float y);

@@ -36,7 +36,7 @@ Transform::Transform()
 void Transform::addChild(Transform* child)
 {
     child->parent = this;
-
+/*
     float szx;
     float szy;
     float szz;
@@ -57,7 +57,7 @@ void Transform::addChild(Transform* child)
     child->m_x = child->m_x / szx;
     child->m_y = child->m_y / szy;
     child->m_z = child->m_z / szz;
-
+*/
 //TODO Rotacije ne treba ??
 //    child->rot_x = child->rot_x / this->rot_x;
 //    child->rot_y = child->rot_y / this->rot_z;
@@ -69,16 +69,29 @@ void Transform::updateTransformMatrix()
     if(isDirty) {
         transformMatrix.setToIdentity();
 
+        float szx = 1.0f;
+        float szy = 1.0f;
+        float szz = 1.0f;
+
         if(parent) {
+            if(this->m_size_x == 0.0f) szx = 1.0f;
+            else szx = parent->m_size_x;
+
+            if(this->m_size_y == 0.0f) szy = 1.0f;
+            else szy = parent->m_size_y;
+
+            if(this->m_size_z == 0.0f) szz = 1.0f;
+            else szz = parent->m_size_z;
+
             parent->updateTransformMatrix();
             transformMatrix =  transformMatrix * parent->transformMatrix;
         }
 
-        transformMatrix.translate(m_x, m_y, m_z);
+        transformMatrix.translate(m_x/szx, m_y/szy, m_z/szz);
         transformMatrix.rotate(m_rot_x, 1.0f, 0.0f, 0.0f);
         transformMatrix.rotate(m_rot_x, 0.0f, 1.0f, 0.0f);
         transformMatrix.rotate(m_rot_z, 0.0f, 0.0f, 1.0f);
-        transformMatrix.scale(m_size_x, m_size_y, m_size_z);
+        transformMatrix.scale(m_size_x/szx, m_size_y/szy, m_size_z/szz);
 
         isDirty = false;
    }

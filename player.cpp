@@ -31,7 +31,7 @@ Player::Player(Engine *engine) :
     sprPlanet = m_engine->newSprite(planet);
     sprPlanet->setName("Planet");
     //sprPlanet->setPosition(0.1f,0.1f,0.0f);
-    sprPlanet->setPosition(1,1,-1);
+    sprPlanet->setPosition(100,1,-1);
     //sprPlanet->setSize(128.0f/64.0f,128.0f/64.0f,1);
     sprPlanet->setSize(128.0f,128.0f,128.0f);
 
