@@ -34,7 +34,7 @@ public:
         
     void addChild(Transform* child);
     void updateTransformMatrix();
-    void setPosition(float x, float y, float z);
+    void setPosition(float m_x, float m_y, float m_z);
     void translateFor(float _x, float _y, float _z);
     void setRotation(float x_angle, float y_angle, float z_angle);
     void rotateFor(float x_angle, float y_angle, float z_angle);
@@ -44,18 +44,30 @@ public:
 
     Transform *parent;
     QMatrix4x4 transformMatrix;
-    float x;
-    float y;
-    float z;
-    float size_x;
-    float size_y;
-    float size_z;
-    float rot_x;
-    float rot_y;
-    float rot_z;
+
     
+    float x() const;
+    float y() const;
+    float z() const;
+    float size_x() const;
+    float size_y() const;
+    float size_z() const;
+    float rot_x() const;
+    float rot_y() const;
+    float rot_z() const;
+
 private:
     bool isDirty;
+
+    float m_x;
+    float m_y;
+    float m_z;
+    float m_size_x;
+    float m_size_y;
+    float m_size_z;
+    float m_rot_x;
+    float m_rot_y;
+    float m_rot_z;
 };
 
 #endif

@@ -21,15 +21,15 @@
 
 Transform::Transform()
 {
-    size_x = 1.0f;
-    size_y = 1.0f;
-    size_z = 1.0f;
-    x = 0.0f;
-    y = 0.0f;
-    z = 0.0f;
-    rot_x = 0.0f;
-    rot_y = 0.0f;
-    rot_z = 0.0f;
+    m_size_x = 1.0f;
+    m_size_y = 1.0f;
+    m_size_z = 1.0f;
+    m_x = 0.0f;
+    m_y = 0.0f;
+    m_z = 0.0f;
+    m_rot_x = 0.0f;
+    m_rot_y = 0.0f;
+    m_rot_z = 0.0f;
     parent = 0;
 }
 
@@ -60,11 +60,11 @@ void Transform::updateTransformMatrix()
             transformMatrix =  transformMatrix * parent->transformMatrix;
         }
 
-        transformMatrix.translate(x, y, z);
-        transformMatrix.rotate(rot_x, 1.0f, 0.0f, 0.0f);
-        transformMatrix.rotate(rot_x, 0.0f, 1.0f, 0.0f);
-        transformMatrix.rotate(rot_z, 0.0f, 0.0f, 1.0f);
-        transformMatrix.scale(size_x, size_y, size_z);
+        transformMatrix.translate(m_x, m_y, m_z);
+        transformMatrix.rotate(m_rot_x, 1.0f, 0.0f, 0.0f);
+        transformMatrix.rotate(m_rot_x, 0.0f, 1.0f, 0.0f);
+        transformMatrix.rotate(m_rot_z, 0.0f, 0.0f, 1.0f);
+        transformMatrix.scale(m_size_x, m_size_y, m_size_z);
         isDirty = false;
    }
 }
@@ -72,39 +72,39 @@ void Transform::updateTransformMatrix()
 void Transform::setPosition(float _x, float _y, float _z)
 {
     isDirty = true;
-    x = _x;
-    y = _y;
-    z = _z;
+    m_x = _x;
+    m_y = _y;
+    m_z = _z;
 }
 
 void Transform::translateFor(float _x, float _y, float _z)
 {
     isDirty = true;
-    x = x + _x;
-    y = y + _y;
-    z = z + _z;
+    m_x = m_x + _x;
+    m_y = m_y + _y;
+    m_z = m_z + _z;
 }
 
 void Transform::setRotation(float x_angle, float y_angle, float z_angle)
 {
     isDirty = true;
-    rot_x = x_angle;
-    rot_y = y_angle;
-    rot_z = z_angle;
+    m_rot_x = x_angle;
+    m_rot_y = y_angle;
+    m_rot_z = z_angle;
 }
 
 void Transform::rotateFor(float x_angle, float y_angle, float z_angle)
 {
     isDirty = true;
-    rot_x += x_angle;
-    rot_y += y_angle;
-    rot_z += z_angle;
+    m_rot_x += x_angle;
+    m_rot_y += y_angle;
+    m_rot_z += z_angle;
 }
 
 void Transform::rotateAroundTo(float _x, float _y, float _z, float x_angle, float y_angle, float z_angle)
 {
     isDirty = true;
-    QVector3D p(x, y, z);
+    QVector3D p(m_x, m_y, m_z);
     QVector3D a(_x, _y, _z);
     QMatrix4x4 m;
 
@@ -115,29 +115,74 @@ void Transform::rotateAroundTo(float _x, float _y, float _z, float x_angle, floa
     p = p * m;
     p+=a;
 
-    rot_x += x_angle;
-    rot_y += y_angle;
-    rot_z += z_angle;
+    m_rot_x += x_angle;
+    m_rot_y += y_angle;
+    m_rot_z += z_angle;
 
-    x = p.x();
-    y = p.y();
-    z = p.z();
+    m_x = p.x();
+    m_y = p.y();
+    m_z = p.z();
 }
 
 void Transform::setSize(float x_size, float y_size, float z_size)
 {
     isDirty = true;
-    size_x = x_size;
-    size_y = y_size;
-    size_z = z_size;
+    m_size_x = x_size;
+    m_size_y = y_size;
+    m_size_z = z_size;
 }
 
 void Transform::resizeFor(float x_size, float y_size, float z_size)
 {
     isDirty = true;
-    size_x = size_x + x_size;
-    size_y = size_y + y_size;
-    size_z = size_z + z_size;
+    m_size_x = m_size_x + x_size;
+    m_size_y = m_size_y + y_size;
+    m_size_z = m_size_z + z_size;
+}
+
+float Transform::x() const
+{
+    return m_x;
+}
+
+float Transform::y() const
+{
+    return m_y;
+}
+
+float Transform::z() const
+{
+    return m_z;
+}
+
+float Transform::size_x() const
+{
+    return m_size_x;
+}
+
+float Transform::size_y() const
+{
+    return m_size_y;
+}
+
+float Transform::size_z() const
+{
+    return m_size_z;
+}
+
+float Transform::rot_x() const
+{
+    return m_rot_x;
+}
+
+float Transform::rot_y() const
+{
+    return m_rot_y;
+}
+
+float Transform::rot_z() const
+{
+    return m_rot_z;
 }
 
 Transform::~Transform()

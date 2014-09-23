@@ -697,7 +697,7 @@ Scene::~Scene()
 
 bool Scene::sortModels(Model *a, Model *b)
 {
-    return a->transform->z < b->transform->z;
+    return a->transform->m_z < b->transform->m_z;
 }
 
 
