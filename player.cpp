@@ -280,7 +280,7 @@ void Player::update(float dt)
 
     checkKey();
     checkState();
-    debugPrintState();
+    //debugPrintState();
 
     if(playerState == FELL_DOWN) {
         fellDownTimer++;

@@ -74,26 +74,26 @@ void Transform::updateTransformMatrix()
         float szz = 1.0f;
 
         if(parent) {
-            if(this->m_size_x == 0.0f) szx = 1.0f;
+            if(parent->m_size_x == 0.0f) szx = 1.0f;
             else szx = parent->m_size_x;
 
-            if(this->m_size_y == 0.0f) szy = 1.0f;
+            if(parent->m_size_y == 0.0f) szy = 1.0f;
             else szy = parent->m_size_y;
 
-            if(this->m_size_z == 0.0f) szz = 1.0f;
+            if(parent->m_size_z == 0.0f) szz = 1.0f;
             else szz = parent->m_size_z;
 
             parent->updateTransformMatrix();
             transformMatrix =  transformMatrix * parent->transformMatrix;
         }
 
-        transformMatrix.translate(m_x/szx, m_y/szy, m_z/szz);
+        transformMatrix.translate(m_x/abs(szx), m_y/abs(szy), m_z/abs(szz));
         transformMatrix.rotate(m_rot_x, 1.0f, 0.0f, 0.0f);
-        transformMatrix.rotate(m_rot_x, 0.0f, 1.0f, 0.0f);
+        transformMatrix.rotate(m_rot_y, 0.0f, 1.0f, 0.0f);
         transformMatrix.rotate(m_rot_z, 0.0f, 0.0f, 1.0f);
-        transformMatrix.scale(m_size_x/szx, m_size_y/szy, m_size_z/szz);
-
+        transformMatrix.scale(m_size_x/abs(szx), m_size_y/abs(szy), m_size_z/abs(szz));
         isDirty = false;
+        qDebug() << m_x << m_y << "  -  " << transformMatrix.map(QPoint(0,0));
    }
 }
 
