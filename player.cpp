@@ -27,11 +27,23 @@ Player::Player(Engine *engine) :
 
     txPlayer = m_engine->newTexture(Resource("textures/allframes.png"));
 
+    planet = m_engine->newTexture(Resource("textures/Flames.png"));
+    sprPlanet = m_engine->newSprite(planet);
+    sprPlanet->setName("Planet");
+    //sprPlanet->setPosition(0.1f,0.1f,0.0f);
+    sprPlanet->setPosition(1,1,-1);
+    //sprPlanet->setSize(128.0f/64.0f,128.0f/64.0f,1);
+    sprPlanet->setSize(128.0f,128.0f,128.0f);
+
+
     asPlayer = m_engine->newAnimatedSprite(4, 32, txPlayer);
     asPlayer->setName("Prince");
-    asPlayer->transform->setPosition(1000,90,60);
-    asPlayer->transform->setSize(64,64,0);
+    asPlayer->setPosition(1,1,1);
+    asPlayer->setSize(64,64,1.0f);
     asPlayer->setFrameLength(3);
+
+    asPlayer->addChild(sprPlanet);
+
 
     //stateQueue.enqueue(PLAYER_STANDING, 0);
     //stateQueue.setInterface(this);
@@ -40,16 +52,13 @@ Player::Player(Engine *engine) :
     turnTimer = 0;
     fellDownTimer = 0;
     onFeetTimer = 0;
-    feetSensor = false;
-    headSensorL = false;
-    headSensorR = false;
     jumpAllowed = true;
 
     m_engine->physicsWorld->setDamping(0.9f);
 
     playerBody = m_engine->createPhysicsObjectBox(80,32,64);
     playerBody->setFriction(0.5f);
-    playerBody->setPosition(900,300);
+    playerBody->setPosition(100,300);
     m_engine->addPhysicsObject(playerBody);
     playerBody->parentGameObject = this;
     playerBody->userType = GAME_PLAYER;
@@ -75,10 +84,10 @@ Player::Player(Engine *engine) :
 void Player::checkState()
 {
     if(orientState == PLAYER_LEFT) {
-        asPlayer->transform->setSize(64,64,0);
+        asPlayer->setSize(64,64,1.0f);
     }
     else {
-        asPlayer->transform->setSize(-64,64,0);
+        asPlayer->setSize(-64,64,1.0f);
     }
 
     if(!feetTouching && (playerBody->getVelocity().y() > 2 || playerBody->getVelocity().y() < -2)) {
@@ -221,8 +230,8 @@ void Player::debugPrintState()
 
 void Player::update(float dt)
 {
-    asPlayer->transform->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y(), 0.0f);
-    asPlayer->transform->setRotation(0,0,playerBody->getRotation());
+    asPlayer->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y(), 0.0f);
+    asPlayer->setRotation(0,0,playerBody->getRotation());
 
     feetSensor->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y()-38);
     QVector2D fr = rotateAround(feetSensor->getPosition(), playerBody->getPosition(), playerBody->getRotation());

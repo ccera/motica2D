@@ -116,6 +116,8 @@ private:
     Engine *m_engine;
     Texture *txPlayer;
     AnimatedSprite *asPlayer;
+    Texture *planet;
+    Sprite *sprPlanet;
     StateQueue stateQueue;
     PhysicsObject *playerBody;
     PhysicsObject *feetSensor;

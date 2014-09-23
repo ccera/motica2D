@@ -27,7 +27,7 @@
 #include "mesh.h"
 #include "transform.h"
 
-class Model
+class Model : public Transform
 {
 public:
     
@@ -46,7 +46,7 @@ public:
     QMatrix3x3 UVTransform;
     Mesh      *mesh;
     Texture   *texture;
-    Transform *transform;
+    //Transform *transform;
     
     QString name;
 };

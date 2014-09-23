@@ -212,7 +212,7 @@ void Scene::bindTexture(Texture *texture)
 
 void Scene::renderModel(Model *model)
 {
-    QMatrix4x4 MVP = projectionMatrix * cameraMatrix * model->transform->transformMatrix;
+    QMatrix4x4 MVP = projectionMatrix * cameraMatrix * model->transformMatrix;
 
     glUniformMatrix4fv(m_progSpr_MVPMatrix, 1, 0, MVP.data());
     glUniform1f(m_progSpr_AlphaColor, model->alpha);
@@ -323,7 +323,7 @@ void Scene::renderPhysics(PhysicsObject *obj)
 
 void Scene::renderPick(Model *model)
 {
-    QMatrix4x4 MVP = projectionMatrix * cameraMatrix * model->transform->transformMatrix;
+    QMatrix4x4 MVP = projectionMatrix * cameraMatrix * model->transformMatrix;
     glUniformMatrix4fv(m_progPick_MVPMatrix, 1, 0, MVP.data());
 
     int r = (model->model_id & 0x000000FF) >>  0;
@@ -404,8 +404,8 @@ void Scene::renderScene()
     //timer.start();
 
     for(int n=0; n < m_engine->arrModels.size(); n++) {
-        m_engine->arrModels[n]->transform->isDirty = true;
-        m_engine->arrModels[n]->transform->updateTransformMatrix();
+        m_engine->arrModels[n]->isDirty = true;
+        m_engine->arrModels[n]->updateTransformMatrix();
     }
     qSort(m_engine->arrModels.begin(), m_engine->arrModels.end(), sortModels); //Prvo ih sortirati po z
 
@@ -697,7 +697,7 @@ Scene::~Scene()
 
 bool Scene::sortModels(Model *a, Model *b)
 {
-    return a->transform->m_z < b->transform->m_z;
+    return a->z() < b->z();
 }
 
 

@@ -30,7 +30,7 @@ Model::Model(Mesh *p_mesh, Texture *p_texture, const QString &p_name)
     model_id = 0;
     isVisible = true;
     this->setTexture(p_texture);
-    transform = new Transform();
+    //transform = new Transform();
     UVTransform.setToIdentity();
 }
 
@@ -44,7 +44,7 @@ Model::Model()
     isVisible = true;
     texture = NULL;
     this->setName("");
-    transform = new Transform();
+    //transform = new Transform();
     UVTransform.setToIdentity();
 }
 
@@ -60,5 +60,5 @@ void Model::setName(const QString &p_name)
 
 Model::~Model()
 {
-    delete transform;
+    //delete transform;
 }
