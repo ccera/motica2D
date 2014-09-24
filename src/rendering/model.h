@@ -46,8 +46,6 @@ public:
     QMatrix3x3 UVTransform;
     Mesh      *mesh;
     Texture   *texture;
-    //Transform *transform;
-    
     QString name;
 };
 

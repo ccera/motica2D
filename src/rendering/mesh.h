@@ -31,7 +31,6 @@ public:
     ~Mesh();
     
     QString name;
-    
     float  *vertexData;
     int    *indexData;
     size_t indexDataSize;

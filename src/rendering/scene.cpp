@@ -268,12 +268,7 @@ void Scene::renderModel(Model *model)
 
 void Scene::renderPhysics(PhysicsObject *obj)
 {
-    Transform transform;
-    transform.setPosition(obj->getPosition().x(), obj->getPosition().y(), 100.0f);
-    transform.setSize(obj->getWidth(), obj->getHeight(),100);
-    transform.setRotation(0,0,obj->getRotation());
-    transform.updateTransformMatrix();
-    QMatrix4x4 MVP = projectionMatrix * cameraMatrix * transform.transformMatrix;
+    QMatrix4x4 MVP = projectionMatrix * cameraMatrix * obj->transformMatrix;
     glUniformMatrix4fv(m_progPick_MVPMatrix, 1, 0, MVP.data());
     glUniform4f(m_progPick_Color, 1.0, 0.0, 0.0, 1.0f);
     Mesh *mesh = m_engine->getMesh("DEFAULT_SPRITE_MESH");
@@ -403,10 +398,6 @@ void Scene::renderScene()
 {
     //timer.start();
 
-    for(int n=0; n < m_engine->arrModels.size(); n++) {
-        m_engine->arrModels[n]->isDirty = true;
-        m_engine->arrModels[n]->updateTransformMatrix();
-    }
     qSort(m_engine->arrModels.begin(), m_engine->arrModels.end(), sortModels); //Prvo ih sortirati po z
 
     //TODO Hints po platfromama ako uopste trebaju?
@@ -443,6 +434,7 @@ void Scene::renderScene()
         }
     }
 #if DBUG_RENDER_PHYSICS
+    glClear(GL_DEPTH_BUFFER_BIT);
     glUseProgram(m_progPick);
     for(int p=0; p < m_engine->arrPhysicsObjects.size(); p++) {
         renderPhysics(m_engine->arrPhysicsObjects.at(p));
@@ -697,7 +689,7 @@ Scene::~Scene()
 
 bool Scene::sortModels(Model *a, Model *b)
 {
-    return a->z() < b->z();
+    return a->getPosition().z() < b->getPosition().z();
 }
 
 

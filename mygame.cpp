@@ -35,8 +35,8 @@ MyGame::MyGame(Engine *engine) :
 
     sprBackground = m_engine->newSprite(background);
     sprBackground->setName("Background");
-    sprBackground->setPosition(512,256,-10);
-    sprBackground->setSize(1024,512,1);
+    sprBackground->setPosition(QVector3D(512,256,-10));
+    sprBackground->setSize(QVector3D(1024,512,1));
 
     /*
     sprPlanet = m_engine->newSprite(planet);
@@ -57,28 +57,28 @@ MyGame::MyGame(Engine *engine) :
     */
 
     pod = m_engine->physicsWorld->createBox(0,10000,50, PHYSICSBODY_STATIC);
-    pod->setPosition(500,0);
+    pod->setPosition(QVector3D(500,0,0));
     pod->parentGameObject = this;
     pod->userType = GAME_FLOOR;
-
+/*
     PhysicsObject *platforma = m_engine->createPhysicsObjectBox(0,210,30, PHYSICSBODY_STATIC);
-    platforma->setPosition(200, 90);
+    platforma->setPosition(QVector3D(200, 90, 0));
     platforma->parentGameObject = this;
     platforma->userType = GAME_FLOOR;
     platforma->setFriction(0.5f);
 
     PhysicsObject *platforma2 = m_engine->createPhysicsObjectBox(0,100,30, PHYSICSBODY_STATIC);
-    platforma2->setPosition(0, 200);
+    platforma2->setPosition(QVector3D(0, 200,0));
     platforma2->parentGameObject = this;
     platforma2->userType = GAME_FLOOR;
     platforma2->setFriction(0.5f);
 
     PhysicsObject *platforma3 = m_engine->createPhysicsObjectBox(0,100,30, PHYSICSBODY_STATIC);
-    platforma3->setPosition(450, 200);
+    platforma3->setPosition(QVector3D(450, 200, 0));
     platforma3->parentGameObject = this;
     platforma3->userType = GAME_FLOOR;
     platforma3->setFriction(0.5f);
-
+*/
     pod->setFriction(0.5f);
     m_engine->physicsWorld->setGravity(0, -200.0f);
 

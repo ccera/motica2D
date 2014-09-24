@@ -29,10 +29,17 @@ PhysicsObject::PhysicsObject(PhysicsWorld *world)
     mass = 0;
 }
 
-void PhysicsObject::setPosition(float x, float y)
+void PhysicsObject::update(float dt)
 {
-    body->p = cpv(x, y);
-    if(this->bodyState == PHYSICSBODY_STATIC) {
+    Transform::setWorldPosition(QVector3D(body->p.x, body->p.y, 1.0f));
+    //Transform::setWorldRotation(QVector3D(0.0f, 0.0f, radToDeg(cpBodyGetAngle(body))));
+}
+
+void PhysicsObject::setPosition(const QVector3D &position)
+{
+    Transform::setPosition(position);
+    body->p = cpv(position.x(), position.y());
+    if(bodyState == PHYSICSBODY_STATIC) {
         cpSpaceReindexStatic(m_world->space);
     }
     else {
@@ -40,15 +47,11 @@ void PhysicsObject::setPosition(float x, float y)
     }
 }
 
-QVector2D PhysicsObject::getPosition()
+void PhysicsObject::setRotation(const QVector3D &rotation)
 {
-    return QVector2D(body->p.x, body->p.y);
-}
-
-void PhysicsObject::setRotation(float deg)
-{
-    cpBodySetAngle(body, degToRad(deg));
-    if(this->bodyState == PHYSICSBODY_STATIC) {
+    Transform::setRotation(rotation);
+    //cpBodySetAngle(body, degToRad(rotation.z()));
+    if(bodyState == PHYSICSBODY_STATIC) {
         cpSpaceReindexStatic(m_world->space);
     }
     else {
@@ -56,10 +59,43 @@ void PhysicsObject::setRotation(float deg)
     }
 }
 
-float PhysicsObject::getRotation()
-{
-    return radToDeg(cpBodyGetAngle(body));
-}
+//void PhysicsObject::setSize(const QVector3D &size)
+//{
+//    // Nista se ne desava jer velicina se postavlja kod kreianja bodyja
+//}
+
+
+//void PhysicsObject::setPosition(float x, float y)
+//{
+//    body->p = cpv(x, y);
+//    if(this->bodyState == PHYSICSBODY_STATIC) {
+//        cpSpaceReindexStatic(m_world->space);
+//    }
+//    else {
+//        cpSpaceReindexShapesForBody(m_world->space, this->body);
+//    }
+//}
+
+//QVector2D PhysicsObject::getPosition()
+//{
+//    return QVector2D(body->p.x, body->p.y);
+//}
+
+//void PhysicsObject::setRotation(float deg)
+//{
+//    cpBodySetAngle(body, degToRad(deg));
+//    if(this->bodyState == PHYSICSBODY_STATIC) {
+//        cpSpaceReindexStatic(m_world->space);
+//    }
+//    else {
+//        cpSpaceReindexShapesForBody(m_world->space, this->body);
+//    }
+//}
+
+//float PhysicsObject::getRotation()
+//{
+//    return radToDeg(cpBodyGetAngle(body));
+//}
 
 void PhysicsObject::applyForce(float x, float y)
 {

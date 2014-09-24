@@ -34,6 +34,7 @@
 #include "physicsobject.h"
 #include "engine.h"
 #include "types.h"
+#include "transform.h"
 
 
 class Engine;

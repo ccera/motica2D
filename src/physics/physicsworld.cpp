@@ -41,6 +41,7 @@ PhysicsObject* PhysicsWorld::createBox(float mass, float width, float height, Ph
     if(width > height) obj->diameter = width;
     else obj->diameter = height;
     obj->mass = mass;
+    obj->setSize(QVector3D(width, height, 1.0f));
 
     return obj;
 }
@@ -78,6 +79,7 @@ PhysicsObject* PhysicsWorld::createCircle(float mass, float diametar, PhysicsBod
     obj->height = diametar;
     obj->diameter = diametar;
     obj->mass = mass;
+    obj->setSize(QVector3D(diametar, diametar, 1.0f));
 
     return obj;
 }

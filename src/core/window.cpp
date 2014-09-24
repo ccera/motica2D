@@ -132,6 +132,10 @@ void Window::render()
     //qDebug() << (1.0f / (float)screen()->refreshRate()) << (1.0f/60.0f) << (1.0f/30.0f);
     m_engine->physicsWorld->updateWorld(1.0f/30.0f); //((1.0f / (float)screen()->refreshRate()) * 1000.0f);
 
+    for(int n=0; n < m_engine->arrPhysicsObjects.size(); n++) {
+        m_engine->arrPhysicsObjects.at(n)->update((1.0f / (float)screen()->refreshRate()) * 1000.0f);
+    }
+
     // Send update to everybody. Delta time is in ms
     for(int n=0; n < m_engine->arrGameObjects.size(); n++) {
         m_engine->arrGameObjects.at(n)->update((1.0f / (float)screen()->refreshRate()) * 1000.0f);

@@ -38,10 +38,18 @@ class PhysicsObject : public Transform
 public:
     PhysicsObject(PhysicsWorld *world);
 
-    void        setPosition(float x, float y);
-    QVector2D   getPosition();
-    void        setRotation(float deg);
-    float       getRotation();
+//    void        setPosition(float x, float y);
+//    QVector2D   getPosition();
+//    void        setRotation(float deg);
+//    float       getRotation();
+
+//    void        updateTransform();
+
+    virtual void setPosition(const QVector3D &position);
+    virtual void setRotation(const QVector3D &rotation);
+    //virtual void setSize(const QVector3D &size);
+
+    void        update(float dt);
 
     void        applyForce(float x, float y);
     void        applyForceWithOffset(float x, float y, float offset_x, float offset_y);

@@ -33,41 +33,35 @@ public:
     ~Transform();
         
     void addChild(Transform* child);
-    void updateTransformMatrix();
-    void setPosition(float m_x, float m_y, float m_z);
-    void translateFor(float _x, float _y, float _z);
-    void setRotation(float x_angle, float y_angle, float z_angle);
-    void rotateFor(float x_angle, float y_angle, float z_angle);
-    void rotateAroundTo(float _x, float _y, float _z, float x_angle, float y_angle, float z_angle);
-    void setSize(float x_size, float y_size, float z_size);
-    void resizeFor(float x_size, float y_size, float z_size);
+    void setPosition(const QVector3D &position);
+    void setWorldPosition(const QVector3D &position);
+    void setSize(const QVector3D &size);
+    void setWorldSize(const QVector3D &size);
+    void setRotation(const QVector3D &rotation);
+    void setWorldRotation(const QVector3D &rotation);
+    void setRotation(const QQuaternion &rotation);
+    // TODO: setWorldRotation
 
-    Transform *parent;
+    QVector3D getPosition();
+    // TODO: getWorldPosition
+    QVector3D getSize();
+    // TODO: getWorldSize
+    QVector3D getRotation();
+     // TODO: getWorldRotation
+    QQuaternion getRotationQuaternion();
+
+    Transform *transformParent;
     QMatrix4x4 transformMatrix;
-
-    
-    float x() const;
-    float y() const;
-    float z() const;
-    float size_x() const;
-    float size_y() const;
-    float size_z() const;
-    float rot_x() const;
-    float rot_y() const;
-    float rot_z() const;
+    QVector<Transform*> children;
 
 private:
     bool isDirty;
+    void updateTransformMatrix();
 
-    float m_x;
-    float m_y;
-    float m_z;
-    float m_size_x;
-    float m_size_y;
-    float m_size_z;
-    float m_rot_x;
-    float m_rot_y;
-    float m_rot_z;
+    QVector3D m_size;
+    QVector3D m_position;
+    QVector3D m_rotation;
+    QQuaternion m_quat_rotation;
 };
 
 #endif
