@@ -26,9 +26,9 @@ Transform::Transform()
 
 void Transform::addChild(Transform* child)
 {
-    float szx;
-    float szy;
-    float szz;
+    float szx = 1.0;
+    float szy = 1.0;
+    float szz = 1.0;
 
     if(this->m_size.x() == 0.0f) szx = 1.0f;
     else szx = this->m_size.x();
@@ -43,7 +43,6 @@ void Transform::addChild(Transform* child)
 
     child->setPosition(QVector3D(child->m_position.x()/szx, child->m_position.y()/szy, child->m_position.z()/szz));
     child->setSize(QVector3D(child->m_size.x()/szx, child->m_size.y()/szy, child->m_size.z()/szz));
-
 
     children.push_back(child);
     child->updateTransformMatrix();
@@ -78,9 +77,10 @@ void Transform::setWorldPosition(const QVector3D &position)
 
 void Transform::setRotation(const QVector3D &rotation)
 {
-    m_quat_rotation = m_quat_rotation.fromAxisAndAngle(1.0f, 0.0f, 0.0f, rotation.x());
-    m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 1.0f, 0.0f, rotation.y());
-    m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
+    //m_quat_rotation = m_quat_rotation.fromAxisAndAngle(1.0f, 0.0f, 0.0f, rotation.x());
+    //m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 1.0f, 0.0f, rotation.y());
+    //m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
+    m_quat_rotation = QQuaternion::fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
     this->m_rotation = rotation;
     this->updateTransformMatrix();
 }
@@ -93,11 +93,13 @@ void Transform::setWorldRotation(const QVector3D &rotation)
     //m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 1.0f, 0.0f, rotation.y());
     //m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
     //m_quat_rotation = QQuaternion::fromAxisAndAngle(0.0f,-0.5f,1.0f, 35.0f);
+        m_quat_rotation = QQuaternion::fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
     }
     else {
-        m_quat_rotation = m_quat_rotation.fromAxisAndAngle(1.0f, 0.0f, 0.0f, rotation.x());
-        m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 1.0f, 0.0f, rotation.y());
-        m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
+        //m_quat_rotation = m_quat_rotation.fromAxisAndAngle(1.0f, 0.0f, 0.0f, rotation.x());
+        //m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 1.0f, 0.0f, rotation.y());
+        //m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
+        m_quat_rotation = QQuaternion::fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
     }
     this->m_rotation = rotation;
     this->updateTransformMatrix();

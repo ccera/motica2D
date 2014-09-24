@@ -27,22 +27,19 @@ Player::Player(Engine *engine) :
 
     txPlayer = m_engine->newTexture(Resource("textures/allframes.png"));
 
-    planet = m_engine->newTexture(Resource("textures/Flames.png"));
-//    sprPlanet = m_engine->newSprite(planet);
-//    sprPlanet->setName("Planet");
-//    sprPlanet->setPosition(QVector3D(100,1,10));
-//    sprPlanet->setSize(QVector3D(128.0f,128.0f,128.0f));
-//    sprPlanet->setRotation(QVector3D(0.0f,0.0f,40.0f));
-
+    planet = m_engine->newTexture(Resource("textures/Planet.png"));
+    sprPlanet = m_engine->newSprite(planet);
+    sprPlanet->setName("Planet");
+    sprPlanet->setPosition(QVector3D(100,1,10));
+    sprPlanet->setSize(QVector3D(128.0f,128.0f,128.0f));
+    sprPlanet->setRotation(QVector3D(0.0f,0.0f,40.0f));
 
     asPlayer = m_engine->newAnimatedSprite(4, 32, txPlayer);
     asPlayer->setName("Prince");
     asPlayer->setPosition(QVector3D(1,1,50));
     asPlayer->setSize(QVector3D(64,64,1.0f));
     asPlayer->setFrameLength(3);
-
-    //asPlayer->addChild(sprPlanet);
-
+    asPlayer->addChild(sprPlanet);
 
     //stateQueue.enqueue(PLAYER_STANDING, 0);
     //stateQueue.setInterface(this);
@@ -55,18 +52,24 @@ Player::Player(Engine *engine) :
 
     m_engine->physicsWorld->setDamping(0.9f);
 
-    playerBody = m_engine->createPhysicsObjectBox(80,32,64);
-    playerBody->setFriction(0.5f);
+    playerBody = m_engine->createPhysicsBodyBox(80,32,64);
+    //playerBody->setFriction(0.5f);
     playerBody->setPosition(QVector3D(100,600,1));
-    m_engine->addPhysicsObject(playerBody);
+    //m_engine->addPhysicsObject(playerBody);
     playerBody->parentGameObject = this;
-    playerBody->userType = GAME_PLAYER;
+    //playerBody->userType = GAME_PLAYER;
+    playerBody->name = "PlayerBody";
+    playerBody->setRotation(QVector3D(0,0,0));
 
-    feetSensor = m_engine->createPhysicsObjectBox(1,180,14, PHYSICSBODY_ROUGE);
-
+    playerShape = m_engine->createPhysicsShapeBox(playerBody,100,100,QVector2D());
+    //playerShape->setFriction(0.5f);
+/*
+    feetSensor = m_engine->createPhysicsBodyBox(1,50,50, PHYSICS_BODY_ROUGE);
+    feetSensor->name = "FeetSensor";
     feetSensor->setPosition(QVector3D(119,100,1));
-    feetSensor->setRotation(QVector3D(0.0,0.0,0.0));
-    playerBody->addChild(feetSensor);
+    feetSensor->setRotation(QVector3D(0.0,0.0,45.0));
+    //playerBody->addChild(feetSensor);
+    */
 
 /*
     headSensorL = m_engine->createPhysicsObjectBox(1,8,4, PHYSICSBODY_ROUGE);
@@ -217,7 +220,7 @@ void Player::checkKey()
     controlsState = CONTROLS_NOTHING;
 }
 
-void Player::collide(PhysicsObject *with)
+void Player::collide(PhysicsBody *with)
 {
 
 }
@@ -234,6 +237,8 @@ void Player::debugPrintState()
 
 void Player::update(float dt)
 {
+    //sprPlanet->setRotation(QVector3D(0,0,40));
+
     asPlayer->setPosition(playerBody->getPosition()); //  QVector3D(playerBody->getPosition().x(), playerBody->getPosition().y(), 0.0f));
     asPlayer->setRotation(playerBody->getRotation());// QVector3D(0,0,playerBody->getRotation()));
 /*
@@ -261,7 +266,7 @@ void Player::update(float dt)
     headSensorT->setPosition(hst.x(), hst.y());
 */
     // Feet sensor check
-    feetTouching = feetSensor->isOverlapping();
+    //feetTouching = feetSensor->isOverlapping();
 /*
     // Head L check
     headTouchingL = headSensorL->isOverlapping();
@@ -283,7 +288,7 @@ void Player::update(float dt)
 */
 
     checkKey();
-    checkState();
+    //checkState();
     //debugPrintState();
 
     if(playerState == FELL_DOWN) {

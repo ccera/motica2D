@@ -56,10 +56,16 @@ MyGame::MyGame(Engine *engine) :
 
     */
 
-    pod = m_engine->physicsWorld->createBox(0,10000,50, PHYSICSBODY_STATIC);
+    pod = m_engine->createPhysicsBodyBox(0,10000,50, PHYSICS_BODY_STATIC);
     pod->setPosition(QVector3D(500,0,0));
-    pod->parentGameObject = this;
-    pod->userType = GAME_FLOOR;
+
+    podShape = m_engine->createPhysicsShapeBox(pod, 10000,50, QVector2D(0,0));
+    podShape->setFriction(1.0f);
+    //m_engine->addShapeToSpace(podShape);
+    //pod->parentGameObject = this;
+   // pod->userType = GAME_FLOOR;
+
+
 /*
     PhysicsObject *platforma = m_engine->createPhysicsObjectBox(0,210,30, PHYSICSBODY_STATIC);
     platforma->setPosition(QVector3D(200, 90, 0));
@@ -79,10 +85,8 @@ MyGame::MyGame(Engine *engine) :
     platforma3->userType = GAME_FLOOR;
     platforma3->setFriction(0.5f);
 */
-    pod->setFriction(0.5f);
+    //pod->setFriction(0.5f);
     m_engine->physicsWorld->setGravity(0, -200.0f);
-
-    m_engine->addPhysicsObject(pod);
 }
 
 void MyGame::update(float dt)

@@ -3,11 +3,13 @@
 
 #include <QObject>
 #include "chipmunk.h"
-#include "physicsobject.h"
+#include "physicsbody.h"
 #include "types.h"
 #include "engine.h"
+#include "physicsshape.h"
 
-class PhysicsObject;
+class PhysicsBody;
+class PhysicsShape;
 
 class PhysicsWorld : public QObject
 {
@@ -19,10 +21,14 @@ public:
     void setGravity(float x, float y);
     void setDamping(float d);
 
-    PhysicsObject* createBox(float mass, float width, float height, PhysicsBodyState bState = PHYSICSBODY_SIMULATED);
-    PhysicsObject* createCircle(float mass, float diametar, PhysicsBodyState bState = PHYSICSBODY_SIMULATED);
+    PhysicsBody* createBoxBody(float mass, float width, float height, PhysicsBodyState bState = PHYSICS_BODY_SIMULATED);
+    PhysicsBody* createCircleBody(float mass, float diametar, PhysicsBodyState bState = PHYSICS_BODY_SIMULATED);
+    PhysicsShape* createPhysicsShapeBox(PhysicsBody *body, float width, float height, const QVector2D &offset);
+    PhysicsShape* createPhysicsShapeCircle(PhysicsBody *body, float diametar, const QVector2D &offset);
+    //void addShapeToBody(PhysicsShape *shape, PhysicsBody *body);
+    void addShapeToSpace(PhysicsShape *shape);
 
-    QList<PhysicsObject*> checkForOverlappingObjects(PhysicsObject *obj);
+    //QList<PhysicsBody*> checkForOverlappingObjects(PhysicsBody *obj);
 
     cpSpace *space;
 signals:
@@ -31,7 +37,7 @@ public slots:
 
 private:
     static void postSolve(cpArbiter *arb, cpSpace *space, void *ignore);
-    static void checkOverlapping(cpShape *shape, cpContactPointSet *points, void *data);
+    //static void checkOverlapping(cpShape *shape, cpContactPointSet *points, void *data);
 
 
 

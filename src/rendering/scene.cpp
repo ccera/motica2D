@@ -266,9 +266,9 @@ void Scene::renderModel(Model *model)
 #endif
 }
 
-void Scene::renderPhysics(PhysicsObject *obj)
+void Scene::renderPhysics(PhysicsBody *obj)
 {
-    QMatrix4x4 MVP = projectionMatrix * cameraMatrix * obj->transformMatrix;
+    QMatrix4x4 MVP = projectionMatrix * cameraMatrix; // * obj->transformMatrix;
     glUniformMatrix4fv(m_progPick_MVPMatrix, 1, 0, MVP.data());
     glUniform4f(m_progPick_Color, 1.0, 0.0, 0.0, 1.0f);
     Mesh *mesh = m_engine->getMesh("DEFAULT_SPRITE_MESH");
@@ -436,8 +436,8 @@ void Scene::renderScene()
 #if DBUG_RENDER_PHYSICS
     glClear(GL_DEPTH_BUFFER_BIT);
     glUseProgram(m_progPick);
-    for(int p=0; p < m_engine->arrPhysicsObjects.size(); p++) {
-        renderPhysics(m_engine->arrPhysicsObjects.at(p));
+    for(int p=0; p < m_engine->arrPhysicsBodies.size(); p++) {
+        renderPhysics(m_engine->arrPhysicsBodies.at(p));
     }
 #endif
 

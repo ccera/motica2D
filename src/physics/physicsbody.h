@@ -31,31 +31,23 @@
 class PhysicsWorld;
 class GameObject;
 
-class PhysicsObject : public Transform
+class PhysicsBody
 {
     friend class PhysicsWorld;
 
 public:
-    PhysicsObject(PhysicsWorld *world);
+    PhysicsBody(PhysicsWorld *world);
 
-//    void        setPosition(float x, float y);
-//    QVector2D   getPosition();
-//    void        setRotation(float deg);
-//    float       getRotation();
-
-//    void        updateTransform();
-
-    virtual void setPosition(const QVector3D &position);
-    virtual void setRotation(const QVector3D &rotation);
-    //virtual void setSize(const QVector3D &size);
-
-    void        update(float dt);
+    void setPosition(const QVector3D &position);
+    void setRotation(const QVector3D &rotation);
+    QVector3D getPosition();
+    QVector3D getRotation();
 
     void        applyForce(float x, float y);
     void        applyForceWithOffset(float x, float y, float offset_x, float offset_y);
     void        applyImpulse(float x, float y);
     void        applyImpulseWithOffset(float x, float y, float offset_x, float offset_y);
-    void        setFriction(float f);
+    //void        setFriction(float f);
     void        setMaxVelocity(float max);
     QVector2D   getVelocity();
     void        setVelocity(float x, float y);
@@ -65,19 +57,21 @@ public:
     void        disableRotation();
     void        enableRotation();
     void        setMomentOfInertia(float i);
-    QList<PhysicsObject*> listOverlappingObjects();
-    bool        isOverlapping();
+    //QList<PhysicsBody*> listOverlappingObjects();
+    //bool        isOverlapping();
 
     cpBody *body;
-    cpShape *shape;
-    PhysicsObjectShapeType shapeType;
+    //cpShape *shape;
+    PhysicsObjectBodyShape bodyShape;
     PhysicsBodyState bodyState;
     GameObject *parentGameObject;
-    int userType;
+    //int userType;
+
+    QString name;
 
 private:
-    static void checkOverlappingList(cpShape *shape, cpContactPointSet *points, void *data);
-    static void checkOverlappingBool(cpShape *shape, cpContactPointSet *points, void *data);
+    //static void checkOverlappingList(cpShape *shape, cpContactPointSet *points, void *data);
+    //static void checkOverlappingBool(cpShape *shape, cpContactPointSet *points, void *data);
     PhysicsWorld *m_world;
     float width;
     float height;

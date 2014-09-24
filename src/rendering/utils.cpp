@@ -21,12 +21,12 @@
 
 float degToRad(float deg)
 {
-    return deg * (0.01745329251f);   //pi 3.14159265359 / 180
+    return (float)deg * (0.01745329251f);   //pi 3.14159265359 / 180
 }
 
 float radToDeg(float rad)
 {
-    return rad * (57.2957796f);   //180.0f / 3.14159265359f
+    return (float)rad * (57.2957796f);   //180.0f / 3.14159265359f
 }
 
 QString Resource(const QString &resource)

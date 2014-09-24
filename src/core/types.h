@@ -10,18 +10,29 @@ enum _ViewportType {
 typedef enum _ViewportType ViewportType;
 
 
+
 enum _PhysicsObjectShapeType {
-    PHYSICSOBJECT_CIRCLE,
-    PHYSICSOBJECT_HOLOW_CIRCLE,
-    PHYSICSOBJECT_BOX,
-    PHYSICSOBJECT_POLYGON
+    PHYSICS_SHAPE_CIRCLE,
+    PHYSICS_SHAPE_HOLOW_CIRCLE,
+    PHYSICS_SHAPE_BOX,
+    PHYSICS_SHAPE_POLYGON
 };
 typedef enum _PhysicsObjectShapeType PhysicsObjectShapeType;
 
+
+
+enum _PhysicsObjectBodyShape {
+    PHYSICS_BODYSHAPE_CIRCLE,
+    PHYSICS_BODYSHAPE_BOX
+};
+typedef enum _PhysicsObjectBodyShape PhysicsObjectBodyShape;
+
+
+
 enum _PhysicsBodyState {
-    PHYSICSBODY_STATIC,
-    PHYSICSBODY_SIMULATED,
-    PHYSICSBODY_ROUGE
+    PHYSICS_BODY_STATIC,
+    PHYSICS_BODY_SIMULATED,
+    PHYSICS_BODY_ROUGE
 };
 typedef enum _PhysicsBodyState PhysicsBodyState;
 

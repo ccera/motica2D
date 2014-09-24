@@ -5,7 +5,7 @@
 #include "sprite.h"
 #include "animatedsprite.h"
 #include "physicsworld.h"
-#include "physicsobject.h"
+#include "physicsbody.h"
 #include "gameobject.h"
 #include "scene.h"
 #include "window.h"
@@ -13,6 +13,7 @@
 #include "mesh.h"
 #include "model.h"
 #include "types.h"
+#include "physicsshape.h"
 
 class Window;
 class Scene;
@@ -21,8 +22,9 @@ class AnimatedSprite;
 class Texture;
 class Model;
 class PhysicsWorld;
-class PhysicsObject;
+class PhysicsBody;
 class GameObject;
+class PhysicsShape;
 
 class Engine
 {
@@ -42,10 +44,13 @@ public:
     Mesh*           getMesh(const QString &name);
     void            addGameObject(GameObject *e);
 
-    PhysicsObject* createPhysicsObjectBox(float mass, float width, float height, PhysicsBodyState bState = PHYSICSBODY_SIMULATED);
-    PhysicsObject* createPhysicsObjectCircle(float mass, float diametar, PhysicsBodyState bState = PHYSICSBODY_SIMULATED);
-    QList<PhysicsObject*> checkForOverlappingPhysicsObjects(PhysicsObject *obj);
-    void            addPhysicsObject(PhysicsObject *object);
+    PhysicsBody* createPhysicsBodyBox(float mass, float width, float height, PhysicsBodyState bState = PHYSICS_BODY_SIMULATED);
+    PhysicsBody* createPhysicsBodyCircle(float mass, float diametar, PhysicsBodyState bState = PHYSICS_BODY_SIMULATED);
+
+    PhysicsShape* createPhysicsShapeBox(PhysicsBody *body, float width, float height, const QVector2D &offset);
+    PhysicsShape* createPhysicsShapeCircle(PhysicsBody *body, float diametar, const QVector2D &offset);
+    //void addShapeToBody(PhysicsShape *shape, PhysicsBody *body);
+    void addShapeToSpace(PhysicsShape *shape);
 
     void initDefaultSpriteMesh();
 
@@ -54,7 +59,8 @@ public:
     QVector<Model*> arrModels;
     QVector<AnimatedSprite*> arrAnimSprites;
     QVector<GameObject*> arrGameObjects;
-    QVector<PhysicsObject*> arrPhysicsObjects;
+    QVector<PhysicsBody*> arrPhysicsBodies;
+    QVector<PhysicsShape*> arrPhysicsShapes;
     QVector<Mesh*> arrMeshes;
 
     Scene *scene;

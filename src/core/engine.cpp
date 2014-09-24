@@ -79,29 +79,42 @@ void Engine::addGameObject(GameObject *e)
     this->arrGameObjects.push_back(e);
 }
 
-PhysicsObject*  Engine::createPhysicsObjectBox(float mass, float width, float height, PhysicsBodyState bState)
+PhysicsBody*  Engine::createPhysicsBodyBox(float mass, float width, float height, PhysicsBodyState bState)
 {
-    PhysicsObject *po = physicsWorld->createBox(mass, width, height, bState);
-    this->arrPhysicsObjects.push_back(po);
+    PhysicsBody *po = physicsWorld->createBoxBody(mass, width, height, bState);
+    this->arrPhysicsBodies.push_back(po);
     return po;
 }
 
-PhysicsObject*  Engine::createPhysicsObjectCircle(float mass, float diametar, PhysicsBodyState bState)
+PhysicsBody*  Engine::createPhysicsBodyCircle(float mass, float diametar, PhysicsBodyState bState)
 {
-    PhysicsObject *po = physicsWorld->createCircle(mass, diametar, bState);
-    this->arrPhysicsObjects.push_back(po);
+    PhysicsBody *po = physicsWorld->createCircleBody(mass, diametar, bState);
+    this->arrPhysicsBodies.push_back(po);
     return po;
 }
 
-QList<PhysicsObject*>  Engine::checkForOverlappingPhysicsObjects(PhysicsObject *obj)
+PhysicsShape* Engine::createPhysicsShapeBox(PhysicsBody *body, float width, float height, const QVector2D &offset)
 {
-    QList<PhysicsObject*> ls = physicsWorld->checkForOverlappingObjects(obj);
-    return ls;
+    PhysicsShape *ps = physicsWorld->createPhysicsShapeBox(body, width, height, offset);
+    this->arrPhysicsShapes.push_back(ps);
+    return ps;
 }
 
-void Engine::addPhysicsObject(PhysicsObject *object)
+PhysicsShape* Engine::createPhysicsShapeCircle(PhysicsBody *body, float diametar, const QVector2D &offset)
 {
-    this->arrPhysicsObjects.push_back(object);
+    PhysicsShape *ps = physicsWorld->createPhysicsShapeCircle(body, diametar, offset);
+    this->arrPhysicsShapes.push_back(ps);
+    return ps;
+}
+
+//void Engine::addShapeToBody(PhysicsShape *shape, PhysicsBody *body)
+//{
+//    physicsWorld->addShapeToBody(shape, body);
+//}
+
+void Engine::addShapeToSpace(PhysicsShape *shape)
+{
+    physicsWorld->addShapeToSpace(shape);
 }
 
 void Engine::addMesh(Mesh *mesh)

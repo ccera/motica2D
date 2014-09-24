@@ -26,7 +26,7 @@
 #include "sprite.h"
 #include "utils.h"
 #include "player.h"
-#include "physicsobject.h"
+#include "physicsbody.h"
 #include "engine.h"
 
 class Engine;
@@ -54,7 +54,8 @@ private:
     Sprite *sprFish;
 
     Player *prince;
-    PhysicsObject *pod;
+    PhysicsBody *pod;
+    PhysicsShape *podShape;
 
     float animTm;
 };

@@ -31,14 +31,14 @@
 #include <QReadWriteLock>
 #include <QMatrix4x4>
 #include <QQuaternion>
-#include "physicsobject.h"
+#include "physicsbody.h"
 #include "engine.h"
 #include "types.h"
 #include "transform.h"
 
 
 class Engine;
-class PhysicsObject;
+class PhysicsBody;
 
 class Scene : public QObject, protected QOpenGLFunctions
 {
@@ -103,7 +103,7 @@ protected:
     void    renderModel(Model *model);
     void    renderPick(Model *model);
     int     renderScenePick();
-    void    renderPhysics(PhysicsObject *obj);
+    void    renderPhysics(PhysicsBody *obj);
     void    initSpriteMesh();
     static bool sortModels(Model *a, Model *b);
 

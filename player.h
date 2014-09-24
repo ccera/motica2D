@@ -30,7 +30,7 @@
 #include "animatedsprite.h"
 #include "statequeueinterface.h"
 #include "statequeue.h"
-#include "physicsobject.h"
+#include "physicsbody.h"
 #include "chipmunk.h"
 #include "engine.h"
 
@@ -106,7 +106,7 @@ public:
 
     virtual void onStateEntered(int animState);
     virtual void onStateExited(int animState);
-    virtual void collide(PhysicsObject *with);
+    virtual void collide(PhysicsBody *with);
 
 signals:
 
@@ -119,13 +119,15 @@ private:
     Texture *planet;
     Sprite *sprPlanet;
     StateQueue stateQueue;
-    PhysicsObject *playerBody;
-    PhysicsObject *feetSensor;
-    PhysicsObject *headSensorL;
-    PhysicsObject *headSensorLU;
-    PhysicsObject *headSensorR;
-    PhysicsObject *headSensorRU;
-    PhysicsObject *headSensorT;
+    PhysicsBody *playerBody;
+    PhysicsBody *feetSensor;
+    PhysicsBody *headSensorL;
+    PhysicsBody *headSensorLU;
+    PhysicsBody *headSensorR;
+    PhysicsBody *headSensorRU;
+    PhysicsBody *headSensorT;
+
+    PhysicsShape *playerShape;
 
 
     bool feetTouching;
