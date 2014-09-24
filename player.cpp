@@ -31,18 +31,18 @@ Player::Player(Engine *engine) :
     sprPlanet = m_engine->newSprite(planet);
     sprPlanet->setName("Planet");
     //sprPlanet->setPosition(0.1f,0.1f,0.0f);
-    sprPlanet->setPosition(100,1,-1);
+    sprPlanet->setPosition(100,1,10);
     //sprPlanet->setSize(128.0f/64.0f,128.0f/64.0f,1);
     sprPlanet->setSize(128.0f,128.0f,128.0f);
 
 
     asPlayer = m_engine->newAnimatedSprite(4, 32, txPlayer);
     asPlayer->setName("Prince");
-    asPlayer->setPosition(1,1,1);
+    asPlayer->setPosition(1,1,50);
     asPlayer->setSize(64,64,1.0f);
     asPlayer->setFrameLength(3);
 
-    asPlayer->addChild(sprPlanet);
+    //asPlayer->addChild(sprPlanet);
 
 
     //stateQueue.enqueue(PLAYER_STANDING, 0);

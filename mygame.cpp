@@ -36,7 +36,7 @@ MyGame::MyGame(Engine *engine) :
     sprBackground = m_engine->newSprite(background);
     sprBackground->setName("Background");
     sprBackground->setPosition(512,256,-10);
-    sprBackground->setSize(1024,512,0);
+    sprBackground->setSize(1024,512,1);
 
     /*
     sprPlanet = m_engine->newSprite(planet);

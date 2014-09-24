@@ -31,6 +31,7 @@ Transform::Transform()
     m_rot_y = 0.0f;
     m_rot_z = 0.0f;
     parent = 0;
+    transformMatrix.setToIdentity();
 }
 
 void Transform::addChild(Transform* child)
@@ -67,7 +68,7 @@ void Transform::addChild(Transform* child)
 void Transform::updateTransformMatrix()
 {
     if(isDirty) {
-        transformMatrix.setToIdentity();
+        //transformMatrix.setToIdentity();
 
         float szx = 1.0f;
         float szy = 1.0f;
@@ -87,22 +88,24 @@ void Transform::updateTransformMatrix()
             transformMatrix =  transformMatrix * parent->transformMatrix;
         }
 
-        transformMatrix.translate(m_x/abs(szx), m_y/abs(szy), m_z/abs(szz));
-        transformMatrix.rotate(m_rot_x, 1.0f, 0.0f, 0.0f);
-        transformMatrix.rotate(m_rot_y, 0.0f, 1.0f, 0.0f);
-        transformMatrix.rotate(m_rot_z, 0.0f, 0.0f, 1.0f);
-        transformMatrix.scale(m_size_x/abs(szx), m_size_y/abs(szy), m_size_z/abs(szz));
+        //transformMatrix.translate(m_x/abs(szx), m_y/abs(szy), m_z/abs(szz));
+        //transformMatrix.rotate(m_rot_x, 1.0f, 0.0f, 0.0f);
+        //transformMatrix.rotate(m_rot_y, 0.0f, 1.0f, 0.0f);
+        //transformMatrix.rotate(m_rot_z, 0.0f, 0.0f, 1.0f);
+        //transformMatrix.scale(m_size_x/abs(szx), m_size_y/abs(szy), m_size_z/abs(szz));
         isDirty = false;
-        qDebug() << m_x << m_y << "  -  " << transformMatrix.map(QPoint(0,0));
+        //qDebug() << m_x << m_y << "  -  " << transformMatrix.map(QPoint(0,0));
    }
 }
 
 void Transform::setPosition(float _x, float _y, float _z)
 {
     isDirty = true;
-    m_x = _x;
-    m_y = _y;
-    m_z = _z;
+    transformMatrix.translate(_x, _y, _z);
+    //m_x = _x;
+    //m_y = _y;
+    //_z = _z;
+
 }
 
 void Transform::translateFor(float _x, float _y, float _z)
@@ -155,9 +158,10 @@ void Transform::rotateAroundTo(float _x, float _y, float _z, float x_angle, floa
 void Transform::setSize(float x_size, float y_size, float z_size)
 {
     isDirty = true;
-    m_size_x = x_size;
-    m_size_y = y_size;
-    m_size_z = z_size;
+    transformMatrix.scale(x_size, y_size, z_size);
+    //m_size_x = x_size;
+    //m_size_y = y_size;
+    //m_size_z = z_size;
 }
 
 void Transform::resizeFor(float x_size, float y_size, float z_size)
