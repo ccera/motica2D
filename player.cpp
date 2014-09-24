@@ -53,23 +53,22 @@ Player::Player(Engine *engine) :
     m_engine->physicsWorld->setDamping(0.9f);
 
     playerBody = m_engine->createPhysicsBodyBox(80,32,64);
-    //playerBody->setFriction(0.5f);
     playerBody->setPosition(QVector3D(100,600,1));
-    //m_engine->addPhysicsObject(playerBody);
     playerBody->parentGameObject = this;
-    //playerBody->userType = GAME_PLAYER;
     playerBody->name = "PlayerBody";
     playerBody->setRotation(QVector3D(0,0,0));
 
-    playerShape = m_engine->createPhysicsShapeBox(playerBody,100,100,QVector2D(0,0));
+    playerShape = m_engine->createPhysicsShapeBox(32,64,QVector2D(0,0));
     playerShape->setFriction(0.5f);
-/*
-    feetSensor = m_engine->createPhysicsBodyBox(1,50,50, PHYSICS_BODY_ROUGE);
+    playerShape->userType = GAME_PLAYER;
+    m_engine->addShapeToBody(playerShape, playerBody);
+    m_engine->addShapeToSpace(playerShape);
+
+    feetSensor = m_engine->createPhysicsShapeBox(100,10,QVector2D(0,-50));
+    feetSensor->setSensor(true);
     feetSensor->name = "FeetSensor";
-    feetSensor->setPosition(QVector3D(119,100,1));
-    feetSensor->setRotation(QVector3D(0.0,0.0,45.0));
-    //playerBody->addChild(feetSensor);
-    */
+    m_engine->addShapeToBody(feetSensor, playerBody);
+    m_engine->addShapeToSpace(feetSensor);
 
 /*
     headSensorL = m_engine->createPhysicsObjectBox(1,8,4, PHYSICSBODY_ROUGE);
@@ -121,8 +120,6 @@ void Player::checkState()
     }
 
     //qDebug() << playerBody->getRotation();
-
-
 
     /*
             stateQueue.enqueue(PLAYER_BEGIN_RUNNING, 14);
@@ -266,7 +263,8 @@ void Player::update(float dt)
     headSensorT->setPosition(hst.x(), hst.y());
 */
     // Feet sensor check
-    //feetTouching = feetSensor->isOverlapping();
+    feetTouching = feetSensor->isOverlapping();
+    //qDebug() << feetTouching;
 /*
     // Head L check
     headTouchingL = headSensorL->isOverlapping();
@@ -288,8 +286,8 @@ void Player::update(float dt)
 */
 
     checkKey();
-    //checkState();
-    //debugPrintState();
+    checkState();
+    debugPrintState();
 
     if(playerState == FELL_DOWN) {
         fellDownTimer++;

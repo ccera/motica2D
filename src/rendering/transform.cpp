@@ -77,30 +77,9 @@ void Transform::setWorldPosition(const QVector3D &position)
 
 void Transform::setRotation(const QVector3D &rotation)
 {
-    //m_quat_rotation = m_quat_rotation.fromAxisAndAngle(1.0f, 0.0f, 0.0f, rotation.x());
-    //m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 1.0f, 0.0f, rotation.y());
-    //m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
-    m_quat_rotation = QQuaternion::fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
-    this->m_rotation = rotation;
-    this->updateTransformMatrix();
-}
-
-void Transform::setWorldRotation(const QVector3D &rotation)
-{
-
-    if(transformParent) {
-    //m_quat_rotation = m_quat_rotation.fromAxisAndAngle(1.0f, 0.0f, 0.0f, rotation.x());
-    //m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 1.0f, 0.0f, rotation.y());
-    //m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
-    //m_quat_rotation = QQuaternion::fromAxisAndAngle(0.0f,-0.5f,1.0f, 35.0f);
-        m_quat_rotation = QQuaternion::fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
-    }
-    else {
-        //m_quat_rotation = m_quat_rotation.fromAxisAndAngle(1.0f, 0.0f, 0.0f, rotation.x());
-        //m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 1.0f, 0.0f, rotation.y());
-        //m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
-        m_quat_rotation = QQuaternion::fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
-    }
+    m_quat_rotation = m_quat_rotation.fromAxisAndAngle(1.0f, 0.0f, 0.0f, rotation.x());
+    m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 1.0f, 0.0f, rotation.y());
+    m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
     this->m_rotation = rotation;
     this->updateTransformMatrix();
 }

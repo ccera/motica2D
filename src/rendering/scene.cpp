@@ -266,11 +266,15 @@ void Scene::renderModel(Model *model)
 #endif
 }
 
-void Scene::renderPhysics(PhysicsBody *obj)
+void Scene::renderWireframe(const Transform &trans, const QColor &clr)
 {
-    QMatrix4x4 MVP = projectionMatrix * cameraMatrix; // * obj->transformMatrix;
+    //Transform transform;
+    //transform.setPosition(obj->getPosition());
+    //transform.setRotation(obj->getRotation());
+    //transform.setSize(QVector3D(obj->getWidth(), obj->getHeight(), 1.0f));
+    QMatrix4x4 MVP = projectionMatrix * cameraMatrix * trans.transformMatrix;
     glUniformMatrix4fv(m_progPick_MVPMatrix, 1, 0, MVP.data());
-    glUniform4f(m_progPick_Color, 1.0, 0.0, 0.0, 1.0f);
+    glUniform4f(m_progPick_Color, clr.red(), clr.green(), clr.blue(), 1.0f);
     Mesh *mesh = m_engine->getMesh("DEFAULT_SPRITE_MESH");
 
 #if OPENGLES_IOS
@@ -437,7 +441,23 @@ void Scene::renderScene()
     glClear(GL_DEPTH_BUFFER_BIT);
     glUseProgram(m_progPick);
     for(int p=0; p < m_engine->arrPhysicsBodies.size(); p++) {
-        renderPhysics(m_engine->arrPhysicsBodies.at(p));
+        Transform transform;
+        transform.setPosition(m_engine->arrPhysicsBodies.at(p)->getPosition());
+        transform.setRotation(m_engine->arrPhysicsBodies.at(p)->getRotation());
+        transform.setSize(QVector3D(m_engine->arrPhysicsBodies.at(p)->getWidth(),
+                                    m_engine->arrPhysicsBodies.at(p)->getHeight(), 1.0f));
+        renderWireframe(transform, QColor(255,0,0));
+    }
+
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glUseProgram(m_progPick);
+    for(int p=0; p < m_engine->arrPhysicsShapes.size(); p++) {
+        Transform transform;
+        transform.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition() + m_engine->arrPhysicsShapes.at(p)->offset );
+        transform.setRotation(m_engine->arrPhysicsShapes.at(p)->getRotation());
+        transform.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(),
+                                    m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
+        renderWireframe(transform, QColor(0,255,0));
     }
 #endif
 

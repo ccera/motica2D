@@ -23,12 +23,10 @@ public:
 
     PhysicsBody* createBoxBody(float mass, float width, float height, PhysicsBodyState bState = PHYSICS_BODY_SIMULATED);
     PhysicsBody* createCircleBody(float mass, float diametar, PhysicsBodyState bState = PHYSICS_BODY_SIMULATED);
-    PhysicsShape* createPhysicsShapeBox(PhysicsBody *body, float width, float height, const QVector2D &offset);
-    PhysicsShape* createPhysicsShapeCircle(PhysicsBody *body, float diametar, const QVector2D &offset);
-    //void addShapeToBody(PhysicsShape *shape, PhysicsBody *body);
+    PhysicsShape* createPhysicsShapeBox(float width, float height, const QVector2D &offset);
+    PhysicsShape* createPhysicsShapeCircle(float diametar, const QVector2D &offset);
+    void addShapeToBody(PhysicsShape *shape, PhysicsBody *body);
     void addShapeToSpace(PhysicsShape *shape);
-
-    //QList<PhysicsBody*> checkForOverlappingObjects(PhysicsBody *obj);
 
     cpSpace *space;
 signals:
@@ -37,11 +35,6 @@ public slots:
 
 private:
     static void postSolve(cpArbiter *arb, cpSpace *space, void *ignore);
-    //static void checkOverlapping(cpShape *shape, cpContactPointSet *points, void *data);
-
-
-
-
 };
 
 #endif // PHYSICSWORLD_H

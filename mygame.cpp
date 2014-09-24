@@ -59,33 +59,35 @@ MyGame::MyGame(Engine *engine) :
     pod = m_engine->createPhysicsBodyBox(0,10000,50, PHYSICS_BODY_STATIC);
     pod->setPosition(QVector3D(500,0,0));
 
-    podShape = m_engine->createPhysicsShapeBox(pod, 10000,50, QVector2D(0,0));
+    podShape = m_engine->createPhysicsShapeBox(10000,50, QVector2D(0,0));
     podShape->setFriction(0.5f);
-    //m_engine->addShapeToSpace(podShape);
-    //pod->parentGameObject = this;
-   // pod->userType = GAME_FLOOR;
+    m_engine->addShapeToBody(podShape, pod);
+    m_engine->addShapeToSpace(podShape);
 
 
-/*
-    PhysicsObject *platforma = m_engine->createPhysicsObjectBox(0,210,30, PHYSICSBODY_STATIC);
-    platforma->setPosition(QVector3D(200, 90, 0));
-    platforma->parentGameObject = this;
-    platforma->userType = GAME_FLOOR;
-    platforma->setFriction(0.5f);
+    PhysicsBody *platformaBody = m_engine->createPhysicsBodyBox(0,210,30, PHYSICS_BODY_STATIC);
+    platformaBody->setPosition(QVector3D(200, 90, 0));
+    PhysicsShape *platformShape = m_engine->createPhysicsShapeBox(210,30,QVector2D(0,0));
+    platformShape->setFriction(0.5f);
+    m_engine->addShapeToBody(platformShape, platformaBody);
+    m_engine->addShapeToSpace(platformShape);
 
-    PhysicsObject *platforma2 = m_engine->createPhysicsObjectBox(0,100,30, PHYSICSBODY_STATIC);
-    platforma2->setPosition(QVector3D(0, 200,0));
-    platforma2->parentGameObject = this;
-    platforma2->userType = GAME_FLOOR;
-    platforma2->setFriction(0.5f);
+    PhysicsBody *platformaBody2 = m_engine->createPhysicsBodyBox(0,210,30, PHYSICS_BODY_STATIC);
+    platformaBody2->setPosition(QVector3D(100, 30, 0));
+    PhysicsShape *platformShape2 = m_engine->createPhysicsShapeBox(210,30,QVector2D(0,0));
+    platformShape2->setFriction(0.5f);
+    m_engine->addShapeToBody(platformShape2, platformaBody2);
+    m_engine->addShapeToSpace(platformShape2);
 
-    PhysicsObject *platforma3 = m_engine->createPhysicsObjectBox(0,100,30, PHYSICSBODY_STATIC);
-    platforma3->setPosition(QVector3D(450, 200, 0));
-    platforma3->parentGameObject = this;
-    platforma3->userType = GAME_FLOOR;
-    platforma3->setFriction(0.5f);
-*/
-    //pod->setFriction(0.5f);
+    /*
+    PhysicsBody *platformaBody3 = m_engine->createPhysicsBodyBox(0,210,30, PHYSICS_BODY_STATIC);
+    platformaBody3->setPosition(QVector3D(450, 200, 0));
+    PhysicsShape *platformShape3 = m_engine->createPhysicsShapeBox(210,30,QVector2D(0,0));
+    platformShape3->setFriction(0.5f);
+    m_engine->addShapeToBody(platformShape3, platformaBody3);
+    m_engine->addShapeToSpace(platformShape3);
+    */
+
     m_engine->physicsWorld->setGravity(0, -200.0f);
 }
 

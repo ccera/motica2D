@@ -120,12 +120,12 @@ private:
     Sprite *sprPlanet;
     StateQueue stateQueue;
     PhysicsBody *playerBody;
-    PhysicsBody *feetSensor;
-    PhysicsBody *headSensorL;
-    PhysicsBody *headSensorLU;
-    PhysicsBody *headSensorR;
-    PhysicsBody *headSensorRU;
-    PhysicsBody *headSensorT;
+    PhysicsShape *feetSensor;
+//    PhysicsBody *headSensorL;
+//    PhysicsBody *headSensorLU;
+//    PhysicsBody *headSensorR;
+//    PhysicsBody *headSensorRU;
+//    PhysicsBody *headSensorT;
 
     PhysicsShape *playerShape;
 

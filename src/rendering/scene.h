@@ -21,6 +21,7 @@
 #define __Scene__
 
 #include <QObject>
+#include <QColor>
 #include "utils.h"
 #include "model.h"
 #include "texture.h"
@@ -103,7 +104,7 @@ protected:
     void    renderModel(Model *model);
     void    renderPick(Model *model);
     int     renderScenePick();
-    void    renderPhysics(PhysicsBody *obj);
+    void    renderWireframe(const Transform &trans, const QColor &clr);
     void    initSpriteMesh();
     static bool sortModels(Model *a, Model *b);
 

@@ -23,11 +23,20 @@ public:
     QList<PhysicsShape*> listOverlappingObjects();
     bool        isOverlapping();
     void        setFriction(float f);
+    void        setSensor(bool b);
+    bool        getSensor();
+    float       getWidth();
+    float       getHeight();
+    float       getDiameter();
+    QVector3D getPosition();
+    QVector3D getRotation();
 
     cpShape *shape;
     PhysicsObjectShapeType shapeType;
     GameObject *parentGameObject;
     int userType;
+    QString name;
+    QVector2D offset;
 
 private:
     static void checkOverlappingList(cpShape *shape, cpContactPointSet *points, void *data);

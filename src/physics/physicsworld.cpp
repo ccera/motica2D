@@ -27,15 +27,10 @@ PhysicsBody* PhysicsWorld::createBoxBody(float mass, float width, float height, 
         break;
     }
 
-    //cpShape *shape = cpBoxShapeNew(body, width, height);
-    //cpSpaceAddShape(space, shape);
-
     PhysicsBody *obj = new PhysicsBody(this);
     obj->bodyShape = PHYSICS_BODYSHAPE_BOX;
     obj->bodyState = bState;
     obj->body = body;
-    //obj->shape = shape;
-    //obj->shape->data = obj;
     obj->width = width;
     obj->height = height;
     if(width > height) obj->diameter = width;
@@ -69,8 +64,6 @@ PhysicsBody* PhysicsWorld::createCircleBody(float mass, float diametar, PhysicsB
     obj->bodyShape = PHYSICS_BODYSHAPE_CIRCLE;
     obj->bodyState = bState;
     obj->body = body;
-    //obj->shape = shape;
-    //obj->shape->data = obj;
     obj->width = diametar;
     obj->height = diametar;
     obj->diameter = diametar;
@@ -95,7 +88,7 @@ void PhysicsWorld::postSolve(cpArbiter *arb, cpSpace *space, void *ignore)
     }
 }
 
-PhysicsShape* PhysicsWorld::createPhysicsShapeBox(PhysicsBody *body, float width, float height, const QVector2D &offset)
+PhysicsShape* PhysicsWorld::createPhysicsShapeBox(float width, float height, const QVector2D &offset)
 {
     cpVect niz[] = {
         cpv(-(width/2.0f), -(height/2.0f)),
@@ -104,9 +97,7 @@ PhysicsShape* PhysicsWorld::createPhysicsShapeBox(PhysicsBody *body, float width
         cpv( (width/2.0f),  -(height/2.0f))
     };
 
-    //cpShape *shape = cpBoxShapeNew(NULL, width, height);
-    cpShape *shape = cpPolyShapeNew(body->body, 4, niz, cpv(offset.x(), offset.y()));
-    cpSpaceAddShape(space, shape);
+    cpShape *shape = cpPolyShapeNew(NULL, 4, niz, cpv(offset.x(), offset.y()));
     PhysicsShape *obj = new PhysicsShape(this);
     obj->shape = shape;
     obj->shapeType = PHYSICS_SHAPE_BOX;
@@ -115,14 +106,14 @@ PhysicsShape* PhysicsWorld::createPhysicsShapeBox(PhysicsBody *body, float width
     if(width > height) obj->diameter = width;
     else obj->diameter = height;
     obj->shape->data = obj;
+    obj->offset = offset;
 
     return obj;
 }
 
-PhysicsShape* PhysicsWorld::createPhysicsShapeCircle(PhysicsBody *body, float diametar, const QVector2D &offset)
+PhysicsShape* PhysicsWorld::createPhysicsShapeCircle(float diametar, const QVector2D &offset)
 {
-    cpShape *shape = cpCircleShapeNew(body->body, diametar, cpv(offset.x(), offset.y()));
-    cpSpaceAddShape(space, shape);
+    cpShape *shape = cpCircleShapeNew(NULL, diametar, cpv(offset.x(), offset.y()));
     PhysicsShape *obj = new PhysicsShape(this);
     obj->shape = shape;
     obj->shapeType = PHYSICS_SHAPE_CIRCLE;
@@ -130,33 +121,20 @@ PhysicsShape* PhysicsWorld::createPhysicsShapeCircle(PhysicsBody *body, float di
     obj->height = diametar;
     obj->diameter = diametar;
     obj->shape->data = obj;
+    obj->offset = offset;
 
     return obj;
 }
 
-//void PhysicsWorld::addShapeToBody(PhysicsShape *shape, PhysicsBody *body)
-//{
-//    cpShapeSetBody(shape->shape, body->body);
-//}
+void PhysicsWorld::addShapeToBody(PhysicsShape *shape, PhysicsBody *body)
+{
+    cpShapeSetBody(shape->shape, body->body);
+}
 
 void PhysicsWorld::addShapeToSpace(PhysicsShape *shape)
 {
     cpSpaceAddShape(space, shape->shape);
 }
-
-//void PhysicsWorld::checkOverlapping(cpShape *shape, cpContactPointSet *points, void *data)
-//{
-//    if(shape->data != NULL) {
-//        ((QList<PhysicsBody*>*)data)->append((PhysicsBody*)shape->data);
-//    }
-//}
-
-//QList<PhysicsBody*> PhysicsWorld::checkForOverlappingObjects(PhysicsBody *obj)
-//{
-//    QList<PhysicsBody*> lista;
-//    cpSpaceShapeQuery(space, obj->shape, checkOverlapping, (void*)&lista);
-//    return lista;
-//}
 
 void PhysicsWorld::updateWorld(float dt)
 {

@@ -46,10 +46,9 @@ public:
 
     PhysicsBody* createPhysicsBodyBox(float mass, float width, float height, PhysicsBodyState bState = PHYSICS_BODY_SIMULATED);
     PhysicsBody* createPhysicsBodyCircle(float mass, float diametar, PhysicsBodyState bState = PHYSICS_BODY_SIMULATED);
-
-    PhysicsShape* createPhysicsShapeBox(PhysicsBody *body, float width, float height, const QVector2D &offset);
-    PhysicsShape* createPhysicsShapeCircle(PhysicsBody *body, float diametar, const QVector2D &offset);
-    //void addShapeToBody(PhysicsShape *shape, PhysicsBody *body);
+    PhysicsShape* createPhysicsShapeBox(float width, float height, const QVector2D &offset);
+    PhysicsShape* createPhysicsShapeCircle(float diametar, const QVector2D &offset);
+    void addShapeToBody(PhysicsShape *shape, PhysicsBody *body);
     void addShapeToSpace(PhysicsShape *shape);
 
     void initDefaultSpriteMesh();

@@ -38,7 +38,6 @@ public:
     void setSize(const QVector3D &size);
     void setWorldSize(const QVector3D &size);
     void setRotation(const QVector3D &rotation);
-    void setWorldRotation(const QVector3D &rotation);
     void setRotation(const QQuaternion &rotation);
     // TODO: setWorldRotation
 
