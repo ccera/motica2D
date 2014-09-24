@@ -60,7 +60,7 @@ MyGame::MyGame(Engine *engine) :
     pod->setPosition(QVector3D(500,0,0));
 
     podShape = m_engine->createPhysicsShapeBox(pod, 10000,50, QVector2D(0,0));
-    podShape->setFriction(1.0f);
+    podShape->setFriction(0.5f);
     //m_engine->addShapeToSpace(podShape);
     //pod->parentGameObject = this;
    // pod->userType = GAME_FLOOR;

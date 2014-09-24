@@ -115,6 +115,8 @@ PhysicsShape* PhysicsWorld::createPhysicsShapeBox(PhysicsBody *body, float width
     if(width > height) obj->diameter = width;
     else obj->diameter = height;
     obj->shape->data = obj;
+
+    return obj;
 }
 
 PhysicsShape* PhysicsWorld::createPhysicsShapeCircle(PhysicsBody *body, float diametar, const QVector2D &offset)
@@ -128,6 +130,8 @@ PhysicsShape* PhysicsWorld::createPhysicsShapeCircle(PhysicsBody *body, float di
     obj->height = diametar;
     obj->diameter = diametar;
     obj->shape->data = obj;
+
+    return obj;
 }
 
 //void PhysicsWorld::addShapeToBody(PhysicsShape *shape, PhysicsBody *body)

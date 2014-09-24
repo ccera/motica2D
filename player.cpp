@@ -61,8 +61,8 @@ Player::Player(Engine *engine) :
     playerBody->name = "PlayerBody";
     playerBody->setRotation(QVector3D(0,0,0));
 
-    playerShape = m_engine->createPhysicsShapeBox(playerBody,100,100,QVector2D());
-    //playerShape->setFriction(0.5f);
+    playerShape = m_engine->createPhysicsShapeBox(playerBody,100,100,QVector2D(0,0));
+    playerShape->setFriction(0.5f);
 /*
     feetSensor = m_engine->createPhysicsBodyBox(1,50,50, PHYSICS_BODY_ROUGE);
     feetSensor->name = "FeetSensor";
