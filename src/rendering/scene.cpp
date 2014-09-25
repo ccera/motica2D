@@ -400,7 +400,7 @@ void Scene::pickPos(int x, int y)
 
 void Scene::renderScene()
 {
-    //timer.start();
+    timer.start();
 
     qSort(m_engine->arrModels.begin(), m_engine->arrModels.end(), sortModels); //Prvo ih sortirati po z
 
@@ -467,7 +467,7 @@ void Scene::renderScene()
     }
 #endif
 
-    //timer.end200();
+    timer.end200();
 
 // Ovako moze samo kod spriteova koji nemaju alpha
 //    glUseProgram(m_progSpr);

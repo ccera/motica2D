@@ -194,9 +194,9 @@ void Window::renderNow()
         initialize();
     }
 
-    render();
-
     m_context->swapBuffers(this);
+
+    render();
 
     if (m_animating) {
         renderLater();

@@ -133,10 +133,13 @@ void Player::checkState()
         onFeetTimer = 0;
     }
 
-    if( ( (bodyTouchingL && bodyTouchingLU) || (bodyTouchingR && bodyTouchingRU))
-        && (playerBody->getRotation().x() > 30 || playerBody->getRotation().x() < -30)
-      )
-    {
+    if( ((bodyTouchingL && bodyTouchingLU) || (bodyTouchingR && bodyTouchingRU))
+        && (playerBody->getRotation().z() > 30 || playerBody->getRotation().z() < -30) ) {
+        playerState = FELL_DOWN;
+        onFeetTimer = 0;
+    }
+
+    if( headTouching && (playerBody->getRotation().z() > 30 || playerBody->getRotation().z() < -30) ) {
         playerState = FELL_DOWN;
         onFeetTimer = 0;
     }
@@ -251,12 +254,25 @@ void Player::collide(PhysicsBody *with)
 
 void Player::debugPrintState()
 {
-    if(playerState == ON_FEET)      qDebug() << "ON_FEET" << controlsState;
+    //if(playerState == ON_FEET)      qDebug() << "ON_FEET" << controlsState;
     if(playerState == RUNNING)      qDebug() << "RUNNING" << controlsState;
     if(playerState == TURNING)      qDebug() << "TURNING" << controlsState;
     if(playerState == FALLING)      qDebug() << "FALLING" << controlsState;
     if(playerState == FELL_DOWN)    qDebug() << "FELL_DOWN" << controlsState;
     if(playerState == FLYING)       qDebug() << "FLYING" << controlsState;
+
+    /*
+        qDebug() << "  feet " << feetTouching
+                 << "  head " << headTouching
+                 << "  bodyL " << bodyTouchingL
+                 << "  bodyLU " << bodyTouchingLU
+                 << "  bodyLD " << bodyTouchingLD
+                 << "  bodyR " << bodyTouchingR
+                 << "  bodyRU " << bodyTouchingRU
+                 << "  bodyRD " << bodyTouchingRD  ;
+
+        qDebug() << playerBody->getVelocity().y() << " rot" << playerBody->getRotation();
+    */
 }
 
 void Player::update(float dt)
@@ -274,20 +290,9 @@ void Player::update(float dt)
     bodyTouchingRU = bodySensorRU->isOverlapping();
     bodyTouchingRD = bodySensorRD->isOverlapping();
 
-    qDebug() << "  feet " << feetTouching
-             << "  head " << headTouching
-             << "  bodyL " << bodyTouchingL
-             << "  bodyLU " << bodyTouchingLU
-             << "  bodyLD " << bodyTouchingLD
-             << "  bodyR " << bodyTouchingR
-             << "  bodyRU " << bodyTouchingRU
-             << "  bodyRD " << bodyTouchingRD  ;
-
-    qDebug() << playerBody->getVelocity().y();
-
     checkKey();
     checkState();
-    debugPrintState();
+    //debugPrintState();
 
     if(playerState == FELL_DOWN) {
         fellDownTimer++;
@@ -319,15 +324,6 @@ void Player::update(float dt)
         if(feetTouching && jumpAllowed) {
             jumpAllowed = false;
             playerBody->applyImpulse(0,16400);
-        }
-    }
-
-    if(controlsState == CONTROLS_NOTHING || playerState == FALLING || playerState == FELL_DOWN)
-    {
-        if(headTouching) {
-            //if(playerBody->getVelocity().x() > 0) playerBody->setVelocity(playerBody->getVelocity().x()-5, playerBody->getVelocity().y());
-            //if(playerBody->getVelocity().x() < 0) playerBody->setVelocity(playerBody->getVelocity().x()+5, playerBody->getVelocity().y());
-            //if(playerBody->getVelocity().x() < 8 && playerBody->getVelocity().x() > -8) playerBody->setVelocity(0,playerBody->body->v.y);
         }
     }
 

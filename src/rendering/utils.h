@@ -30,6 +30,7 @@
 
 #if _WIN64 || _WIN32 || (__linux && !__ANDROID_API__)
     #define OPENGL21 1
+    //#define OPENGL32 1
     #include <qopengl.h>
 #elif __APPLE__
     #include "TargetConditionals.h"
