@@ -437,27 +437,33 @@ void Scene::renderScene()
             renderModel(m_engine->arrModels[m]);
         }
     }
+
 #if DBUG_RENDER_PHYSICS
     glClear(GL_DEPTH_BUFFER_BIT);
     glUseProgram(m_progPick);
-    for(int p=0; p < m_engine->arrPhysicsBodies.size(); p++) {
-        Transform transform;
-        transform.setPosition(m_engine->arrPhysicsBodies.at(p)->getPosition());
-        transform.setRotation(m_engine->arrPhysicsBodies.at(p)->getRotation());
-        transform.setSize(QVector3D(m_engine->arrPhysicsBodies.at(p)->getWidth(),
-                                    m_engine->arrPhysicsBodies.at(p)->getHeight(), 1.0f));
-        renderWireframe(transform, QColor(255,0,0));
-    }
-
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glUseProgram(m_progPick);
     for(int p=0; p < m_engine->arrPhysicsShapes.size(); p++) {
-        Transform transform;
-        transform.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition() + m_engine->arrPhysicsShapes.at(p)->offset );
-        transform.setRotation(m_engine->arrPhysicsShapes.at(p)->getRotation());
-        transform.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(),
-                                    m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
-        renderWireframe(transform, QColor(0,255,0));
+
+        if(m_engine->arrPhysicsShapes.at(p)->offset.x() != 0.0f || m_engine->arrPhysicsShapes.at(p)->offset.y() != 0.0f) {
+            Transform tp;
+            tp.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition());
+            tp.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(), m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
+
+            Transform t;
+            t.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition() + m_engine->arrPhysicsShapes.at(p)->offset);
+            t.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(),
+                                        m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
+            tp.addChild(&t);
+            tp.setRotation(m_engine->arrPhysicsShapes.at(p)->getRotation());
+            renderWireframe(t, QColor(0,255,0));
+        }
+        else {
+            Transform transform;
+            transform.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition() + m_engine->arrPhysicsShapes.at(p)->offset );
+            transform.setRotation(m_engine->arrPhysicsShapes.at(p)->getRotation());
+            transform.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(),
+                                        m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
+            renderWireframe(transform, QColor(0,255,0));
+        }
     }
 #endif
 

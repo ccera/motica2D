@@ -113,35 +113,40 @@ signals:
 public slots:
 
 private:
-    Engine *m_engine;
-    Texture *txPlayer;
-    AnimatedSprite *asPlayer;
-    Texture *planet;
-    Sprite *sprPlanet;
-    StateQueue stateQueue;
-    PhysicsBody *playerBody;
-    PhysicsShape *feetSensor;
-//    PhysicsBody *headSensorL;
-//    PhysicsBody *headSensorLU;
-//    PhysicsBody *headSensorR;
-//    PhysicsBody *headSensorRU;
-//    PhysicsBody *headSensorT;
+    Engine          *m_engine;
+    Texture         *txPlayer;
+    AnimatedSprite  *asprPlayer;
+    Texture         *planet;
+    Sprite          *sprPlanet;
+    //StateQueue  stateQueue;
 
+    PhysicsBody  *playerBody;
     PhysicsShape *playerShape;
-
+    PhysicsShape *feetSensor;
+    PhysicsShape *bodySensorL;
+    PhysicsShape *bodySensorLU;
+    PhysicsShape *bodySensorLD;
+    PhysicsShape *bodySensorR;
+    PhysicsShape *bodySensorRU;
+    PhysicsShape *bodySensorRD;
+    PhysicsShape *headSensor;
 
     bool feetTouching;
-    bool headTouchingL;
-    bool headTouchingLU;
-    bool headTouchingR;
-    bool headTouchingRU;
-    bool headTouchingT;
-    bool bodyTouching;
-    int turnTimer;
-    int flyTimer;
-    int fellDownTimer;
-    int onFeetTimer;
+    bool bodyTouchingL;
+    bool bodyTouchingLU;
+    bool bodyTouchingLD;
+    bool bodyTouchingR;
+    bool bodyTouchingRU;
+    bool bodyTouchingRD;
+    bool headTouching;
+
+    int  turnTimer;
+    int  flyTimer;
+    int  fellDownTimer;
+    int  onFeetTimer;
     bool jumpAllowed;
+
+    int t;
 };
 
 #endif // PLAYER_H

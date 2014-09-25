@@ -79,28 +79,28 @@ void Engine::addGameObject(GameObject *e)
     this->arrGameObjects.push_back(e);
 }
 
-PhysicsBody*  Engine::createPhysicsBodyBox(float mass, float width, float height, PhysicsBodyState bState)
+PhysicsBody*  Engine::newPhysicsBodyBox(float mass, float width, float height, PhysicsBodyState bState)
 {
     PhysicsBody *po = physicsWorld->createBoxBody(mass, width, height, bState);
     this->arrPhysicsBodies.push_back(po);
     return po;
 }
 
-PhysicsBody*  Engine::createPhysicsBodyCircle(float mass, float diametar, PhysicsBodyState bState)
+PhysicsBody*  Engine::newPhysicsBodyCircle(float mass, float diametar, PhysicsBodyState bState)
 {
     PhysicsBody *po = physicsWorld->createCircleBody(mass, diametar, bState);
     this->arrPhysicsBodies.push_back(po);
     return po;
 }
 
-PhysicsShape* Engine::createPhysicsShapeBox(float width, float height, const QVector2D &offset)
+PhysicsShape* Engine::newPhysicsShapeBox(float width, float height, const QVector2D &offset)
 {
     PhysicsShape *ps = physicsWorld->createPhysicsShapeBox(width, height, offset);
     this->arrPhysicsShapes.push_back(ps);
     return ps;
 }
 
-PhysicsShape* Engine::createPhysicsShapeCircle(float diametar, const QVector2D &offset)
+PhysicsShape* Engine::newPhysicsShapeCircle(float diametar, const QVector2D &offset)
 {
     PhysicsShape *ps = physicsWorld->createPhysicsShapeCircle(diametar, offset);
     this->arrPhysicsShapes.push_back(ps);

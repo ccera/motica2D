@@ -32,35 +32,24 @@ public:
     Transform();
     ~Transform();
         
-    void addChild(Transform* child);
-    void setPosition(const QVector3D &position);
-    void setWorldPosition(const QVector3D &position);
-    void setSize(const QVector3D &size);
-    void setWorldSize(const QVector3D &size);
-    void setRotation(const QVector3D &rotation);
-    void setRotation(const QQuaternion &rotation);
-    // TODO: setWorldRotation
-
-    QVector3D getPosition();
-    // TODO: getWorldPosition
-    QVector3D getSize();
-    // TODO: getWorldSize
-    QVector3D getRotation();
-     // TODO: getWorldRotation
-    QQuaternion getRotationQuaternion();
+    void        addChild(Transform* child);
+    void        setPosition(const QVector3D &position);
+    void        setSize(const QVector3D &size);
+    void        setRotation(const QVector3D &rotation);
+    QVector3D   getPosition();
+    QVector3D   getSize();
+    QVector3D   getRotation();
 
     Transform *transformParent;
     QMatrix4x4 transformMatrix;
     QVector<Transform*> children;
 
 private:
-    bool isDirty;
     void updateTransformMatrix();
 
     QVector3D m_size;
     QVector3D m_position;
     QVector3D m_rotation;
-    QQuaternion m_quat_rotation;
 };
 
 #endif

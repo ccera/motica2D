@@ -31,6 +31,7 @@ class Engine
 public:
     Engine();
 
+    // Graphics helper functions
     Texture*        newTexture(const QString &file);
     void            addTexture(Texture *texture);
     Texture*        getTexture(const QString &name);
@@ -44,23 +45,23 @@ public:
     Mesh*           getMesh(const QString &name);
     void            addGameObject(GameObject *e);
 
-    PhysicsBody* createPhysicsBodyBox(float mass, float width, float height, PhysicsBodyState bState = PHYSICS_BODY_SIMULATED);
-    PhysicsBody* createPhysicsBodyCircle(float mass, float diametar, PhysicsBodyState bState = PHYSICS_BODY_SIMULATED);
-    PhysicsShape* createPhysicsShapeBox(float width, float height, const QVector2D &offset);
-    PhysicsShape* createPhysicsShapeCircle(float diametar, const QVector2D &offset);
-    void addShapeToBody(PhysicsShape *shape, PhysicsBody *body);
-    void addShapeToSpace(PhysicsShape *shape);
+    // Physics helper functions
+    PhysicsBody*    newPhysicsBodyBox(float mass, float width, float height, PhysicsBodyState bState = PHYSICS_BODY_SIMULATED);
+    PhysicsBody*    newPhysicsBodyCircle(float mass, float diametar, PhysicsBodyState bState = PHYSICS_BODY_SIMULATED);
+    PhysicsShape*   newPhysicsShapeBox(float width, float height, const QVector2D &offset);
+    PhysicsShape*   newPhysicsShapeCircle(float diametar, const QVector2D &offset);
+    void            addShapeToBody(PhysicsShape *shape, PhysicsBody *body);
+    void            addShapeToSpace(PhysicsShape *shape);
 
-    void initDefaultSpriteMesh();
 
-    QVector<Texture*> arrTextures;
-    QVector<Sprite*> arrSprites;
-    QVector<Model*> arrModels;
+    QVector<Texture*>        arrTextures;
+    QVector<Sprite*>         arrSprites;
+    QVector<Model*>          arrModels;
     QVector<AnimatedSprite*> arrAnimSprites;
-    QVector<GameObject*> arrGameObjects;
-    QVector<PhysicsBody*> arrPhysicsBodies;
-    QVector<PhysicsShape*> arrPhysicsShapes;
-    QVector<Mesh*> arrMeshes;
+    QVector<GameObject*>     arrGameObjects;
+    QVector<PhysicsBody*>    arrPhysicsBodies;
+    QVector<PhysicsShape*>   arrPhysicsShapes;
+    QVector<Mesh*>           arrMeshes;
 
     Scene *scene;
     Window *engine;
@@ -77,7 +78,7 @@ public:
 
 private:
     int next_model_id; // Id koji se dodjeljuje svakom modelu
-
+    void initDefaultSpriteMesh();
 };
 
 #endif // DATASTORE_H

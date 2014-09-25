@@ -22,24 +22,24 @@
 Player::Player(Engine *engine) :
      GameObject()
 {
+    t = 0;
     m_engine = engine;
     m_engine->addGameObject(this);
 
     txPlayer = m_engine->newTexture(Resource("textures/allframes.png"));
 
-    planet = m_engine->newTexture(Resource("textures/Planet.png"));
+    planet = m_engine->newTexture(Resource("textures/yellow.png"));
     sprPlanet = m_engine->newSprite(planet);
     sprPlanet->setName("Planet");
-    sprPlanet->setPosition(QVector3D(100,1,10));
-    sprPlanet->setSize(QVector3D(128.0f,128.0f,128.0f));
-    sprPlanet->setRotation(QVector3D(0.0f,0.0f,40.0f));
+    sprPlanet->setPosition(QVector3D(500,200,50));
+    sprPlanet->setSize(QVector3D(28.0f, 28.0f, 28.0f));
 
-    asPlayer = m_engine->newAnimatedSprite(4, 32, txPlayer);
-    asPlayer->setName("Prince");
-    asPlayer->setPosition(QVector3D(1,1,50));
-    asPlayer->setSize(QVector3D(64,64,1.0f));
-    asPlayer->setFrameLength(3);
-    asPlayer->addChild(sprPlanet);
+    asprPlayer = m_engine->newAnimatedSprite(4, 32, txPlayer);
+    asprPlayer->setName("Prince");
+    asprPlayer->setPosition(QVector3D(400,200,50));
+    asprPlayer->setSize(QVector3D(64,64,64));
+    asprPlayer->setFrameLength(3);
+    asprPlayer->addChild(sprPlanet);
 
     //stateQueue.enqueue(PLAYER_STANDING, 0);
     //stateQueue.setInterface(this);
@@ -52,61 +52,88 @@ Player::Player(Engine *engine) :
 
     m_engine->physicsWorld->setDamping(0.9f);
 
-    playerBody = m_engine->createPhysicsBodyBox(80,32,64);
+    playerBody = m_engine->newPhysicsBodyBox(80,32,64);
     playerBody->setPosition(QVector3D(100,600,1));
     playerBody->parentGameObject = this;
     playerBody->name = "PlayerBody";
     playerBody->setRotation(QVector3D(0,0,0));
 
-    playerShape = m_engine->createPhysicsShapeBox(32,64,QVector2D(0,0));
+    playerShape = m_engine->newPhysicsShapeBox(32,64,QVector2D(0,0));
+    playerShape->name = "PlayerShape";
     playerShape->setFriction(0.5f);
     playerShape->userType = GAME_PLAYER;
     m_engine->addShapeToBody(playerShape, playerBody);
     m_engine->addShapeToSpace(playerShape);
 
-    feetSensor = m_engine->createPhysicsShapeBox(100,10,QVector2D(0,-50));
+    feetSensor = m_engine->newPhysicsShapeBox(10,10,QVector2D(0,-40));
     feetSensor->setSensor(true);
     feetSensor->name = "FeetSensor";
     m_engine->addShapeToBody(feetSensor, playerBody);
     m_engine->addShapeToSpace(feetSensor);
 
-/*
-    headSensorL = m_engine->createPhysicsObjectBox(1,8,4, PHYSICSBODY_ROUGE);
-    headSensorL->setPosition(QVector3D(800,210,0));
-    headSensorLU = m_engine->createPhysicsObjectBox(1,8,4, PHYSICSBODY_ROUGE);
-    headSensorLU->setPosition(QVector3D(800,210,0));
+    headSensor = m_engine->newPhysicsShapeBox(10,10,QVector2D(0,40));
+    headSensor->setSensor(true);
+    headSensor->name = "HeadSensor";
+    m_engine->addShapeToBody(headSensor, playerBody);
+    m_engine->addShapeToSpace(headSensor);
 
-    headSensorR = m_engine->createPhysicsObjectBox(1,8,4, PHYSICSBODY_ROUGE);
-    headSensorR->setPosition(QVector3D(1000,210,0));
-    headSensorRU = m_engine->createPhysicsObjectBox(1,8,4, PHYSICSBODY_ROUGE);
-    headSensorRU->setPosition(QVector3D(1000,210,0));
+    bodySensorL = m_engine->newPhysicsShapeBox(10,10,QVector2D(-25,0));
+    bodySensorL->setSensor(true);
+    bodySensorL->name = "HeadSensorL";
+    m_engine->addShapeToBody(bodySensorL, playerBody);
+    m_engine->addShapeToSpace(bodySensorL);
 
+    bodySensorLU = m_engine->newPhysicsShapeBox(10,10,QVector2D(-25,20));
+    bodySensorLU->setSensor(true);
+    bodySensorLU->name = "HeadSensorLU";
+    m_engine->addShapeToBody(bodySensorLU, playerBody);
+    m_engine->addShapeToSpace(bodySensorLU);
 
-    headSensorT = m_engine->createPhysicsObjectBox(1,8,4, PHYSICSBODY_ROUGE);
-    headSensorT->setPosition(QVector3D(900,410,0));
-    */
+    bodySensorLD = m_engine->newPhysicsShapeBox(10,10,QVector2D(-25,-20));
+    bodySensorLD->setSensor(true);
+    bodySensorLD->name = "HeadSensorLD";
+    m_engine->addShapeToBody(bodySensorLD, playerBody);
+    m_engine->addShapeToSpace(bodySensorLD);
+
+    bodySensorR = m_engine->newPhysicsShapeBox(10,10,QVector2D(25,0));
+    bodySensorR->setSensor(true);
+    bodySensorR->name = "HeadSensorR";
+    m_engine->addShapeToBody(bodySensorR, playerBody);
+    m_engine->addShapeToSpace(bodySensorR);
+
+    bodySensorRU = m_engine->newPhysicsShapeBox(10,10,QVector2D(25,20));
+    bodySensorRU->setSensor(true);
+    bodySensorRU->name = "HeadSensorRU";
+    m_engine->addShapeToBody(bodySensorRU, playerBody);
+    m_engine->addShapeToSpace(bodySensorRU);
+
+    bodySensorRD = m_engine->newPhysicsShapeBox(10,10,QVector2D(25,-20));
+    bodySensorRD->setSensor(true);
+    bodySensorRD->name = "HeadSensorRD";
+    m_engine->addShapeToBody(bodySensorRD, playerBody);
+    m_engine->addShapeToSpace(bodySensorRD);
 }
 
 void Player::checkState()
 {
     if(orientState == PLAYER_LEFT) {
-        asPlayer->setSize(QVector3D(64,64,1.0f));
+        asprPlayer->setSize(QVector3D(64,64,1.0f));
     }
     else {
-        asPlayer->setSize(QVector3D(-64,64,1.0f));
+        asprPlayer->setSize(QVector3D(-64,64,1.0f));
     }
 
-    if(!feetTouching && (playerBody->getVelocity().y() > 2 || playerBody->getVelocity().y() < -2)) {
+    if( !feetTouching && (playerBody->getVelocity().y() > 10) ) {
         playerState = FLYING;
         onFeetTimer = 0;
     }
 
-    if((playerBody->getRotation().x() > 30 || playerBody->getRotation().x() < -30)) {
+    if( !feetTouching && (playerBody->getVelocity().y() < -10) ) {
         playerState = FALLING;
         onFeetTimer = 0;
     }
 
-    if( ( (headTouchingL && headTouchingLU) || (headTouchingR && headTouchingRU) || headTouchingT)
+    if( ( (bodyTouchingL && bodyTouchingLU) || (bodyTouchingR && bodyTouchingRU))
         && (playerBody->getRotation().x() > 30 || playerBody->getRotation().x() < -30)
       )
     {
@@ -224,66 +251,39 @@ void Player::collide(PhysicsBody *with)
 
 void Player::debugPrintState()
 {
-    if(playerState == ON_FEET) qDebug() << "ON_FEET" << controlsState;
-    if(playerState == RUNNING) qDebug() << "RUNNING" << controlsState;
-    if(playerState == TURNING) qDebug() << "TURNING" << controlsState;
-    if(playerState == FALLING) qDebug() << "FALLING" << controlsState;
-    if(playerState == FELL_DOWN) qDebug() << "FELL_DOWN" << controlsState;
-    if(playerState == FLYING) qDebug() << "FLYING" << controlsState;
+    if(playerState == ON_FEET)      qDebug() << "ON_FEET" << controlsState;
+    if(playerState == RUNNING)      qDebug() << "RUNNING" << controlsState;
+    if(playerState == TURNING)      qDebug() << "TURNING" << controlsState;
+    if(playerState == FALLING)      qDebug() << "FALLING" << controlsState;
+    if(playerState == FELL_DOWN)    qDebug() << "FELL_DOWN" << controlsState;
+    if(playerState == FLYING)       qDebug() << "FLYING" << controlsState;
 }
 
 void Player::update(float dt)
 {
-    //sprPlanet->setRotation(QVector3D(0,0,40));
+    asprPlayer->setPosition(playerBody->getPosition());
+    asprPlayer->setRotation(playerBody->getRotation());
 
-    asPlayer->setPosition(playerBody->getPosition()); //  QVector3D(playerBody->getPosition().x(), playerBody->getPosition().y(), 0.0f));
-    asPlayer->setRotation(playerBody->getRotation());// QVector3D(0,0,playerBody->getRotation()));
-/*
-    feetSensor->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y()-38);
-    QVector2D fr = rotateAround(feetSensor->getPosition(), playerBody->getPosition(), playerBody->getRotation());
-    feetSensor->setPosition(fr.x(), fr.y());
-
-    headSensorL->setPosition(playerBody->getPosition().x()-24, playerBody->getPosition().y()-20);
-    QVector2D hsl = rotateAround(headSensorL->getPosition(), playerBody->getPosition(), playerBody->getRotation());
-    headSensorL->setPosition(hsl.x(), hsl.y());
-    headSensorLU->setPosition(playerBody->getPosition().x()-24, playerBody->getPosition().y()+20);
-    QVector2D hslu = rotateAround(headSensorLU->getPosition(), playerBody->getPosition(), playerBody->getRotation());
-    headSensorLU->setPosition(hslu.x(), hslu.y());
-
-    headSensorR->setPosition(playerBody->getPosition().x()+24, playerBody->getPosition().y()-20);
-    QVector2D hsr = rotateAround(headSensorR->getPosition(), playerBody->getPosition(), playerBody->getRotation());
-    headSensorR->setPosition(hsr.x(), hsr.y());
-    headSensorRU->setPosition(playerBody->getPosition().x()+24, playerBody->getPosition().y()+20);
-    QVector2D hsru = rotateAround(headSensorRU->getPosition(), playerBody->getPosition(), playerBody->getRotation());
-    headSensorRU->setPosition(hsru.x(), hsru.y());
-
-
-    headSensorT->setPosition(playerBody->getPosition().x(), playerBody->getPosition().y()+38);
-    QVector2D hst = rotateAround(headSensorT->getPosition(), playerBody->getPosition(), playerBody->getRotation());
-    headSensorT->setPosition(hst.x(), hst.y());
-*/
-    // Feet sensor check
+    // Check sensors for collisions
     feetTouching = feetSensor->isOverlapping();
-    //qDebug() << feetTouching;
-/*
-    // Head L check
-    headTouchingL = headSensorL->isOverlapping();
+    headTouching = headSensor->isOverlapping();
+    bodyTouchingL = bodySensorL->isOverlapping();
+    bodyTouchingLU = bodySensorLU->isOverlapping();
+    bodyTouchingLD = bodySensorLD->isOverlapping();
+    bodyTouchingR = bodySensorR->isOverlapping();
+    bodyTouchingRU = bodySensorRU->isOverlapping();
+    bodyTouchingRD = bodySensorRD->isOverlapping();
 
-    // Head LU check
-    headTouchingLU = headSensorLU->isOverlapping();
+    qDebug() << "  feet " << feetTouching
+             << "  head " << headTouching
+             << "  bodyL " << bodyTouchingL
+             << "  bodyLU " << bodyTouchingLU
+             << "  bodyLD " << bodyTouchingLD
+             << "  bodyR " << bodyTouchingR
+             << "  bodyRU " << bodyTouchingRU
+             << "  bodyRD " << bodyTouchingRD  ;
 
-    // Head R check
-    headTouchingR = headSensorR->isOverlapping();
-
-    // Head RU check
-    headTouchingRU = headSensorRU->isOverlapping();
-
-    // Head T check
-    headTouchingT = headSensorT->isOverlapping();
-
-    // Body check
-    bodyTouching = playerBody->isOverlapping();
-*/
+    qDebug() << playerBody->getVelocity().y();
 
     checkKey();
     checkState();
@@ -324,7 +324,7 @@ void Player::update(float dt)
 
     if(controlsState == CONTROLS_NOTHING || playerState == FALLING || playerState == FELL_DOWN)
     {
-        if(bodyTouching) {
+        if(headTouching) {
             //if(playerBody->getVelocity().x() > 0) playerBody->setVelocity(playerBody->getVelocity().x()-5, playerBody->getVelocity().y());
             //if(playerBody->getVelocity().x() < 0) playerBody->setVelocity(playerBody->getVelocity().x()+5, playerBody->getVelocity().y());
             //if(playerBody->getVelocity().x() < 8 && playerBody->getVelocity().x() > -8) playerBody->setVelocity(0,playerBody->body->v.y);

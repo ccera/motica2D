@@ -22,27 +22,20 @@
 Transform::Transform()
 {
     transformParent = 0;
+    m_position = QVector3D(0,0,0);
+    m_size = QVector3D(0,0,0);
+    m_rotation = QVector3D(0,0,0);
 }
 
 void Transform::addChild(Transform* child)
 {
-    float szx = 1.0;
-    float szy = 1.0;
-    float szz = 1.0;
-
-    if(this->m_size.x() == 0.0f) szx = 1.0f;
-    else szx = this->m_size.x();
-
-    if(this->m_size.y() == 0.0f) szy = 1.0f;
-    else szy = this->m_size.y();
-
-    if(this->m_size.z() == 0.0f) szz = 1.0f;
-    else szz = this->m_size.z();
-
     child->transformParent = this;
 
-    child->setPosition(QVector3D(child->m_position.x()/szx, child->m_position.y()/szy, child->m_position.z()/szz));
-    child->setSize(QVector3D(child->m_size.x()/szx, child->m_size.y()/szy, child->m_size.z()/szz));
+    child->m_position = this->transformMatrix.inverted() * child->getPosition();
+
+    QMatrix4x4 sz;
+    sz.scale(this->m_size);
+    child->m_size = sz.inverted() * child->getSize();
 
     children.push_back(child);
     child->updateTransformMatrix();
@@ -54,66 +47,15 @@ void Transform::setPosition(const QVector3D &position)
     this->updateTransformMatrix();
 }
 
-void Transform::setWorldPosition(const QVector3D &position)
-{
-    float szx = 1.0f;
-    float szy = 1.0f;
-    float szz = 1.0f;
-
-    if(transformParent) {
-        if(transformParent->getSize().x() == 0.0f) szx = 1.0f;
-        else szx = transformParent->getSize().x();
-
-        if(transformParent->getSize().y() == 0.0f) szy = 1.0f;
-        else szy = transformParent->getSize().y();
-
-        if(transformParent->getSize().z() == 0.0f) szz = 1.0f;
-        else szz = transformParent->getSize().z();
-    }
-
-    this->m_position = QVector3D(position.x()/szx, position.y()/szy, position.z()/szz);
-    this->updateTransformMatrix();
-}
-
 void Transform::setRotation(const QVector3D &rotation)
 {
-    m_quat_rotation = m_quat_rotation.fromAxisAndAngle(1.0f, 0.0f, 0.0f, rotation.x());
-    m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 1.0f, 0.0f, rotation.y());
-    m_quat_rotation = m_quat_rotation * m_quat_rotation.fromAxisAndAngle(0.0f, 0.0f, 1.0f, rotation.z());
     this->m_rotation = rotation;
-    this->updateTransformMatrix();
-}
-
-void Transform::setRotation(const QQuaternion &rotation)
-{
-    this->m_quat_rotation = rotation;
     this->updateTransformMatrix();
 }
 
 void Transform::setSize(const QVector3D &size)
 {
     this->m_size = size;
-    this->updateTransformMatrix();
-}
-
-void Transform::setWorldSize(const QVector3D &size)
-{
-    float szx = 1.0f;
-    float szy = 1.0f;
-    float szz = 1.0f;
-
-    if(transformParent) {
-        if(transformParent->getSize().x() == 0.0f) szx = 1.0f;
-        else szx = transformParent->getSize().x();
-
-        if(transformParent->getSize().y() == 0.0f) szy = 1.0f;
-        else szy = transformParent->getSize().y();
-
-        if(transformParent->getSize().z() == 0.0f) szz = 1.0f;
-        else szz = transformParent->getSize().z();
-    }
-
-    this->m_size = QVector3D(size.x()/szx, size.y()/szy, size.z()/szz);
     this->updateTransformMatrix();
 }
 
@@ -127,11 +69,6 @@ QVector3D Transform::getRotation()
     return m_rotation;
 }
 
-QQuaternion Transform::getRotationQuaternion()
-{
-    return m_quat_rotation;
-}
-
 QVector3D Transform::getSize()
 {
     return m_size;
@@ -140,14 +77,15 @@ QVector3D Transform::getSize()
 void Transform::updateTransformMatrix()
 {
     transformMatrix.setToIdentity();
+    if(transformParent) {
+        transformMatrix = transformParent->transformMatrix;
+    }
 
     transformMatrix.translate(m_position);
-    transformMatrix.rotate(m_quat_rotation);
-    transformMatrix.scale(m_size);
-
-    if(transformParent) {
-        transformMatrix = transformParent->transformMatrix * transformMatrix;
-    }
+    transformMatrix.rotate(m_rotation.x(), 1.0f, 0.0f, 0.0f);
+    transformMatrix.rotate(m_rotation.y(), 0.0f, 1.0f, 0.0f);
+    transformMatrix.rotate(m_rotation.z(), 0.0f, 0.0f, 1.0f);
+    transformMatrix.scale(m_size.x(), m_size.y(), m_size.z());
 
     for(int n=0; n < children.size(); n++) {
         children.at(n)->updateTransformMatrix();
