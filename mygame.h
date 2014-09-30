@@ -44,14 +44,12 @@ public slots:
 
 private:
     Engine *m_engine;
-    Texture *planet;
-    Texture *bottle;
     Texture *background;
-    Texture *fish;
+    Texture *platforma;
     Sprite *sprBackground;
-    Sprite *sprPlanet;
-    Sprite *sprBottle;
-    Sprite *sprFish;
+    Sprite *sprPlatfroma1;
+    Sprite *sprPlatfroma2;
+    Sprite *sprPlatfroma3;
 
     Player *prince;
     PhysicsBody *pod;

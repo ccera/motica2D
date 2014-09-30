@@ -46,20 +46,18 @@ enum _PlayerAnimationState {
     PLAYER_STANDING,
     PLAYER_FLYING,
     PLAYER_TURNING,
-    PLAYER_BEGIN_RUNNING,
-    PLAYER_END_BEGIN_RUNNING,
-    PLAYER_END_RUNNING,
-    PLAYER_TURN,
-    PLAYER_START_JUMP_FROM_RUN,
-    PLAYER_END_JUMP_FROM_RUN,
-    PLAYER_TURN_FROM_RUN
+    PLAYER_FALLING,
+    PLAYER_HIT_MIDDLE,
+    PLAYER_HIT_HEAD,
+    PLAYER_HIT_LEGS,
+    PLAYER_SPLAT
 };
 typedef enum _PlayerAnimationState PlayerAnimationState;
 
 
 enum _PlayerOrientationState {
-    PLAYER_LEFT,
-    PLAYER_RIGHT
+    ORIENT_LEFT,
+    ORIENT_RIGHT
 };
 typedef enum _PlayerOrientationState PlayerOrientationState;
 
@@ -76,18 +74,18 @@ enum _ControlsState {
 };
 typedef enum _ControlsState ControlsState;
 
-enum _PlayerState {
-    ON_FEET,
+enum _PlayerMovementState {
+    STANDING,
     RUNNING,
     TURNING,
     FALLING,
     FELL_DOWN,
     FLYING
 };
-typedef enum _PlayerState PlayerState;
+typedef enum _PlayerMovementState PlayerMovementState;
 
 
-class Player : public GameObject, StateQueueInterface
+class Player : public GameObject
 {
     Q_OBJECT
 public:
@@ -102,10 +100,8 @@ public:
     PlayerAnimationState animState;
     PlayerOrientationState orientState;
     ControlsState controlsState;
-    PlayerState playerState;
+    PlayerMovementState playerState;
 
-    virtual void onStateEntered(int animState);
-    virtual void onStateExited(int animState);
     virtual void collide(PhysicsBody *with);
 
 signals:

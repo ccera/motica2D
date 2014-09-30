@@ -26,25 +26,17 @@ Player::Player(Engine *engine) :
     m_engine = engine;
     m_engine->addGameObject(this);
 
-    txPlayer = m_engine->newTexture(Resource("textures/allframes.png"));
+    txPlayer = m_engine->newTexture(Resource("textures/animacije.png"));
 
-    planet = m_engine->newTexture(Resource("textures/yellow.png"));
-    sprPlanet = m_engine->newSprite(planet);
-    sprPlanet->setName("Planet");
-    sprPlanet->setPosition(QVector3D(500,200,50));
-    sprPlanet->setSize(QVector3D(28.0f, 28.0f, 28.0f));
-
-    asprPlayer = m_engine->newAnimatedSprite(4, 32, txPlayer);
+    asprPlayer = m_engine->newAnimatedSprite(1, 18, txPlayer);
     asprPlayer->setName("Prince");
     asprPlayer->setPosition(QVector3D(400,200,50));
     asprPlayer->setSize(QVector3D(64,64,64));
     asprPlayer->setFrameLength(3);
-    asprPlayer->addChild(sprPlanet);
 
-    //stateQueue.enqueue(PLAYER_STANDING, 0);
-    //stateQueue.setInterface(this);
-    orientState = PLAYER_LEFT;
+    orientState = ORIENT_LEFT;
     playerState = FLYING;
+    animState = PLAYER_FLYING;
     turnTimer = 0;
     fellDownTimer = 0;
     onFeetTimer = 0;
@@ -116,13 +108,15 @@ Player::Player(Engine *engine) :
 
 void Player::checkState()
 {
-    if(orientState == PLAYER_LEFT) {
+    // Orientation state
+    if(orientState == ORIENT_LEFT) {
         asprPlayer->setSize(QVector3D(64,64,1.0f));
     }
     else {
         asprPlayer->setSize(QVector3D(-64,64,1.0f));
     }
 
+    // Player movment state
     if( !feetTouching && (playerBody->getVelocity().y() > 10) ) {
         playerState = FLYING;
         onFeetTimer = 0;
@@ -134,7 +128,10 @@ void Player::checkState()
     }
 
     if( ((bodyTouchingL && bodyTouchingLU) || (bodyTouchingR && bodyTouchingRU))
-        && (playerBody->getRotation().z() > 30 || playerBody->getRotation().z() < -30) ) {
+        && (playerBody->getRotation().z() > 30 || playerBody->getRotation().z() < -30)
+        && (playerBody->getVelocity().y() < 10 &&  playerBody->getVelocity().y() > -10)
+      )
+    {
         playerState = FELL_DOWN;
         onFeetTimer = 0;
     }
@@ -144,57 +141,67 @@ void Player::checkState()
         onFeetTimer = 0;
     }
 
-    if(feetTouching) {
-        playerState = ON_FEET;
+    if(feetTouching && (playerBody->getVelocity().x() < 25 || playerBody->getVelocity().x() > -25)) {
+        playerState = STANDING;
         onFeetTimer++;
     }
 
-    //qDebug() << playerBody->getRotation();
-
-    /*
-            stateQueue.enqueue(PLAYER_BEGIN_RUNNING, 14);
-            stateQueue.enqueue(PLAYER_RUNNING, 0);
-            stateQueue.enqueue(PLAYER_TURN, 26);
-            stateQueue.enqueue(PLAYER_STANDING, 0);
-            stateQueue.enqueue(PLAYER_END_BEGIN_RUNNING, 14);
-            stateQueue.enqueue(PLAYER_TURN, 26);
-            stateQueue.enqueue(PLAYER_STANDING, 0); //??
-            stateQueue.enqueue(PLAYER_TURN_FROM_RUN, 26);
-            stateQueue.enqueue(PLAYER_RUNNING, 0);
-            stateQueue.enqueue(PLAYER_TURN_FROM_RUN, 26);
-    /*
-    case PLAYER_BEGIN_RUNNING:
-        asPlayer->setLoop(32,36);
-    case PLAYER_STANDING:
-        asPlayer->setCurrentFrame(0);
-        asPlayer->setLoop(0,0);
-    case PLAYER_RUNNING:
-        asPlayer->setLoop(10,17);
-    case PLAYER_END_BEGIN_RUNNING:
-        asPlayer->setLoop(36,32);
-    case PLAYER_END_RUNNING:
-        asPlayer->setLoop(19,26);
-    case PLAYER_TURN:
-        asPlayer->setLoop(0,8);
-    case PLAYER_TURN_FROM_RUN:
-        asPlayer->setLoop(50,58);
-    case PLAYER_START_JUMP_FROM_RUN:
-        asPlayer->setLoop(38,42);
-    case PLAYER_END_JUMP_FROM_RUN:
-        asPlayer->setLoop(44,48);
-    case PLAYER_FLYING:
-        asPlayer->setLoop(44,44);
+    if(feetTouching && (playerBody->getVelocity().x() > 25 || playerBody->getVelocity().x() < -25)) {
+        playerState = RUNNING;
+        onFeetTimer++;
     }
-    */
-}
 
-void Player::onStateEntered(int state)
-{
 
-}
+    // Player animation state
+    if(playerState == RUNNING) {
+        animState = PLAYER_RUNNING;
+        asprPlayer->setCurrentFrame(2);
+        asprPlayer->setLoop(2,2);
+    }
 
-void Player::onStateExited(int state)
-{
+    if(playerState == STANDING) {
+        animState = PLAYER_STANDING;
+        asprPlayer->setCurrentFrame(0);
+        asprPlayer->setLoop(0,0);
+    }
+
+    if(playerState == FELL_DOWN) {
+        animState = PLAYER_SPLAT;
+        asprPlayer->setCurrentFrame(10);
+        asprPlayer->setLoop(10,10);
+    }
+
+    if(playerState == FLYING) {
+        animState = PLAYER_FLYING;
+        asprPlayer->setCurrentFrame(4);
+        asprPlayer->setLoop(4,4);
+    }
+
+    if(playerState == FALLING) {
+        animState = PLAYER_FALLING;
+        asprPlayer->setCurrentFrame(6);
+        asprPlayer->setLoop(6,6);
+    }
+
+    if((playerState == FALLING || playerState == FLYING || playerState == RUNNING) && (bodyTouchingL || bodyTouchingR)) {
+        animState = PLAYER_HIT_MIDDLE;
+        asprPlayer->setCurrentFrame(8);
+        asprPlayer->setLoop(8,8);
+    }
+
+    if((playerState == FALLING || playerState == FLYING || playerState == RUNNING) && (bodyTouchingLU || bodyTouchingRU)) {
+        animState = PLAYER_HIT_HEAD;
+        asprPlayer->setCurrentFrame(8);
+        asprPlayer->setLoop(8,8);
+    }
+
+    if((playerState == FALLING || playerState == FLYING || playerState == RUNNING) && (bodyTouchingLD || bodyTouchingRD)) {
+        animState = PLAYER_HIT_LEGS;
+        asprPlayer->setCurrentFrame(8);
+        asprPlayer->setLoop(8,8);
+    }
+
+
 
 }
 
@@ -202,6 +209,7 @@ void Player::checkKey()
 {
     if(Keyboard::keyLEFT && Keyboard::keyRIGHT && Keyboard::keyUP && Keyboard::keyDOWN) {
         controlsState = CONTROLS_NOTHING;
+
         return;
     }
 
@@ -212,13 +220,13 @@ void Player::checkKey()
 
     if(Keyboard::keyLEFT && Keyboard::keyUP) {
         controlsState = CONTROLS_LEFT_UP;
-        orientState = PLAYER_LEFT;
+        orientState = ORIENT_LEFT;
         return;
     }
 
     if(Keyboard::keyRIGHT && Keyboard::keyUP) {
         controlsState = CONTROLS_RIGHT_UP;
-        orientState = PLAYER_RIGHT;
+        orientState = ORIENT_RIGHT;
         return;
     }
 
@@ -234,13 +242,13 @@ void Player::checkKey()
 
     if(Keyboard::keyLEFT) {
         controlsState = CONTROLS_LEFT;
-        orientState = PLAYER_LEFT;
+        orientState = ORIENT_LEFT;
         return;
     }
 
     if(Keyboard::keyRIGHT) {
         controlsState = CONTROLS_RIGHT;
-        orientState = PLAYER_RIGHT;
+        orientState = ORIENT_RIGHT;
         return;
     }
 
@@ -254,12 +262,25 @@ void Player::collide(PhysicsBody *with)
 
 void Player::debugPrintState()
 {
-    //if(playerState == ON_FEET)      qDebug() << "ON_FEET" << controlsState;
-    if(playerState == RUNNING)      qDebug() << "RUNNING" << controlsState;
-    if(playerState == TURNING)      qDebug() << "TURNING" << controlsState;
-    if(playerState == FALLING)      qDebug() << "FALLING" << controlsState;
-    if(playerState == FELL_DOWN)    qDebug() << "FELL_DOWN" << controlsState;
-    if(playerState == FLYING)       qDebug() << "FLYING" << controlsState;
+    QString str;
+
+    if(playerState == RUNNING)   str = str + "RUNNING ";
+    if(playerState == TURNING)   str = str + "TURNING ";
+    if(playerState == FALLING)   str = str + "FALLING ";
+    if(playerState == FELL_DOWN) str = str + "FELL_DOWN ";
+    if(playerState == FLYING)    str = str + "FLYING ";
+    if(playerState == STANDING)   str = str + "ON_FEET ";
+
+    if(animState == PLAYER_RUNNING) str = str + "PLAYER_RUNNING ";
+    if(animState == PLAYER_FALLING) str = str + "PLAYER_FALLING ";
+    if(animState == PLAYER_HIT_HEAD) str = str + "PLAYER_HIT_HEAD ";
+    if(animState == PLAYER_HIT_MIDDLE) str = str + "PLAYER_HIT_MIDDLE ";
+    if(animState == PLAYER_HIT_LEGS) str = str + "PLAYER_HIT_LEGS ";
+    if(animState == PLAYER_SPLAT) str = str + "PLAYER_SPLAT ";
+    if(animState == PLAYER_STANDING) str = str + "PLAYER_STANDING ";
+    if(animState == PLAYER_FLYING) str = str + "PLAYER_FLYING ";
+
+    qDebug() << str;
 
     /*
         qDebug() << "  feet " << feetTouching
@@ -270,7 +291,6 @@ void Player::debugPrintState()
                  << "  bodyR " << bodyTouchingR
                  << "  bodyRU " << bodyTouchingRU
                  << "  bodyRD " << bodyTouchingRD  ;
-
         qDebug() << playerBody->getVelocity().y() << " rot" << playerBody->getRotation();
     */
 }

@@ -400,7 +400,7 @@ void Scene::pickPos(int x, int y)
 
 void Scene::renderScene()
 {
-    timer.start();
+    //timer.start();
 
     qSort(m_engine->arrModels.begin(), m_engine->arrModels.end(), sortModels); //Prvo ih sortirati po z
 
@@ -439,48 +439,35 @@ void Scene::renderScene()
     }
 
 #if DBUG_RENDER_PHYSICS
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glUseProgram(m_progPick);
-    for(int p=0; p < m_engine->arrPhysicsShapes.size(); p++) {
+//    glClear(GL_DEPTH_BUFFER_BIT);
+//    glUseProgram(m_progPick);
+//    for(int p=0; p < m_engine->arrPhysicsShapes.size(); p++) {
 
-        if(m_engine->arrPhysicsShapes.at(p)->offset.x() != 0.0f || m_engine->arrPhysicsShapes.at(p)->offset.y() != 0.0f) {
-            Transform tp;
-            tp.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition());
-            tp.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(), m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
+//        if(m_engine->arrPhysicsShapes.at(p)->offset.x() != 0.0f || m_engine->arrPhysicsShapes.at(p)->offset.y() != 0.0f) {
+//            Transform tp;
+//            tp.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition());
+//            tp.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(), m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
 
-            Transform t;
-            t.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition() + m_engine->arrPhysicsShapes.at(p)->offset);
-            t.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(),
-                                        m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
-            tp.addChild(&t);
-            tp.setRotation(m_engine->arrPhysicsShapes.at(p)->getRotation());
-            renderWireframe(t, QColor(0,255,0));
-        }
-        else {
-            Transform transform;
-            transform.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition() + m_engine->arrPhysicsShapes.at(p)->offset );
-            transform.setRotation(m_engine->arrPhysicsShapes.at(p)->getRotation());
-            transform.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(),
-                                        m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
-            renderWireframe(transform, QColor(0,255,0));
-        }
-    }
-#endif
-
-    timer.end200();
-
-// Ovako moze samo kod spriteova koji nemaju alpha
-//    glUseProgram(m_progSpr);
-//    for(int t=0; t < textureList.size(); t++)
-//    {
-//        glActiveTexture(GL_TEXTURE0);
-//        glBindTexture(GL_TEXTURE_2D, textureList[t]->ID);
-//        for(int m=0; m < modelList.size(); m++) {
-//            if(modelList[m]->isVisible && modelList[m]->texture->ID == textureList[t]->ID) {
-//                renderModel(modelList[m]);
-//            }
+//            Transform t;
+//            t.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition() + m_engine->arrPhysicsShapes.at(p)->offset);
+//            t.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(),
+//                                        m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
+//            tp.addChild(&t);
+//            tp.setRotation(m_engine->arrPhysicsShapes.at(p)->getRotation());
+//            renderWireframe(t, QColor(0,255,0));
+//        }
+//        else {
+//            Transform transform;
+//            transform.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition() + m_engine->arrPhysicsShapes.at(p)->offset );
+//            transform.setRotation(m_engine->arrPhysicsShapes.at(p)->getRotation());
+//            transform.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(),
+//                                        m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
+//            renderWireframe(transform, QColor(0,255,0));
 //        }
 //    }
+#endif
+
+    //timer.end200();
 }
 
 
