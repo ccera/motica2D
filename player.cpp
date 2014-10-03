@@ -110,10 +110,10 @@ void Player::checkState()
 {
     // Orientation state
     if(orientState == ORIENT_LEFT) {
-        asprPlayer->setSize(QVector3D(64,64,1.0f));
+        asprPlayer->setSize(QVector3D(-64,64,1.0f));
     }
     else {
-        asprPlayer->setSize(QVector3D(-64,64,1.0f));
+        asprPlayer->setSize(QVector3D(64,64,1.0f));
     }
 
     // Player movment state
@@ -167,38 +167,38 @@ void Player::checkState()
 
     if(playerState == FELL_DOWN) {
         animState = PLAYER_SPLAT;
-        asprPlayer->setCurrentFrame(10);
-        asprPlayer->setLoop(10,10);
+        asprPlayer->setCurrentFrame(16);
+        asprPlayer->setLoop(16,16);
     }
 
     if(playerState == FLYING) {
         animState = PLAYER_FLYING;
-        asprPlayer->setCurrentFrame(4);
-        asprPlayer->setLoop(4,4);
+        asprPlayer->setCurrentFrame(9);
+        asprPlayer->setLoop(9,9);
     }
 
     if(playerState == FALLING) {
         animState = PLAYER_FALLING;
-        asprPlayer->setCurrentFrame(6);
-        asprPlayer->setLoop(6,6);
+        asprPlayer->setCurrentFrame(9);
+        asprPlayer->setLoop(9,9);
     }
 
     if((playerState == FALLING || playerState == FLYING || playerState == RUNNING) && (bodyTouchingL || bodyTouchingR)) {
         animState = PLAYER_HIT_MIDDLE;
-        asprPlayer->setCurrentFrame(8);
-        asprPlayer->setLoop(8,8);
+        asprPlayer->setCurrentFrame(13);
+        asprPlayer->setLoop(13,13);
     }
 
     if((playerState == FALLING || playerState == FLYING || playerState == RUNNING) && (bodyTouchingLU || bodyTouchingRU)) {
         animState = PLAYER_HIT_HEAD;
-        asprPlayer->setCurrentFrame(8);
-        asprPlayer->setLoop(8,8);
+        asprPlayer->setCurrentFrame(13);
+        asprPlayer->setLoop(13,13);
     }
 
     if((playerState == FALLING || playerState == FLYING || playerState == RUNNING) && (bodyTouchingLD || bodyTouchingRD)) {
         animState = PLAYER_HIT_LEGS;
-        asprPlayer->setCurrentFrame(8);
-        asprPlayer->setLoop(8,8);
+        asprPlayer->setCurrentFrame(13);
+        asprPlayer->setLoop(13,13);
     }
 
 

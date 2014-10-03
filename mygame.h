@@ -50,6 +50,7 @@ private:
     Sprite *sprPlatfroma1;
     Sprite *sprPlatfroma2;
     Sprite *sprPlatfroma3;
+    Sprite *sprPod;
 
     Player *prince;
     PhysicsBody *pod;

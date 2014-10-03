@@ -50,6 +50,11 @@ MyGame::MyGame(Engine *engine) :
     sprPlatfroma1->setPosition(QVector3D(520, 130,100));
     sprPlatfroma1->setSize(QVector3D(210,30,1));
 
+    sprPod = m_engine->newSprite(platforma);
+    sprPod->setName("Platfroma1");
+    sprPod->setPosition(QVector3D(0, 0,100));
+    sprPod->setSize(QVector3D(2000,50,1));
+
     pod = m_engine->newPhysicsBodyBox(0,10000,50, PHYSICS_BODY_STATIC);
     pod->setPosition(QVector3D(500,0,0));
     podShape = m_engine->newPhysicsShapeBox(10000,50, QVector2D(0,0));
