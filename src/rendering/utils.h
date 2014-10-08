@@ -26,7 +26,7 @@
 #include <QtOpenGL>
 #include <QString>
 
-#define DBUG_RENDER_PHYSICS 1
+//#define DBUG_RENDER_PHYSICS 1
 
 #if _WIN64 || _WIN32 || (__linux && !__ANDROID_API__)
     #define OPENGL21 1
@@ -42,8 +42,6 @@
     #endif
 #elif __ANDROID_API__
     #define OPENGLES_ANDRO 1
-#elif __linux
-    #include <qopengl.h>
 #endif
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))

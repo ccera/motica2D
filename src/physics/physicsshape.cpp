@@ -8,6 +8,7 @@ PhysicsShape::PhysicsShape(PhysicsWorld *world)
     height = 0;
     diameter = 0;
     shape = 0;
+    debug_draw_color = QColor(0,255,0);
 }
 
 void PhysicsShape::checkOverlappingList(cpShape *shape, cpContactPointSet *points, void *data)

@@ -33,6 +33,7 @@
 #include "physicsbody.h"
 #include "chipmunk.h"
 #include "engine.h"
+#include "settings.h"
 
 enum _GameObjects {
     GAME_FLOOR,
@@ -91,7 +92,6 @@ class Player : public GameObject
 public:
     explicit Player(Engine *engine = 0);
     virtual void update(float dt);
-    QVector2D rotateAround(const QVector2D &pos, const QVector2D &around, float angle);
 
     void checkKey();
     void checkState();
@@ -114,33 +114,39 @@ private:
     AnimatedSprite  *asprPlayer;
     Texture         *planet;
     Sprite          *sprPlanet;
-    //StateQueue  stateQueue;
 
     PhysicsBody  *playerBody;
     PhysicsShape *playerShape;
-    PhysicsShape *feetSensor;
+    PhysicsShape *feetSensorL;
+    PhysicsShape *feetSensorR;
     PhysicsShape *bodySensorL;
     PhysicsShape *bodySensorLU;
     PhysicsShape *bodySensorLD;
     PhysicsShape *bodySensorR;
     PhysicsShape *bodySensorRU;
     PhysicsShape *bodySensorRD;
-    PhysicsShape *headSensor;
+    PhysicsShape *headSensorL;
+    PhysicsShape *headSensorR;
 
-    bool feetTouching;
+    bool feetTouchingL;
+    bool feetTouchingR;
+    bool headTouchingL;
+    bool headTouchingR;
+
     bool bodyTouchingL;
     bool bodyTouchingLU;
     bool bodyTouchingLD;
     bool bodyTouchingR;
     bool bodyTouchingRU;
     bool bodyTouchingRD;
-    bool headTouching;
+
 
     int  turnTimer;
     int  flyTimer;
     int  fellDownTimer;
     int  onFeetTimer;
     bool jumpAllowed;
+    int  bodySensorsTouching;
 
     int t;
 };

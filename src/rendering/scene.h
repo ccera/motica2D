@@ -36,6 +36,7 @@
 #include "engine.h"
 #include "types.h"
 #include "transform.h"
+#include "settings.h"
 
 
 class Engine;

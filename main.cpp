@@ -22,10 +22,13 @@
 #include "mygame.h"
 #include "window.h"
 #include "engine.h"
+#include "settings.h"
 
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
+
+    Settings::checkGraphicsCapabilities();
 
     Engine *engine = new Engine();
 

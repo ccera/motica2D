@@ -38,6 +38,8 @@ public:
     QString name;
     QVector2D offset;
 
+    QColor debug_draw_color;
+
 private:
     static void checkOverlappingList(cpShape *shape, cpContactPointSet *points, void *data);
     static void checkOverlappingBool(cpShape *shape, cpContactPointSet *points, void *data);

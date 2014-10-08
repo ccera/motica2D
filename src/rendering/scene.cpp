@@ -438,34 +438,34 @@ void Scene::renderScene()
         }
     }
 
-#if DBUG_RENDER_PHYSICS
-//    glClear(GL_DEPTH_BUFFER_BIT);
-//    glUseProgram(m_progPick);
-//    for(int p=0; p < m_engine->arrPhysicsShapes.size(); p++) {
+    if(Settings::DEBUG_PHYSICS_RENDER) {
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glUseProgram(m_progPick);
+        for(int p=0; p < m_engine->arrPhysicsShapes.size(); p++) {
 
-//        if(m_engine->arrPhysicsShapes.at(p)->offset.x() != 0.0f || m_engine->arrPhysicsShapes.at(p)->offset.y() != 0.0f) {
-//            Transform tp;
-//            tp.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition());
-//            tp.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(), m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
+            if(m_engine->arrPhysicsShapes.at(p)->offset.x() != 0.0f || m_engine->arrPhysicsShapes.at(p)->offset.y() != 0.0f) {
+                Transform tp;
+                tp.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition());
+                tp.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(), m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
 
-//            Transform t;
-//            t.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition() + m_engine->arrPhysicsShapes.at(p)->offset);
-//            t.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(),
-//                                        m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
-//            tp.addChild(&t);
-//            tp.setRotation(m_engine->arrPhysicsShapes.at(p)->getRotation());
-//            renderWireframe(t, QColor(0,255,0));
-//        }
-//        else {
-//            Transform transform;
-//            transform.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition() + m_engine->arrPhysicsShapes.at(p)->offset );
-//            transform.setRotation(m_engine->arrPhysicsShapes.at(p)->getRotation());
-//            transform.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(),
-//                                        m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
-//            renderWireframe(transform, QColor(0,255,0));
-//        }
-//    }
-#endif
+                Transform t;
+                t.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition() + m_engine->arrPhysicsShapes.at(p)->offset);
+                t.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(),
+                                            m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
+                tp.addChild(&t);
+                tp.setRotation(m_engine->arrPhysicsShapes.at(p)->getRotation());
+                renderWireframe(t, m_engine->arrPhysicsShapes.at(p)->debug_draw_color);
+            }
+            else {
+                Transform transform;
+                transform.setPosition(m_engine->arrPhysicsShapes.at(p)->getPosition() + m_engine->arrPhysicsShapes.at(p)->offset );
+                transform.setRotation(m_engine->arrPhysicsShapes.at(p)->getRotation());
+                transform.setSize(QVector3D(m_engine->arrPhysicsShapes.at(p)->getWidth(),
+                                            m_engine->arrPhysicsShapes.at(p)->getHeight(), 1.0f));
+                renderWireframe(transform, m_engine->arrPhysicsShapes.at(p)->debug_draw_color);
+            }
+        }
+    }
 
     //timer.end200();
 }

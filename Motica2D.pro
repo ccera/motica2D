@@ -34,7 +34,8 @@ HEADERS += \
     src/core/engine.h \
     src/core/types.h \
     src/physics/physicsbody.h \
-    src/physics/physicsshape.h
+    src/physics/physicsshape.h \
+    src/core/settings.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
@@ -88,7 +89,8 @@ SOURCES += \
     src/core/window.cpp \
     src/core/engine.cpp \
     src/physics/physicsbody.cpp \
-    src/physics/physicsshape.cpp
+    src/physics/physicsshape.cpp \
+    src/core/settings.cpp
 
 # Ovdje dodati sve što se treba koirati uz app
 resources_dir.source = resources
