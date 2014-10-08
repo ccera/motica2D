@@ -60,42 +60,44 @@ Player::Player(Engine *engine) :
     m_engine->addShapeToBody(playerShape, playerBody);
     m_engine->addShapeToSpace(playerShape);
 
-    feetSensorL = m_engine->newPhysicsShapeBox(20,10,QVector2D(-20,-40));
+    feetSensorL = m_engine->newPhysicsShapeBox(23,10,QVector2D(-12,-40));
     feetSensorL->setSensor(true);
     feetSensorL->name = "FeetSensorL";
     m_engine->addShapeToBody(feetSensorL, playerBody);
     m_engine->addShapeToSpace(feetSensorL);
 
-    feetSensorR = m_engine->newPhysicsShapeBox(20,10,QVector2D(20,-40));
+    feetSensorR = m_engine->newPhysicsShapeBox(23,10,QVector2D(12,-40));
     feetSensorR->setSensor(true);
     feetSensorR->name = "FeetSensorR";
     m_engine->addShapeToBody(feetSensorR, playerBody);
     m_engine->addShapeToSpace(feetSensorR);
 
-    headSensorL = m_engine->newPhysicsShapeBox(20,10,QVector2D(-20,40));
+    headSensorL = m_engine->newPhysicsShapeBox(23,10,QVector2D(-12,40));
     headSensorL->setSensor(true);
     headSensorL->name = "HeadSensorL";
     m_engine->addShapeToBody(headSensorL, playerBody);
     m_engine->addShapeToSpace(headSensorL);
 
-    headSensorR = m_engine->newPhysicsShapeBox(20,10,QVector2D(20,40));
+    headSensorR = m_engine->newPhysicsShapeBox(23,10,QVector2D(12,40));
     headSensorR->setSensor(true);
     headSensorR->name = "HeadSensorL";
     m_engine->addShapeToBody(headSensorR, playerBody);
     m_engine->addShapeToSpace(headSensorR);
 
-    bodySensorL = m_engine->newPhysicsShapeBox(10,30,QVector2D(-25,0));
+    bodySensorL = m_engine->newPhysicsShapeBox(10,15,QVector2D(-25,0));
     bodySensorL->setSensor(true);
     bodySensorL->name = "HeadSensorL";
     bodySensorL->debug_draw_color = QColor(255,0,0);
     m_engine->addShapeToBody(bodySensorL, playerBody);
     m_engine->addShapeToSpace(bodySensorL);
 
-    bodySensorR = m_engine->newPhysicsShapeBox(10,30,QVector2D(25,0));
+    bodySensorR = m_engine->newPhysicsShapeBox(10,15,QVector2D(25,0));
     bodySensorR->setSensor(true);
     bodySensorR->name = "HeadSensorR";
     m_engine->addShapeToBody(bodySensorR, playerBody);
     m_engine->addShapeToSpace(bodySensorR);
+
+    playerBody->setRotation(QVector3D(0,0,180));
 }
 
 void Player::checkState()
@@ -108,7 +110,9 @@ void Player::checkState()
         asprPlayer->setSize(QVector3D(64,64,1.0f));
     }
 
-    if( (feetTouchingL || feetTouchingR) && (!bodyTouchingL && !bodyTouchingR) ){
+
+
+    if( (feetTouchingL && feetTouchingR) ){
         if(controlsState == CONTROLS_LEFT || controlsState == CONTROLS_RIGHT) {
             playerState = RUNNING;
             onFeetTimer++;
@@ -140,6 +144,12 @@ void Player::checkState()
 
         if( (headTouchingL && bodyTouchingL)  || (headTouchingR && bodyTouchingR) )
         {
+            playerState = FELL_DOWN;
+            onFeetTimer = 0;
+            jumpAllowed = false;
+        }
+
+        if( (headTouchingL && headTouchingR) ){
             playerState = FELL_DOWN;
             onFeetTimer = 0;
             jumpAllowed = false;
@@ -181,6 +191,11 @@ void Player::checkState()
                 asprPlayer->setCurrentFrame(15);
                 asprPlayer->setLoop(15,15);
             }
+        }
+
+        if(headTouchingL && headTouchingR) {
+            asprPlayer->setCurrentFrame(17);
+            asprPlayer->setLoop(17,17);
         }
     }
 
@@ -290,7 +305,7 @@ void Player::update(float dt)
 
     checkKey();
     checkState();
-    //debugPrintState();
+    debugPrintState();
 
     if(playerState == FELL_DOWN) {
         fellDownTimer++;

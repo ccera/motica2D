@@ -51,7 +51,8 @@ enum _PlayerAnimationState {
     PLAYER_HIT_MIDDLE,
     PLAYER_HIT_HEAD,
     PLAYER_HIT_LEGS,
-    PLAYER_SPLAT
+    PLAYER_SPLAT,
+    PLAYER_SPLAT_HEAD
 };
 typedef enum _PlayerAnimationState PlayerAnimationState;
 
@@ -81,7 +82,8 @@ enum _PlayerMovementState {
     TURNING,
     FALLING,
     FELL_DOWN,
-    FLYING
+    FLYING,
+    FELL_HEAD
 };
 typedef enum _PlayerMovementState PlayerMovementState;
 
