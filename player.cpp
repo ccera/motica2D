@@ -32,7 +32,7 @@ Player::Player(Engine *engine) :
     asprPlayer->setName("Prince");
     asprPlayer->setPosition(QVector3D(400,200,50));
     asprPlayer->setSize(QVector3D(64,64,64));
-    asprPlayer->setFrameLength(3);
+    asprPlayer->setFrameLength(10);
 
     orientState = ORIENT_LEFT;
     playerState = FLYING;
@@ -97,7 +97,7 @@ Player::Player(Engine *engine) :
     m_engine->addShapeToBody(bodySensorR, playerBody);
     m_engine->addShapeToSpace(bodySensorR);
 
-    playerBody->setRotation(QVector3D(0,0,180));
+    //playerBody->setRotation(QVector3D(0,0,180));
 }
 
 void Player::checkState()
@@ -110,12 +110,12 @@ void Player::checkState()
         asprPlayer->setSize(QVector3D(64,64,1.0f));
     }
 
-
-
     if( (feetTouchingL && feetTouchingR) ){
         if(controlsState == CONTROLS_LEFT || controlsState == CONTROLS_RIGHT) {
+            if(playerBody->getVelocity().x() > 10 || playerBody->getVelocity().x() < -10) {
             playerState = RUNNING;
             onFeetTimer++;
+            }
         }
         else {
             playerState = STANDING;
@@ -158,9 +158,11 @@ void Player::checkState()
 
     // Player animation state
     if(playerState == RUNNING) {
-        animState = PLAYER_RUNNING;
-        asprPlayer->setCurrentFrame(2);
-        asprPlayer->setLoop(2,2);
+        if(animState != PLAYER_RUNNING) {
+            asprPlayer->setCurrentFrame(2);
+            asprPlayer->setLoop(2,7);
+            animState = PLAYER_RUNNING;
+        }
     }
 
     if(playerState == STANDING) {
@@ -201,15 +203,15 @@ void Player::checkState()
 
     if(playerState == FLYING) {
         animState = PLAYER_FLYING;
-        asprPlayer->setCurrentFrame(8);
-        asprPlayer->setLoop(8,8);
+        asprPlayer->setCurrentFrame(11);
+        asprPlayer->setLoop(11,11);
     }
 
     // Bio je 10
     if(playerState == FALLING) {
         animState = PLAYER_FALLING;
-        asprPlayer->setCurrentFrame(8);
-        asprPlayer->setLoop(8,8);
+        asprPlayer->setCurrentFrame(10);
+        asprPlayer->setLoop(10,10);
     }
 }
 
@@ -292,6 +294,7 @@ void Player::debugPrintState()
 
 void Player::update(float dt)
 {
+    asprPlayer->update(dt);
     asprPlayer->setPosition(playerBody->getPosition());
     asprPlayer->setRotation(playerBody->getRotation());
 
@@ -305,7 +308,7 @@ void Player::update(float dt)
 
     checkKey();
     checkState();
-    debugPrintState();
+    //debugPrintState();
 
     if(playerState == FELL_DOWN) {
         fellDownTimer++;
