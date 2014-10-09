@@ -28,8 +28,6 @@
 #include "utils.h"
 #include "gameobject.h"
 #include "animatedsprite.h"
-#include "statequeueinterface.h"
-#include "statequeue.h"
 #include "physicsbody.h"
 #include "chipmunk.h"
 #include "engine.h"
@@ -46,13 +44,7 @@ enum _PlayerAnimationState {
     PLAYER_RUNNING,
     PLAYER_STANDING,
     PLAYER_FLYING,
-    PLAYER_TURNING,
-    PLAYER_FALLING,
-    PLAYER_HIT_MIDDLE,
-    PLAYER_HIT_HEAD,
-    PLAYER_HIT_LEGS,
-    PLAYER_SPLAT,
-    PLAYER_SPLAT_HEAD
+    PLAYER_FALLING
 };
 typedef enum _PlayerAnimationState PlayerAnimationState;
 
@@ -79,11 +71,8 @@ typedef enum _ControlsState ControlsState;
 enum _PlayerMovementState {
     STANDING,
     RUNNING,
-    TURNING,
     FALLING,
-    FELL_DOWN,
-    FLYING,
-    FELL_HEAD
+    FLYING
 };
 typedef enum _PlayerMovementState PlayerMovementState;
 
@@ -114,19 +103,13 @@ private:
     Engine          *m_engine;
     Texture         *txPlayer;
     AnimatedSprite  *asprPlayer;
-    Texture         *planet;
-    Sprite          *sprPlanet;
 
     PhysicsBody  *playerBody;
     PhysicsShape *playerShape;
     PhysicsShape *feetSensorL;
     PhysicsShape *feetSensorR;
     PhysicsShape *bodySensorL;
-    PhysicsShape *bodySensorLU;
-    PhysicsShape *bodySensorLD;
     PhysicsShape *bodySensorR;
-    PhysicsShape *bodySensorRU;
-    PhysicsShape *bodySensorRD;
     PhysicsShape *headSensorL;
     PhysicsShape *headSensorR;
 
@@ -134,23 +117,11 @@ private:
     bool feetTouchingR;
     bool headTouchingL;
     bool headTouchingR;
-
     bool bodyTouchingL;
-    bool bodyTouchingLU;
-    bool bodyTouchingLD;
     bool bodyTouchingR;
-    bool bodyTouchingRU;
-    bool bodyTouchingRD;
-
-
-    int  turnTimer;
-    int  flyTimer;
-    int  fellDownTimer;
     int  onFeetTimer;
     bool jumpAllowed;
-    int  bodySensorsTouching;
 
-    int t;
 };
 
 #endif // PLAYER_H

@@ -25,8 +25,6 @@ HEADERS += \
     src/physics/chipmunk/chipmunk.h \
     src/core/mocolor.h \
     src/rendering/animatedsprite.h \
-    src/core/statequeue.h \
-    src/core/statequeueinterface.h \
     src/core/keyboard.h \
     player.h \
     src/physics/physicsworld.h \
@@ -81,8 +79,6 @@ SOURCES += \
     src/physics/chipmunk/cpVect.c \
     src/core/mocolor.cpp \
     src/rendering/animatedsprite.cpp \
-    src/core/statequeue.cpp \
-    src/core/statequeueinterface.cpp \
     src/core/keyboard.cpp \
     player.cpp \
     src/physics/physicsworld.cpp \

@@ -22,7 +22,6 @@
 Player::Player(Engine *engine) :
      GameObject()
 {
-    t = 0;
     m_engine = engine;
     m_engine->addGameObject(this);
 
@@ -37,67 +36,65 @@ Player::Player(Engine *engine) :
     orientState = ORIENT_LEFT;
     playerState = FLYING;
     animState = PLAYER_FLYING;
-    turnTimer = 0;
-    fellDownTimer = 0;
     onFeetTimer = 0;
     jumpAllowed = true;
-    bodySensorsTouching = 0;
 
     //Settings::DEBUG_PHYSICS_RENDER = true;
 
     m_engine->physicsWorld->setDamping(0.9f);
 
-    playerBody = m_engine->newPhysicsBodyBox(80,32,64);
+    playerBody = m_engine->newPhysicsBodyBox(80,24,48);
     playerBody->setPosition(QVector3D(100,600,1));
     playerBody->parentGameObject = this;
     playerBody->name = "PlayerBody";
     playerBody->setRotation(QVector3D(0,0,0));
 
-    playerShape = m_engine->newPhysicsShapeBox(32,64,QVector2D(0,0));
+    playerShape = m_engine->newPhysicsShapeBox(24,48,QVector2D(0,0));
     playerShape->name = "PlayerShape";
     playerShape->setFriction(0.5f);
     playerShape->userType = GAME_PLAYER;
     m_engine->addShapeToBody(playerShape, playerBody);
     m_engine->addShapeToSpace(playerShape);
 
-    feetSensorL = m_engine->newPhysicsShapeBox(23,10,QVector2D(-12,-40));
+    feetSensorL = m_engine->newPhysicsShapeBox(12,10,QVector2D(-8,-36));
     feetSensorL->setSensor(true);
     feetSensorL->name = "FeetSensorL";
     m_engine->addShapeToBody(feetSensorL, playerBody);
     m_engine->addShapeToSpace(feetSensorL);
 
-    feetSensorR = m_engine->newPhysicsShapeBox(23,10,QVector2D(12,-40));
+    feetSensorR = m_engine->newPhysicsShapeBox(12,10,QVector2D(8,-36));
     feetSensorR->setSensor(true);
     feetSensorR->name = "FeetSensorR";
     m_engine->addShapeToBody(feetSensorR, playerBody);
     m_engine->addShapeToSpace(feetSensorR);
 
-    headSensorL = m_engine->newPhysicsShapeBox(23,10,QVector2D(-12,40));
+    headSensorL = m_engine->newPhysicsShapeBox(12,10,QVector2D(-8,36));
     headSensorL->setSensor(true);
     headSensorL->name = "HeadSensorL";
     m_engine->addShapeToBody(headSensorL, playerBody);
     m_engine->addShapeToSpace(headSensorL);
 
-    headSensorR = m_engine->newPhysicsShapeBox(23,10,QVector2D(12,40));
+    headSensorR = m_engine->newPhysicsShapeBox(12,10,QVector2D(8,36));
     headSensorR->setSensor(true);
     headSensorR->name = "HeadSensorL";
     m_engine->addShapeToBody(headSensorR, playerBody);
     m_engine->addShapeToSpace(headSensorR);
 
-    bodySensorL = m_engine->newPhysicsShapeBox(10,15,QVector2D(-25,0));
+    bodySensorL = m_engine->newPhysicsShapeBox(10,12,QVector2D(-25,0));
     bodySensorL->setSensor(true);
     bodySensorL->name = "HeadSensorL";
     bodySensorL->debug_draw_color = QColor(255,0,0);
     m_engine->addShapeToBody(bodySensorL, playerBody);
     m_engine->addShapeToSpace(bodySensorL);
 
-    bodySensorR = m_engine->newPhysicsShapeBox(10,15,QVector2D(25,0));
+    bodySensorR = m_engine->newPhysicsShapeBox(10,12,QVector2D(25,0));
     bodySensorR->setSensor(true);
     bodySensorR->name = "HeadSensorR";
     m_engine->addShapeToBody(bodySensorR, playerBody);
     m_engine->addShapeToSpace(bodySensorR);
 
     //playerBody->setRotation(QVector3D(0,0,180));
+    playerBody->disableRotation();
 }
 
 void Player::checkState()
@@ -112,48 +109,23 @@ void Player::checkState()
 
     if( (feetTouchingL && feetTouchingR) ){
         if(controlsState == CONTROLS_LEFT || controlsState == CONTROLS_RIGHT) {
-            if(playerBody->getVelocity().x() > 10 || playerBody->getVelocity().x() < -10) {
-            playerState = RUNNING;
-            onFeetTimer++;
+            if(playerBody->getVelocity().x() > 5 || playerBody->getVelocity().x() < -5) {
+                playerState = RUNNING;
             }
         }
         else {
             playerState = STANDING;
-            onFeetTimer++;
         }
+        onFeetTimer++;
     }
     else {
         if(playerBody->getVelocity().y() > 10) {
             playerState = FLYING;
-            onFeetTimer = 0;
         }
         else if(playerBody->getVelocity().y() < -10) {
             playerState = FALLING;
-            onFeetTimer = 0;
         }
-    }
-
-    if( (playerBody->getRotation().z() > 55 || playerBody->getRotation().z() < -55) )
-    {
-        if( (feetTouchingL && bodyTouchingL)  || (feetTouchingR && bodyTouchingR) )
-        {
-            playerState = FELL_DOWN;
-            onFeetTimer = 0;
-            jumpAllowed = false;
-        }
-
-        if( (headTouchingL && bodyTouchingL)  || (headTouchingR && bodyTouchingR) )
-        {
-            playerState = FELL_DOWN;
-            onFeetTimer = 0;
-            jumpAllowed = false;
-        }
-
-        if( (headTouchingL && headTouchingR) ){
-            playerState = FELL_DOWN;
-            onFeetTimer = 0;
-            jumpAllowed = false;
-        }
+        onFeetTimer = 0;
     }
 
     // Player animation state
@@ -169,36 +141,6 @@ void Player::checkState()
         animState = PLAYER_STANDING;
         asprPlayer->setCurrentFrame(0);
         asprPlayer->setLoop(0,0);
-    }
-
-    if(playerState == FELL_DOWN) {
-        animState = PLAYER_SPLAT;
-        if(orientState == ORIENT_LEFT) {
-            if(bodyTouchingL) {
-                asprPlayer->setCurrentFrame(15);
-                asprPlayer->setLoop(15,15);
-            }
-            else {
-                asprPlayer->setCurrentFrame(14);
-                asprPlayer->setLoop(14,14);
-            }
-        }
-
-        if(orientState == ORIENT_RIGHT) {
-            if(bodyTouchingL) {
-                asprPlayer->setCurrentFrame(14);
-                asprPlayer->setLoop(14,14);
-            }
-            else {
-                asprPlayer->setCurrentFrame(15);
-                asprPlayer->setLoop(15,15);
-            }
-        }
-
-        if(headTouchingL && headTouchingR) {
-            asprPlayer->setCurrentFrame(17);
-            asprPlayer->setLoop(17,17);
-        }
     }
 
     if(playerState == FLYING) {
@@ -229,13 +171,13 @@ void Player::checkKey()
 
     if(Keyboard::keyLEFT && Keyboard::keyUP) {
         controlsState = CONTROLS_LEFT_UP;
-        if(playerState != FELL_DOWN) { orientState = ORIENT_LEFT; }
+        orientState = ORIENT_LEFT;
         return;
     }
 
     if(Keyboard::keyRIGHT && Keyboard::keyUP) {
         controlsState = CONTROLS_RIGHT_UP;
-        if(playerState != FELL_DOWN) { orientState = ORIENT_RIGHT; }
+        orientState = ORIENT_RIGHT;
         return;
     }
 
@@ -251,13 +193,13 @@ void Player::checkKey()
 
     if(Keyboard::keyLEFT) {
         controlsState = CONTROLS_LEFT;
-        if(playerState != FELL_DOWN) { orientState = ORIENT_LEFT; }
+        orientState = ORIENT_LEFT;
         return;
     }
 
     if(Keyboard::keyRIGHT) {
         controlsState = CONTROLS_RIGHT;
-        if(playerState != FELL_DOWN) { orientState = ORIENT_RIGHT; }
+        orientState = ORIENT_RIGHT;
         return;
     }
 
@@ -274,18 +216,12 @@ void Player::debugPrintState()
     QString str;
 
     if(playerState == RUNNING)   str = str + "RUNNING ";
-    if(playerState == TURNING)   str = str + "TURNING ";
     if(playerState == FALLING)   str = str + "FALLING ";
-    if(playerState == FELL_DOWN) str = str + "FELL_DOWN ";
     if(playerState == FLYING)    str = str + "FLYING ";
     if(playerState == STANDING)   str = str + "ON_FEET ";
 
     if(animState == PLAYER_RUNNING) str = str + "PLAYER_RUNNING ";
     if(animState == PLAYER_FALLING) str = str + "PLAYER_FALLING ";
-    if(animState == PLAYER_HIT_HEAD) str = str + "PLAYER_HIT_HEAD ";
-    if(animState == PLAYER_HIT_MIDDLE) str = str + "PLAYER_HIT_MIDDLE ";
-    if(animState == PLAYER_HIT_LEGS) str = str + "PLAYER_HIT_LEGS ";
-    if(animState == PLAYER_SPLAT) str = str + "PLAYER_SPLAT ";
     if(animState == PLAYER_STANDING) str = str + "PLAYER_STANDING ";
     if(animState == PLAYER_FLYING) str = str + "PLAYER_FLYING ";
 
@@ -310,41 +246,44 @@ void Player::update(float dt)
     checkState();
     //debugPrintState();
 
-    if(playerState == FELL_DOWN) {
-        fellDownTimer++;
-        if(fellDownTimer > 130) {
-            playerBody->setRotation(QVector3D(0,0,0));
-            fellDownTimer = 0;
-        }
-    }
-
     if(controlsState == CONTROLS_LEFT || controlsState == CONTROLS_LEFT_UP) {
-        if(playerState != FALLING && playerState != FELL_DOWN) {
-            playerBody->applyImpulse(-300,0);
-        }
+            if(playerBody->getVelocity().x() > 2) { playerBody->applyImpulse(-700,0); }
+            else { playerBody->applyImpulse(-400,0); }
     }
 
     if(controlsState == CONTROLS_RIGHT || controlsState == CONTROLS_RIGHT_UP) {
-        if(playerState != FALLING && playerState != FELL_DOWN) {
-            playerBody->applyImpulse(300,0);
-        }
+        if(playerBody->getVelocity().x() < -2) { playerBody->applyImpulse(700,0); }
+        else { playerBody->applyImpulse(400,0); }
     }
 
     if(controlsState != CONTROLS_UP && controlsState != CONTROLS_LEFT_UP && controlsState != CONTROLS_RIGHT_UP) {
-        if(onFeetTimer > 1) {
-            jumpAllowed = true;
-        }
+        if(onFeetTimer > 4) { jumpAllowed = true; }
     }
 
     if(controlsState == CONTROLS_UP || controlsState == CONTROLS_LEFT_UP || controlsState == CONTROLS_RIGHT_UP) {
         if(jumpAllowed) {
             jumpAllowed = false;
-            playerBody->applyImpulse(0,16400);
+            playerBody->applyImpulse(0,17400);
         }
     }
 
+    if(controlsState == CONTROLS_NOTHING) {
+        if(feetTouchingL && feetTouchingR) {
+            if(playerBody->getVelocity().x() > 2) { playerBody->applyImpulse(-600,0); }
+            if(playerBody->getVelocity().x() < -2) { playerBody->applyImpulse(600,0); }
+        }
+    }
+
+    // Gurnuti ga sa ivice ako ne stoji sa obije noge
+    if((feetTouchingL && !feetTouchingR) && playerBody->getVelocity().y() == 0) {
+        playerBody->applyImpulse(200,0);
+    }
+    if((!feetTouchingL && feetTouchingR) && playerBody->getVelocity().y() == 0) {
+        playerBody->applyImpulse(-200,0);
+    }
+
     // limit Horizontalni na 150
-    if(playerBody->getVelocity().x() > 150 ) playerBody->setVelocity(150, playerBody->getVelocity().y());
-    if(playerBody->getVelocity().x() < -150 ) playerBody->setVelocity(-150, playerBody->getVelocity().y());
+    if(playerBody->getVelocity().x() > 150 ) { playerBody->setVelocity(150, playerBody->getVelocity().y()); }
+    if(playerBody->getVelocity().x() < -150 ) { playerBody->setVelocity(-150, playerBody->getVelocity().y()); }
 
 }
