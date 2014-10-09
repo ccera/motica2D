@@ -31,7 +31,7 @@ Player::Player(Engine *engine) :
     asprPlayer->setName("Prince");
     asprPlayer->setPosition(QVector3D(400,200,50));
     asprPlayer->setSize(QVector3D(64,64,64));
-    asprPlayer->setFrameLength(10);
+    asprPlayer->setFrameLength(5);
 
     orientState = ORIENT_LEFT;
     playerState = FLYING;
@@ -131,7 +131,6 @@ void Player::checkState()
     // Player animation state
     if(playerState == RUNNING) {
         if(animState != PLAYER_RUNNING) {
-            asprPlayer->setCurrentFrame(2);
             asprPlayer->setLoop(2,7);
             animState = PLAYER_RUNNING;
         }
@@ -139,20 +138,17 @@ void Player::checkState()
 
     if(playerState == STANDING) {
         animState = PLAYER_STANDING;
-        asprPlayer->setCurrentFrame(0);
         asprPlayer->setLoop(0,0);
     }
 
     if(playerState == FLYING) {
         animState = PLAYER_FLYING;
-        asprPlayer->setCurrentFrame(11);
         asprPlayer->setLoop(11,11);
     }
 
     // Bio je 10
     if(playerState == FALLING) {
         animState = PLAYER_FALLING;
-        asprPlayer->setCurrentFrame(10);
         asprPlayer->setLoop(10,10);
     }
 }
@@ -230,7 +226,6 @@ void Player::debugPrintState()
 
 void Player::update(float dt)
 {
-    asprPlayer->update(dt);
     asprPlayer->setPosition(playerBody->getPosition());
     asprPlayer->setRotation(playerBody->getRotation());
 

@@ -44,14 +44,16 @@ public:
     void onPicked();
     void update(float dt);
     void setLoop(int from, int to);
-    void setCurrentFrame(int n);
-    int  getCurrentFrame();
+
 
 signals:
 
 public slots:
 
 private:
+    void setCurrentFrame(int n);
+    int  getCurrentFrame();
+
     int counter;
     int m_frame_length;
     int m_loop_from;

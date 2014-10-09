@@ -91,6 +91,7 @@ void AnimatedSprite::setCurrentFrame(int n)
         m_currentFrame = n;
     }
 
+
     // Transform trenutni UV da bi se dobio trazeni frame
     UVTransform.setToIdentity();
 
