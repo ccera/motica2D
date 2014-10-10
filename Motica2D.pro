@@ -1,5 +1,5 @@
 
-QT += gui opengl openglextensions
+QT += gui opengl openglextensions script
 
 QMAKE_CFLAGS_RELEASE += -std=c99
 QMAKE_CFLAGS_DEBUG += -std=c99

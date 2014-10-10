@@ -19,7 +19,8 @@
 
 #include "engine.h"
 
-Engine::Engine()
+Engine::Engine(QObject *parent)
+       : QObject(parent)
 {
     qDebug() << "Initializing engine...";
     Settings::checkGraphicsCapabilities();

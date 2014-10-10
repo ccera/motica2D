@@ -20,6 +20,7 @@
 #ifndef DATASTORE_H
 #define DATASTORE_H
 
+#include <QObject>
 #include <QVector>
 #include "sprite.h"
 #include "animatedsprite.h"
@@ -45,15 +46,11 @@ class PhysicsBody;
 class GameObject;
 class PhysicsShape;
 
-class Engine
+class Engine : public QObject
 {
+    Q_OBJECT
 public:
-    Engine();
-
-    // Window helper
-    void createWindow(float width, float height);
-    void createWindow(float width, float height, float camera_width, float camera_height, ViewportType type);
-    void showWindow();
+    explicit Engine(QObject *parent = 0);
 
 
     // Graphics helper functions
@@ -100,6 +97,16 @@ public:
     float camera_near;
     float camera_far;
     ViewportType viewport_type;
+
+signals:
+
+
+public slots:
+    // Window helper
+    void createWindow(float width, float height);
+    void createWindow(float width, float height, float camera_width, float camera_height, ViewportType type);
+    void showWindow();
+
 
 private:
     int next_model_id; // Id koji se dodjeljuje svakom modelu
