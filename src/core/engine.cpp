@@ -1,11 +1,32 @@
+//
+//  Copyright (c) 2014 Emir Cerić. All rights reserved.
+//
+//  This file is part of Motica2D.
+//
+//  Motica2D is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  Motica2D is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with Motica2D.  If not, see <http://www.gnu.org/licenses/>.
+//
+
 #include "engine.h"
 
 Engine::Engine()
 {
     qDebug() << "Initializing engine...";
+    Settings::checkGraphicsCapabilities();
     isGLInitialized = false;
     next_model_id = 1;
     initDefaultSpriteMesh();
+    window = 0;
 }
 
 Texture* Engine::newTexture(const QString &file)
@@ -157,4 +178,31 @@ void Engine::initDefaultSpriteMesh()
     int idata[] = { 0,1,2,0,2,3, 0,2,1,0,3,2 };
     arrMeshes.push_back(new Mesh(vdata, idata, 8, 4, "DEFAULT_SPRITE_MESH"));
 }
+
+void Engine::createWindow(float width, float height)
+{
+    window = new Window(this);
+    window->setWindowSize(width, height);
+    window->setCamera2DSize(width, height);
+    window->setAnimating(true);
+    window->setViewport2DType(VIEWPORT_STRECH_XY);
+    window->setBackgroundColor(0.5f, 0.0f, 0.3f, 1.0f);
+
+}
+
+void Engine::createWindow(float width, float height, float camera_width, float camera_height, ViewportType type)
+{
+    window = new Window(this);
+    window->setWindowSize(width, height);
+    window->setCamera2DSize(camera_width, camera_height);
+    window->setAnimating(true);
+    window->setViewport2DType(type);
+    window->setBackgroundColor(0.5f, 0.0f, 0.3f, 1.0f);
+}
+
+void Engine::showWindow()
+{
+    window->showWindow();
+}
+
 

@@ -47,7 +47,6 @@ public:
     void        applyForceWithOffset(float x, float y, float offset_x, float offset_y);
     void        applyImpulse(float x, float y);
     void        applyImpulseWithOffset(float x, float y, float offset_x, float offset_y);
-    //void        setFriction(float f);
     void        setMaxVelocity(float max);
     QVector2D   getVelocity();
     void        setVelocity(float x, float y);
@@ -57,21 +56,14 @@ public:
     void        disableRotation();
     void        enableRotation();
     void        setMomentOfInertia(float i);
-    //QList<PhysicsBody*> listOverlappingObjects();
-    //bool        isOverlapping();
 
     cpBody *body;
-    //cpShape *shape;
     PhysicsObjectBodyShape bodyShape;
     PhysicsBodyState bodyState;
-    GameObject *parentGameObject;
-    //int userType;
 
     QString name;
 
 private:
-    //static void checkOverlappingList(cpShape *shape, cpContactPointSet *points, void *data);
-    //static void checkOverlappingBool(cpShape *shape, cpContactPointSet *points, void *data);
     PhysicsWorld *m_world;
     float width;
     float height;

@@ -19,26 +19,19 @@
 
 #include <QtGui/QGuiApplication>
 #include <QDebug>
-#include "mygame.h"
-#include "window.h"
 #include "engine.h"
+#include "mygame.h"
 #include "settings.h"
 
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
 
-    Settings::checkGraphicsCapabilities();
+
 
     Engine *engine = new Engine();
-
-    Window *mo = new Window(engine);
-    mo->setWindowSize(1024, 512);
-    mo->setCamera2DSize(1024,512);
-    mo->setAnimating(true);
-    mo->setViewport2DType(VIEWPORT_STRECH_XY);
-    mo->setBackgroundColor(0.5f, 0.0f, 0.3f, 1.0f);
-    mo->showWindow();
+    engine->createWindow(1024,512);
+    engine->showWindow();
 
     MyGame *mygame = new MyGame(engine);
 

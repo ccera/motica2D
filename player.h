@@ -93,7 +93,7 @@ public:
     ControlsState controlsState;
     PlayerMovementState playerState;
 
-    virtual void collide(PhysicsBody *with);
+    virtual void collide(PhysicsShape *with);
 
 signals:
 

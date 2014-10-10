@@ -45,7 +45,6 @@ Player::Player(Engine *engine) :
 
     playerBody = m_engine->newPhysicsBodyBox(80,24,48);
     playerBody->setPosition(QVector3D(100,600,1));
-    playerBody->parentGameObject = this;
     playerBody->name = "PlayerBody";
     playerBody->setRotation(QVector3D(0,0,0));
 
@@ -55,6 +54,7 @@ Player::Player(Engine *engine) :
     playerShape->userType = GAME_PLAYER;
     m_engine->addShapeToBody(playerShape, playerBody);
     m_engine->addShapeToSpace(playerShape);
+    playerShape->parentGameObject = this;
 
     feetSensorL = m_engine->newPhysicsShapeBox(12,10,QVector2D(-8,-36));
     feetSensorL->setSensor(true);
@@ -202,11 +202,6 @@ void Player::checkKey()
     controlsState = CONTROLS_NOTHING;
 }
 
-void Player::collide(PhysicsBody *with)
-{
-
-}
-
 void Player::debugPrintState()
 {
     QString str;
@@ -281,4 +276,9 @@ void Player::update(float dt)
     if(playerBody->getVelocity().x() > 150 ) { playerBody->setVelocity(150, playerBody->getVelocity().y()); }
     if(playerBody->getVelocity().x() < -150 ) { playerBody->setVelocity(-150, playerBody->getVelocity().y()); }
 
+}
+
+void Player::collide(PhysicsShape *with)
+{
+    //qDebug() << "collideee";
 }

@@ -21,9 +21,9 @@
 #define GAMEOBJECT_H
 
 #include <QObject>
-#include "physicsbody.h"
+#include "physicsshape.h"
 
-class PhysicsBody;
+class PhysicsShape;
 
 class GameObject : public QObject
 {
@@ -38,7 +38,7 @@ public:
     virtual void update(float dt);
     virtual void keyPress(int key);
     virtual void keyRelease(int key);
-    virtual void collide(PhysicsBody *with);
+    virtual void collide(PhysicsShape *with);
 };
 
 #endif // GAMEOBJECT_H

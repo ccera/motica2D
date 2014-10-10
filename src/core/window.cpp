@@ -49,7 +49,7 @@ Window::Window(Engine *engine)
     this->setFormat(format);
 #endif
 
-    engine->engine = this;
+    engine->window = this;
     isPressed = false;
     m_engine->scene = NULL;
     m_engine->isGLInitialized = false;
