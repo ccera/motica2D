@@ -52,6 +52,10 @@ class Engine : public QObject
 public:
     explicit Engine(QObject *parent = 0);
 
+    // Window helper
+    void createWindow(float width, float height);
+    void createWindow(float width, float height, float camera_width, float camera_height, ViewportType type);
+    void showWindow();
 
     // Graphics helper functions
     Texture*        newTexture(const QString &file);
@@ -100,13 +104,7 @@ public:
 
 signals:
 
-
 public slots:
-    // Window helper
-    void createWindow(float width, float height);
-    void createWindow(float width, float height, float camera_width, float camera_height, ViewportType type);
-    void showWindow();
-
 
 private:
     int next_model_id; // Id koji se dodjeljuje svakom modelu

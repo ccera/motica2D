@@ -19,7 +19,6 @@
 
 #include <QtGui/QGuiApplication>
 #include <QDebug>
-#include <QScriptEngine>
 #include "engine.h"
 #include "mygame.h"
 #include "settings.h"
@@ -29,30 +28,10 @@ int main(int argc, char **argv)
     QGuiApplication app(argc, argv);
 
     Engine *engine = new Engine();
-    //engine->createWindow(1024,512);
-    //engine->showWindow();
+    engine->createWindow(1024,512);
+    engine->showWindow();
 
-    // SCRIPTING test-------
-    QFile f1(Resource("scripts/drugi.js"));
-    f1.open(QFile::ReadOnly | QFile::Text);
-    QByteArray ba1 = f1.readAll();
-
-    QFile f2(Resource("scripts/main.js"));
-    f2.open(QFile::ReadOnly | QFile::Text);
-    QByteArray ba2 = f2.readAll();
-
-    QScriptEngine scriptEngine;
-
-    QScriptValue objValue = scriptEngine.newQObject(engine);
-    scriptEngine.globalObject().setProperty("engine", objValue);
-
-    QScriptProgram program1(ba1.data());
-    QScriptProgram program2(ba2.data());
-    scriptEngine.evaluate(program1);
-    scriptEngine.evaluate(program2);
-    //----------------------
-
-    //MyGame *mygame = new MyGame(engine);
+    MyGame *mygame = new MyGame(engine);
 
     return app.exec();
 }

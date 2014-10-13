@@ -57,10 +57,9 @@ public:
     virtual void mouseMoveEvent(QMouseEvent *ev);
     virtual void mouseReleaseEvent(QMouseEvent *ev);
     virtual void resizeEvent(QResizeEvent * ev);
-
-    void setAnimating(bool animating);
-    void setWindowSize(float width, float height);
     void setBackgroundColor(float r, float g, float b, float a);
+    void setWindowSize(float width, float height);
+    void setAnimating(bool animating);
     void showWindow();
     void setCamera2DSize(float w, float h);
     void setCamera2DPos(float x, float y);
